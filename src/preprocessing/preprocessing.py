@@ -19,8 +19,7 @@ MAX_PRICE = 10_000_000
 
 
 def mileage_midpoint(text: str) -> float:
-    """'200 000 - 249 999' -> 225000 (middle of the range).
-    'Plus de 500 000' has no upper limit, so it becomes 500000."""
+    # '200 000 - 249 999' -> 225000 (middle of the range). 'Plus de 500 000' has no upper limit, so it becomes 500000
     if text.startswith("Plus de"):
         return 500_000
     low, high = text.replace(" ", "").split("-")
@@ -43,23 +42,30 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Year: "1980 ou plus ancien" -> 1980, and make it a number
     df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
-    # Mileage: range text -> number (middle of the range) plus a flag column
-    # for the open-ended "Plus de 500 000" bucket
+    # Mileage: range text -> number (middle of the range) plus a flag column for the open-ended "Plus de 500 000" bucket
     df["Mileage Above 500000"] = (df["Mileage"] == "Plus de 500 000").astype(int)
     df["Mileage"] = df["Mileage"].map(mileage_midpoint)
 
-    # Condition: ordinal encoding (missing values stay empty)
+    # Condition: ordinal encoding (missing values are removed)
     CONDITION_ORDER = {"For Parts": 0, "Damaged": 1, "Fair": 2, "Good": 3, "Very Good": 4, "Excellent": 5, "New": 6}
     df["Condition"] = df["Condition"].map(CONDITION_ORDER)
+    df = df.dropna(subset=["Condition"])
 
     # Gearbox: Manual = 0, Automatic = 1
     df["Gearbox"] = df["Gearbox"].map({"Manual": 0, "Automatic": 1})
 
-    # Fiscal Power: "8 CV" -> 8 ; "Plus de 41 CV" -> 41 plus a flag column
-    # (missing values stay empty and get flag 0)
+    # Fiscal Power: "8 CV" -> 8 ; "Plus de 41 CV" -> 41 plus a flag column (missing values stay empty and get flag 0)
     df["Fiscal Power Above 41"] = (df["Fiscal Power"] == "Plus de 41 CV").astype(int)
     df["Fiscal Power (CV)"] = df["Fiscal Power"].str.extract(r"(\d+)")[0].astype("Int64")
     df = df.drop(columns=["Fiscal Power"])
+
+    # Fiscal Power: fill missing with the most common value of the same
+    # Brand + Model + Fuel, then (for what is left) the same Brand + Model
+    for keys in (["Brand", "Model", "Fuel"], ["Brand", "Model"]):
+        group_mode = df.groupby(keys)["Fiscal Power (CV)"].transform(
+            lambda s: s.mode().iloc[0] if s.notna().any() else np.nan)
+        df["Fiscal Power (CV)"] = df["Fiscal Power (CV)"].fillna(group_mode)
+
 
     # Fuel: one-hot encoding (only 5 categories)
     df["Fuel"] = df["Fuel"].replace({"Electrique": "Electric"})

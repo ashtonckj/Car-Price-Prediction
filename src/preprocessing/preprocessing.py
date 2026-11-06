@@ -24,8 +24,7 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
     # Condition: ordinal encoding (missing values stay empty)
-    condition_order = {"For Parts": 0, "Damaged": 1, "Fair": 2, "Good": 3,
-                       "Very Good": 4, "Excellent": 5, "New": 6}
+    condition_order = {"For Parts": 0, "Damaged": 1, "Fair": 2, "Good": 3, "Very Good": 4, "Excellent": 5, "New": 6}
     df["Condition"] = df["Condition"].map(condition_order)
 
     # Gearbox: Manual = 0, Automatic = 1
@@ -45,8 +44,7 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Number of Doors: fill with the most common value for that Brand + Model, else 5
     mode_by_model = df.groupby(["Brand", "Model"])["Number of Doors"].transform(
         lambda s: s.mode().iloc[0] if s.notna().any() else np.nan)
-    df["Number of Doors"] = (df["Number of Doors"].fillna(mode_by_model)
-                             .fillna(5).astype(int))
+    df["Number of Doors"] = (df["Number of Doors"].fillna(mode_by_model).fillna(5).astype(int))
 
     # Drop columns that are not needed
     df = df.drop(columns=["Origin", "Location", "Sector"])
@@ -59,11 +57,10 @@ def main() -> None:
     clean = preprocess(raw)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUT_DIR / "cars.csv"
-    clean.to_csv(out_path, index=False)
+    clean.to_csv(OUT_DIR / "cars.csv", index=False)
 
     print(f"Rows: {len(raw)} -> {len(clean)}")
-    print(f"Saved {out_path}")
+    print(f"Saved {OUT_DIR / "cars.csv"}")
     print("Remaining missing values:")
     print(clean.isna().sum()[lambda s: s > 0].to_string())
 

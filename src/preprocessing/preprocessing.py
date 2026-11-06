@@ -11,10 +11,20 @@ import pandas as pd
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
 OUT_DIR = ROOT_DIR / "data" / "processed"
+OUT_PATH = OUT_DIR / "cars.csv"
 
 # Price limits (MAD): anything outside is treated as a typo / placeholder
 MIN_PRICE = 3_000
-MAX_PRICE = 50_000_000
+MAX_PRICE = 10_000_000
+
+
+def mileage_midpoint(text: str) -> float:
+    """'200 000 - 249 999' -> 225000 (middle of the range).
+    'Plus de 500 000' has no upper limit, so it becomes 500000."""
+    if text.startswith("Plus de"):
+        return 500_000
+    low, high = text.replace(" ", "").split("-")
+    return round((int(low) + int(high)) / 2)
 
 
 def preprocess(df: pd.DataFrame) -> pd.DataFrame:
@@ -30,15 +40,21 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Year: "1980 ou plus ancien" -> 1980, and make it a number
     df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
+    # Mileage: range text -> number (middle of the range)
+    df["Mileage"] = df["Mileage"].map(mileage_midpoint)
+
     # Condition: ordinal encoding (missing values stay empty)
-    condition_order = {"For Parts": 0, "Damaged": 1, "Fair": 2, "Good": 3, "Very Good": 4, "Excellent": 5, "New": 6}
-    df["Condition"] = df["Condition"].map(condition_order)
+    CONDITION_ORDER = {"For Parts": 0, "Damaged": 1, "Fair": 2, "Good": 3, "Very Good": 4, "Excellent": 5, "New": 6}
+    df["Condition"] = df["Condition"].map(CONDITION_ORDER)
 
     # Gearbox: Manual = 0, Automatic = 1
     df["Gearbox"] = df["Gearbox"].map({"Manual": 0, "Automatic": 1})
 
-    # Fiscal Power: "Plus de 41 CV" -> ">41 CV"
-    df["Fiscal Power"] = df["Fiscal Power"].replace({"Plus de 41 CV": ">41 CV"})
+    # Fiscal Power: "8 CV" -> 8 ; "Plus de 41 CV" -> 41 plus a flag column
+    # (missing values stay empty and get flag 0)
+    df["Fiscal Power Above 41"] = (df["Fiscal Power"] == "Plus de 41 CV").astype(int)
+    df["Fiscal Power (CV)"] = df["Fiscal Power"].str.extract(r"(\d+)")[0].astype("Int64")
+    df = df.drop(columns=["Fiscal Power"])
 
     # Fuel: one-hot encoding (only 5 categories)
     df["Fuel"] = df["Fuel"].replace({"Electrique": "Electric"})
@@ -54,7 +70,7 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     df["Number of Doors"] = (df["Number of Doors"].fillna(mode_by_model).fillna(5).astype(int))
 
     # Drop columns that are not needed
-    df = df.drop(columns=["Origin", "Location", "Sector"])
+    df = df.drop(columns=["First Owner", "Origin", "Location", "Sector"])
 
     return df
 
@@ -64,10 +80,10 @@ def main() -> None:
     clean = preprocess(raw)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    clean.to_csv(OUT_DIR / "cars.csv", index=False)
+    clean.to_csv(OUT_PATH, index=False)
+    print(f"Saved {OUT_PATH}")
 
     print(f"Rows: {len(raw)} -> {len(clean)}")
-    print(f"Saved {OUT_DIR / "cars.csv"}")
     print("Remaining missing values:")
     print(clean.isna().sum()[lambda s: s > 0].to_string())
 

@@ -14,7 +14,7 @@ OUT_DIR = ROOT_DIR / "data" / "processed"
 
 # Price limits (MAD): anything outside is treated as a typo / placeholder
 MIN_PRICE = 3_000
-MAX_PRICE = 3_000_000
+MAX_PRICE = 50_000_000
 
 
 def preprocess(df: pd.DataFrame) -> pd.DataFrame:

@@ -4,8 +4,6 @@ Exploratory Data Analysis script for data/raw/cars_dataframe.csv
 Saves visual reports to reports/figures/
 """
 from pathlib import Path
-import re
-import ast
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -71,7 +69,7 @@ def inspect_target(df: pd.DataFrame) -> None:
     print(f"Suspiciously High Prices (> 2M MAD):      {extreme_high:,} rows")
 
     # Plot Price Distributions
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    _fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     
     # Linear scale plot (filtered to < 1M for readability)
     sns.histplot(price_cleaned[price_cleaned < 1_000_000], bins=50, kde=True, ax=axes[0], color="skyblue")

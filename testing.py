@@ -42,7 +42,7 @@ def main():
         df = df.drop_duplicates().reset_index(drop=True)
         print(f"Duplicate rows removed. New shape: {df.shape}")
 
-    # 2. Parse Mileage & apply 3-tier hierarchical median imputation
+    # 2. Parse Mileage
     if "Mileage" in df.columns:
         df["Mileage"] = df["Mileage"].apply(parse_mileage)
 

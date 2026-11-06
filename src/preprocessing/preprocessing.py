@@ -88,6 +88,8 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     df = df[["Brand", "Model", "Year", "Condition", "Gearbox", "Number of Doors", "Equipment Amount",
              "Mileage", "Mileage Above 500000", "Fiscal Power (CV)", "Fiscal Power Above 41", *fuel_cols, "Price"]]
 
+    df = df.drop_duplicates()
+
     return df
 
 

@@ -11,7 +11,7 @@ import pandas as pd
 import seaborn as sns
 
 # File paths
-ROOT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
 FIG_DIR = ROOT_DIR / "reports" / "figures"
 FIG_DIR.mkdir(parents=True, exist_ok=True)

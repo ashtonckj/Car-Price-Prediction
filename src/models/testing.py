@@ -2,7 +2,6 @@
 train_xgb.py
 Loads data/processed/cars.csv, cleans and imputes Mileage, and trains XGBRegressor.
 """
-import re
 from pathlib import Path
 
 import numpy as np
@@ -18,44 +17,20 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 from xgboost import XGBRegressor
 
-ROOT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = Path(__file__).resolve().parents[2]
 PROCESSED_CSV = ROOT_DIR / "data" / "processed" / "cars.csv"
-
-
-def parse_mileage(val):
-    """Parses mileage ranges ('10000 - 20000') or strings into floats."""
-    if pd.isna(val):
-        return np.nan
-    val_str = str(val).replace(" ", "").replace("\xa0", "").strip()
-    if "-" in val_str:
-        parts = val_str.split("-")
-        nums = [re.sub(r"[^\d]", "", p) for p in parts if re.sub(r"[^\d]", "", p)]
-        if len(nums) == 2:
-            return (float(nums[0]) + float(nums[1])) / 2.0
-    num_only = re.sub(r"[^\d]", "", val_str)
-    return float(num_only) if num_only else np.nan
 
 
 def main():
     # 1. Load data from processed CSV
     df = pd.read_csv(PROCESSED_CSV)
 
-    # 1.1 Check for duplicates and remove them
-    print(f"Duplicate rows: {df.duplicated().sum()}")
-    if df.duplicated().sum() > 0:
-        df = df.drop_duplicates().reset_index(drop=True)
-        print(f"Duplicate rows removed. New shape: {df.shape}")
-
-    # 2. Parse Mileage
-    if "Mileage" in df.columns:
-        df["Mileage"] = df["Mileage"].apply(parse_mileage)
-
-    # 3. Separate Features and Log-Transformed Target (Handle Skewed Price Distribution)
+    # 2. Separate Features and Log-Transformed Target (Handle Skewed Price Distribution)
     y = np.log1p(df["Price"])
-    X = df.drop(columns=["Price", "First Owner"])
+    X = df.drop(columns="Price")
 
     # 4. Categorical and Numerical Feature Split
-    cat_cols = [col for col in ["Brand", "Model", "Fiscal Power"] if col in X.columns]
+    cat_cols = [col for col in ["Brand", "Model"] if col in X.columns]
     num_cols = [col for col in X.columns if col not in cat_cols]
 
     # 5. Preprocessing & XGBoost Pipeline

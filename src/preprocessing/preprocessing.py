@@ -37,6 +37,9 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Price: remove impossible values (e.g. 1, 24, 180 or 1,600,000,000)
     df = df[df["Price"].between(MIN_PRICE, MAX_PRICE)].copy()
 
+    # Price: whole numbers only (it was a float because of the missing values)
+    df["Price"] = df["Price"].astype(int)
+
     # Year: "1980 ou plus ancien" -> 1980, and make it a number
     df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
@@ -74,7 +77,7 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Drop columns that are not needed
     df = df.drop(columns=["First Owner", "Origin", "Location", "Sector"])
 
-    # Column order: general columns, Mileage + flag, Fiscal Power + flag, Fuel, Price last
+    # Column order: general columns, Mileage + flag, Fiscal Power + flag, Fuel, Price
     fuel_cols = [c for c in df.columns if c.startswith("Fuel_")]
     df = df[["Brand", "Model", "Year", "Condition", "Gearbox", "Number of Doors", "Equipment Amount",
              "Mileage", "Mileage Above 500000", "Fiscal Power (CV)", "Fiscal Power Above 41", *fuel_cols, "Price"]]

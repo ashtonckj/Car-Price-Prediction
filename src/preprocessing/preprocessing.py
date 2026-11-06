@@ -40,7 +40,9 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Year: "1980 ou plus ancien" -> 1980, and make it a number
     df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
-    # Mileage: range text -> number (middle of the range)
+    # Mileage: range text -> number (middle of the range) plus a flag column
+    # for the open-ended "Plus de 500 000" bucket
+    df["Mileage Above 500000"] = (df["Mileage"] == "Plus de 500 000").astype(int)
     df["Mileage"] = df["Mileage"].map(mileage_midpoint)
 
     # Condition: ordinal encoding (missing values stay empty)
@@ -72,6 +74,11 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Drop columns that are not needed
     df = df.drop(columns=["First Owner", "Origin", "Location", "Sector"])
 
+    # Column order: general columns, Mileage + flag, Fiscal Power + flag, Fuel, Price last
+    fuel_cols = [c for c in df.columns if c.startswith("Fuel_")]
+    df = df[["Brand", "Model", "Year", "Condition", "Gearbox", "Number of Doors", "Equipment Amount",
+             "Mileage", "Mileage Above 500000", "Fiscal Power (CV)", "Fiscal Power Above 41", *fuel_cols, "Price"]]
+
     return df
 
 
@@ -81,9 +88,9 @@ def main() -> None:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     clean.to_csv(OUT_PATH, index=False)
-    print(f"Saved {OUT_PATH}")
 
     print(f"Rows: {len(raw)} -> {len(clean)}")
+    print(f"Saved {OUT_PATH}")
     print("Remaining missing values:")
     print(clean.isna().sum()[lambda s: s > 0].to_string())
 

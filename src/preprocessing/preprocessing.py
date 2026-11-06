@@ -12,6 +12,10 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
 OUT_DIR = ROOT_DIR / "data" / "processed"
 
+# Price limits (MAD): anything outside is treated as a typo / placeholder
+MIN_PRICE = 3_000
+MAX_PRICE = 3_000_000
+
 
 def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Remove the one corrupted row (a mileage range sitting in the Fuel column)
@@ -19,6 +23,9 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
     # Price: remove rows without a price
     df = df.dropna(subset=["Price"]).copy()
+
+    # Price: remove impossible values (e.g. 1, 24, 180 or 1,600,000,000)
+    df = df[df["Price"].between(MIN_PRICE, MAX_PRICE)].copy()
 
     # Year: "1980 ou plus ancien" -> 1980, and make it a number
     df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)

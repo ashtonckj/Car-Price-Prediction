@@ -11,7 +11,7 @@ import pandas as pd
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
 OUT_DIR = ROOT_DIR / "data" / "processed"
-OUT_PATH = OUT_DIR / "cars.csv"
+PROCESSED_CSV = OUT_DIR / "cars.csv"
 
 # Price limits (MAD): anything outside is treated as a typo / placeholder
 MIN_PRICE = 3_000
@@ -94,16 +94,16 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
-    raw = pd.read_csv(RAW_CSV)
-    clean = preprocess(raw)
+    df = pd.read_csv(RAW_CSV)
+    df_clean = preprocess(df)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    clean.to_csv(OUT_PATH, index=False)
+    df_clean.to_csv(PROCESSED_CSV, index=False)
 
-    print(f"Rows: {len(raw)} -> {len(clean)}")
-    print(f"Saved {OUT_PATH}")
+    print(f"Rows: {len(df)} -> {len(df_clean)}")
+    print(f"Saved {PROCESSED_CSV}")
     print("Remaining missing values:")
-    print(clean.isna().sum()[lambda s: s > 0].to_string())
+    print(df_clean.isna().sum()[lambda s: s > 0].to_string())
 
 
 if __name__ == "__main__":

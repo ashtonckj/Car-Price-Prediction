@@ -3,12 +3,14 @@ eda.py
 Exploratory Data Analysis script for data/raw/cars_dataframe.csv
 Saves visual reports to reports/figures/
 """
+import ast
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import scipy.stats as stats
 
 # File paths
 ROOT_DIR = Path(__file__).resolve().parents[2]
@@ -26,6 +28,40 @@ def load_raw_data() -> pd.DataFrame:
     if not RAW_CSV.exists():
         raise FileNotFoundError(f"Raw data file not found at {RAW_CSV}")
     return pd.read_csv(RAW_CSV)
+
+def prepare_numerical_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Extracts and parses all continuous features into numeric dtypes for outlier testing."""
+    num_df = pd.DataFrame()
+
+    # 1. Price
+    if "Price" in df.columns:
+        num_df["Price"] = pd.to_numeric(
+            df["Price"].astype(str).str.replace(r"[^\d\.]", "", regex=True), errors="coerce"
+        )
+
+    # 2. Year
+    if "Year" in df.columns:
+        num_df["Year"] = pd.to_numeric(
+            df["Year"].astype(str).str.extract(r"(\d{4})")[0], errors="coerce"
+        )
+
+    # 3. Fiscal Power
+    if "Fiscal Power" in df.columns:
+        num_df["Fiscal Power"] = pd.to_numeric(
+            df["Fiscal Power"].astype(str).str.extract(r"(\d+)")[0], errors="coerce"
+        )
+
+    # 4. Equipment Amount
+    if "Equipment" in df.columns:
+        num_df["Equipment Amount"] = df["Equipment"].apply(
+            lambda x: len(ast.literal_eval(x)) if pd.notna(x) and isinstance(x, str) and x.startswith("[") else 0
+        )
+
+    # 5. Number of Doors
+    if "Number of Doors" in df.columns:
+        num_df["Number of Doors"] = pd.to_numeric(df["Number of Doors"], errors="coerce")
+
+    return num_df
 
 
 def inspect_overview(df: pd.DataFrame) -> None:
@@ -164,7 +200,9 @@ def inspect_bivariate_relationships(df: pd.DataFrame) -> None:
         data=analysis_df[analysis_df["Brand"].isin(top_brands)],
         x="Brand",
         y="Price",
-        palette="viridis"
+        palette="viridis",
+        hue="Brand",
+        legend=False
     )
     plt.xticks(rotation=45, ha="right")
     plt.title("Price Distribution Across Top 15 Brands (10k - 1.5M MAD)")
@@ -185,14 +223,126 @@ def inspect_bivariate_relationships(df: pd.DataFrame) -> None:
     print(f"Saved plot: {FIG_DIR / 'price_vs_year.png'}\n")
 
 
+def plot_all_boxplots(num_df: pd.DataFrame) -> None:
+    """Generates boxplots for every numerical feature."""
+    cols = num_df.columns
+    n_cols = len(cols)
+
+    fig, axes = plt.subplots(nrows=2, ncols=int(np.ceil(n_cols / 2)), figsize=(16, 10))
+    axes = axes.flatten()
+
+    for idx, col in enumerate(cols):
+        sns.boxplot(
+            y=num_df[col],
+            ax=axes[idx],
+            color="skyblue",
+            flierprops={"markerfacecolor": "red", "markersize": 4}
+        )
+        axes[idx].set_title(f"Boxplot: {col}", fontsize=12, fontweight="bold")
+        axes[idx].set_ylabel("")
+
+    for i in range(idx + 1, len(axes)):
+        fig.delaxes(axes[i])
+
+    plt.tight_layout()
+    boxplot_path = FIG_DIR / "all_features_boxplots.png"
+    plt.savefig(boxplot_path)
+    plt.close()
+    print(f"Saved boxplots: {boxplot_path}")
+
+
+def plot_z_scores(num_df: pd.DataFrame) -> None:
+    """Plots Z-score distributions with threshold lines at Z = -3 and Z = +3."""
+    cols = num_df.columns
+    n_cols = len(cols)
+
+    fig, axes = plt.subplots(nrows=2, ncols=int(np.ceil(n_cols / 2)), figsize=(16, 10))
+    axes = axes.flatten()
+
+    for idx, col in enumerate(cols):
+        s = num_df[col].dropna()
+        if len(s) == 0 or s.std() == 0:
+            continue
+
+        z_scores = (s - s.mean()) / s.std()
+        outliers_count = (z_scores.abs() > 3).sum()
+
+        sns.histplot(z_scores, kde=True, ax=axes[idx], color="mediumpurple", bins=40)
+        axes[idx].axvline(3, color="red", linestyle="--", linewidth=1.5, label="Z = +3")
+        axes[idx].axvline(-3, color="red", linestyle="--", linewidth=1.5, label="Z = -3")
+        
+        axes[idx].set_title(f"Z-Score Distribution: {col}\n({outliers_count:,} outliers |Z| > 3)", fontsize=11, fontweight="bold")
+        axes[idx].set_xlabel("Z-Score")
+        axes[idx].set_ylabel("Count")
+        axes[idx].legend(loc="upper right")
+
+    for i in range(idx + 1, len(axes)):
+        fig.delaxes(axes[i])
+
+    plt.tight_layout()
+    z_plot_path = FIG_DIR / "all_features_z_scores.png"
+    plt.savefig(z_plot_path)
+    plt.close()
+    print(f"Saved Z-Score distribution plots: {z_plot_path}")
+
+def detect_outliers_summary(num_df: pd.DataFrame) -> pd.DataFrame:
+    """Calculates IQR and Z-Score outlier counts for each numerical feature."""
+    summary_list = []
+
+    for col in num_df.columns:
+        s = num_df[col].dropna()
+        n_total = len(s)
+
+        if n_total == 0:
+            continue
+
+        # IQR Method
+        q1 = s.quantile(0.25)
+        q3 = s.quantile(0.75)
+        iqr = q3 - q1
+        lower_iqr = q1 - 1.5 * iqr
+        upper_iqr = q3 + 1.5 * iqr
+        iqr_outliers = s[(s < lower_iqr) | (s > upper_iqr)].count()
+
+        # Z-Score Method (|Z| > 3)
+        mean = s.mean()
+        std = s.std()
+        if std > 0:
+            z_scores = (s - mean) / std
+            z_outliers = (z_scores.abs() > 3).sum()
+        else:
+            z_outliers = 0
+
+        summary_list.append({
+            "Feature": col,
+            "Valid Count": n_total,
+            "Mean": round(mean, 2),
+            "Std Dev": round(std, 2),
+            "IQR Outliers": iqr_outliers,
+            "IQR Outliers (%)": round((iqr_outliers / n_total) * 100, 2),
+            "Z-Score Outliers (|Z|>3)": z_outliers,
+            "Z-Score Outliers (%)": round((z_outliers / n_total) * 100, 2),
+        })
+
+    return pd.DataFrame(summary_list)
+
 def main():
     print("Starting EDA for Raw Dataset...\n")
     df = load_raw_data()
+    num_df = prepare_numerical_df(df)
     
     inspect_overview(df)
     inspect_target(df)
     inspect_categorical_anomalies(df)
     inspect_mileage_and_year(df)
+
+    print("=" * 60)
+    plot_all_boxplots(num_df)
+    plot_z_scores(num_df)
+    outlier_table = detect_outliers_summary(num_df)
+    print("\nStatistical Outlier Summary:")
+    print(outlier_table.to_string(index=False))
+
     inspect_bivariate_relationships(df)
     
     print("=" * 60)

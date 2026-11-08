@@ -15,7 +15,7 @@ from sklearn.metrics import (
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
-from xgboost import XGBRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 PROCESSED_CSV = ROOT_DIR / "data" / "processed" / "cars.csv"
@@ -29,9 +29,14 @@ def main():
     y = np.log1p(df["Price"])
     X = df.drop(columns="Price")
 
-    # 4. Categorical and Numerical Feature Split
-    cat_cols = [col for col in ["Brand", "Model"] if col in X.columns]
-    num_cols = [col for col in X.columns if col not in cat_cols]
+    # 3. Perform Train/Test Split FIRST
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+
+    # 4. Define Feature Columns
+    cat_cols = [col for col in ["Brand", "Model"] if col in X_train.columns]
+    num_cols = [col for col in X_train.columns if col not in cat_cols]
 
     # 5. Preprocessing & XGBoost Pipeline
     preprocessor = ColumnTransformer(
@@ -50,20 +55,15 @@ def main():
             ("preprocessor", preprocessor),
             (
                 "regressor",
-                XGBRegressor(
+                GradientBoostingRegressor(
                     random_state=42
                 ),
             ),
         ]
     )
 
-    # 6. Train/Test Split (80/20)
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-
     # 7. Model Training & Evaluation
-    print("Training XGBoost Regressor...")
+    print("Training Gradient Boosting Regressor...")
     model_pipeline.fit(X_train, y_train)
 
     y_pred_log = model_pipeline.predict(X_test)

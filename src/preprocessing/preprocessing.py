@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
@@ -17,6 +18,8 @@ OUT_PATH = OUT_DIR / "cars.csv"
 MIN_PRICE = 3_000
 MAX_PRICE = 10_000_000
 
+MIN_FREQUENCY = 10   # Brand/Model values with fewer rows are grouped into one "infrequent" column
+CATEGORICAL_COLUMNS = ["Brand", "Model"]
 
 def mileage_midpoint(text: str) -> float:
     # '200 000 - 249 999' -> 225000 (middle of the range). 'Plus de 500 000' has no upper limit, so it becomes 500000
@@ -89,6 +92,18 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
              "Mileage", "Mileage Above 500000", "Fiscal Power (CV)", "Fiscal Power Above 41", *fuel_cols, "Price"]]
 
     df = df.drop_duplicates()
+
+    # Brand + Model: one-hot encoding; values with fewer than MIN_FREQUENCY rows share one "infrequent" column
+    encoder = OneHotEncoder(min_frequency=MIN_FREQUENCY, handle_unknown="infrequent_if_exist", sparse_output=False, dtype=int)
+    encoded = pd.DataFrame(
+        encoder.fit_transform(df[CATEGORICAL_COLUMNS]),
+        columns=encoder.get_feature_names_out(CATEGORICAL_COLUMNS),
+        index=df.index,
+    )
+    df = pd.concat([df.drop(columns=CATEGORICAL_COLUMNS), encoded], axis=1)
+
+    # Price -> log1p (the target column; use np.expm1 to get back to MAD)
+    df["Log Price"] = np.log1p(df.pop("Price"))
 
     return df
 

@@ -13,8 +13,10 @@ from src.shared.core_utils import evaluate, load_data
 X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price = load_data()
 
 model = nn.Sequential(
-    nn.Linear(X_train.shape[1], 128), nn.ReLU(),
-    nn.Linear(128, 64), nn.ReLU(),
+    nn.Linear(X_train.shape[1], 128),
+    nn.ReLU(),
+    nn.Linear(128, 64),
+    nn.ReLU(),
     nn.Linear(64, 1),
 )
 model = train_torch(model, X_train, y_train, X_val, y_val)

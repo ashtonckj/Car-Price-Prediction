@@ -17,14 +17,23 @@ def train_torch(model, X_train, y_train, X_val, y_val, epochs=100, learning_rate
     torch.manual_seed(RANDOM_STATE)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model.to(device)
-    optimizer, loss_function = torch.optim.Adam(model.parameters(), lr=learning_rate), nn.MSELoss()
-    loader = DataLoader(TensorDataset(torch.tensor(X_train), torch.tensor(y_train)), batch_size=batch_size, shuffle=True)
+    optimizer, loss_function = (
+        torch.optim.Adam(model.parameters(), lr=learning_rate),
+        nn.MSELoss(),
+    )
+    loader = DataLoader(
+        TensorDataset(torch.tensor(X_train), torch.tensor(y_train)),
+        batch_size=batch_size,
+        shuffle=True,
+    )
     best_loss, best_state, bad_epochs = float("inf"), None, 0
     for epoch in range(epochs):
         model.train()
         for X_batch, y_batch in loader:
             X_batch, y_batch = X_batch.to(device), y_batch.to(device)
-            optimizer.zero_grad(); loss_function(model(X_batch), y_batch).backward(); optimizer.step()
+            optimizer.zero_grad()
+            loss_function(model(X_batch), y_batch).backward()
+            optimizer.step()
         val_loss = float(np.mean((predict(model, X_val) - y_val) ** 2))
         print(f"epoch {epoch + 1} | val_loss {val_loss:.4f}")
         if val_loss < best_loss:

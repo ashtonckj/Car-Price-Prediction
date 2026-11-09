@@ -26,8 +26,12 @@ def main():
     df = pd.read_csv(PROCESSED_CSV)
 
     # 2. Separate Features and Log-Transformed Target (Handle Skewed Price Distribution)
-    y = np.log1p(df["Price"])
-    X = df.drop(columns="Price")
+    if "Log Price" in df.columns:
+        y = df["Log Price"]
+        X = df.drop(columns="Log Price")
+    else:
+        y = np.log1p(df["Price"])
+        X = df.drop(columns="Price")
 
     # 3. Perform Train/Test Split FIRST
     X_train, X_test, y_train, y_test = train_test_split(
@@ -35,13 +39,14 @@ def main():
     )
 
     # 4. Define Feature Columns
-    cat_cols = [col for col in ["Brand", "Model"] if col in X_train.columns]
+    cat_cols = [col for col in ["Brand", "Model", "Fuel"] if col in X_train.columns]
     num_cols = [col for col in X_train.columns if col not in cat_cols]
 
     # 5. Preprocessing & XGBoost Pipeline
     preprocessor = ColumnTransformer(
         transformers=[
             ("num", "passthrough", num_cols),
+            # ("num", SimpleImputer(strategy="median"), num_cols), 
             (
                 "cat",
                 OneHotEncoder(handle_unknown="ignore", min_frequency=10, sparse_output=False),

@@ -28,9 +28,9 @@ class KernelRegressor:
         dist, idx = self.nn_.kneighbors(X)  # distances/indices of candidate cars
         # Subtract each row's smallest squared distance before exp(): the weighted
         # average is unchanged, but weights no longer underflow to 0 (stability).
-        d2 = dist ** 2
+        d2 = dist**2
         d2 = d2 - d2.min(axis=1, keepdims=True)
-        weights = np.exp(-d2 / (2 * self.bandwidth ** 2))
+        weights = np.exp(-d2 / (2 * self.bandwidth**2))
         return (weights * self.y_train_[idx]).sum(axis=1) / weights.sum(axis=1)
 
 

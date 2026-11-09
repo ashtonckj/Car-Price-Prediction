@@ -13,7 +13,7 @@ from src.shared.core_utils import evaluate, load_data
 
 X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price = load_data()
 
-model = RadiusNeighborsRegressor()  # default parameters (radius=1.0)
+model = RadiusNeighborsRegressor()  # default: radius=1.0
 
 t0 = time.time()
 model.fit(X_train, y_train.ravel())

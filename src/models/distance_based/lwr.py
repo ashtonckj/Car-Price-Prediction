@@ -39,26 +39,26 @@ class LocallyWeightedRegressor:
         penalty[0, 0] = 0.0
 
         for start in range(0, len(X), BATCH_SIZE):
-            xb = X[start:start + BATCH_SIZE]             # (B, d) cars to predict
-            dist, idx = self.nn_.kneighbors(xb)          # (B, k) neighbours
+            xb = X[start : start + BATCH_SIZE]  # (B, d) cars to predict
+            dist, idx = self.nn_.kneighbors(xb)  # (B, k) neighbours
 
             # Kernel weights (smallest squared distance subtracted for stability)
-            d2 = dist ** 2
+            d2 = dist**2
             d2 = d2 - d2.min(axis=1, keepdims=True)
-            w = np.exp(-d2 / (2 * self.bandwidth ** 2))  # (B, k)
+            w = np.exp(-d2 / (2 * self.bandwidth**2))  # (B, k)
 
             # Centre neighbours on the query car and add a column of 1s (intercept)
-            Z = self.X_train_[idx] - xb[:, None, :]      # (B, k, d)
+            Z = self.X_train_[idx] - xb[:, None, :]  # (B, k, d)
             A = np.concatenate([np.ones(Z.shape[:2] + (1,)), Z], axis=2)  # (B, k, d+1)
-            yn = self.y_train_[idx]                      # (B, k)
+            yn = self.y_train_[idx]  # (B, k)
 
             # Weighted ridge normal equations, solved for the whole batch at once
             Aw = A * w[:, :, None]
             lhs = np.einsum("bki,bkj->bij", Aw, A) + penalty  # A' W A + penalty
-            rhs = np.einsum("bki,bk->bi", Aw, yn)             # A' W y
+            rhs = np.einsum("bki,bk->bi", Aw, yn)  # A' W y
             beta = np.linalg.solve(lhs, rhs[:, :, None])[:, :, 0]
 
-            predictions[start:start + BATCH_SIZE] = beta[:, 0]  # intercept = prediction
+            predictions[start : start + BATCH_SIZE] = beta[:, 0]  # intercept = prediction
 
         # A local plane can extrapolate wildly for unusual cars, so keep
         # predictions inside the range of targets seen in training.

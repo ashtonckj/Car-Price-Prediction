@@ -12,8 +12,7 @@ from src.shared.core_utils import evaluate, load_data
 
 X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price = load_data()
 
-model = KNeighborsRegressor()  # default parameters
-
+model = KNeighborsRegressor()  # default: n_neighbors=5, weights="uniform", metric="minkowski", p=2
 t0 = time.time()
 model.fit(X_train, y_train.ravel())
 print(f"Fit time (s): {time.time() - t0:.2f}")

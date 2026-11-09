@@ -11,7 +11,7 @@ import pandas as pd
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
 OUT_DIR = ROOT_DIR / "data" / "processed"
-PROCESSED_CSV = OUT_DIR / "cars.csv"
+OUT_PATH = OUT_DIR / "cars.csv"
 
 # Price limits (MAD): anything outside is treated as a typo / placeholder
 MIN_PRICE = 3_000
@@ -83,11 +83,11 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
-    df = pd.read_csv(RAW_CSV)
-    df_clean = preprocess(df)
+    raw = pd.read_csv(RAW_CSV)
+    clean = preprocess(raw)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    df_clean.to_csv(PROCESSED_CSV, index=False)
+    clean.to_csv(OUT_PATH, index=False)
 
     print(f"Rows: {len(raw)} -> {len(clean)}")
     print(f"Saved {OUT_PATH}")

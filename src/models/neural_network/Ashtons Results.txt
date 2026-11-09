@@ -1,0 +1,27 @@
+--- TabNet test results (original price scale) | log1p=True ---
+RMSE: 177,304.18
+MAE:  28,673.48
+R2:   0.2727
+MAPE: 22.17%
+R2 (scaled/log space): 0.7959
+
+--- MLP test results (original price scale) | log1p=True ---
+RMSE: 175,281.13
+MAE:  27,147.05
+R2:   0.2892
+MAPE: 21.18%
+R2 (scaled/log space): 0.8032
+
+--- GRU test results (original price scale) | log1p=True ---
+RMSE: 181,131.61
+MAE:  34,465.36
+R2:   0.2410
+MAPE: 26.91%
+R2 (scaled/log space): 0.7557
+
+--- LSTM test results (original price scale) | log1p=True ---
+RMSE: 210,406.84
+MAE:  77,796.11
+R2:   -0.0242
+MAPE: 78.13%
+R2 (scaled/log space): 0.0212

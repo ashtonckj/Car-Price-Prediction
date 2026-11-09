@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import (
     mean_absolute_error,
     mean_absolute_percentage_error,
@@ -15,7 +16,6 @@ from sklearn.metrics import (
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.ensemble import GradientBoostingRegressor
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 PROCESSED_CSV = ROOT_DIR / "data" / "processed" / "cars.csv"

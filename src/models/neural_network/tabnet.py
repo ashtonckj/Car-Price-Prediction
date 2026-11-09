@@ -1,5 +1,13 @@
-from common import RANDOM_STATE, evaluate, load_data
+import sys
+from pathlib import Path
+
 from pytorch_tabnet.tab_model import TabNetRegressor
+
+ROOT_DIR = Path(__file__).resolve().parents[3]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.append(str(ROOT_DIR))
+
+from src.shared.core_utils import RANDOM_STATE, evaluate, load_data
 
 X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price = load_data()
 

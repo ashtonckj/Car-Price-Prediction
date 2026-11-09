@@ -1,7 +1,3 @@
-"""
-preprocessing.py
-Reads data/raw/cars_dataframe.csv and writes data/processed/cars.csv
-"""
 import ast
 from pathlib import Path
 
@@ -83,16 +79,16 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
-    raw = pd.read_csv(RAW_CSV)
-    clean = preprocess(raw)
+    df = pd.read_csv(RAW_CSV)
+    df_clean = preprocess(df)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    clean.to_csv(OUT_PATH, index=False)
+    df_clean.to_csv(OUT_PATH, index=False)
 
-    print(f"Rows: {len(raw)} -> {len(clean)}")
+    print(f"Rows: {len(df)} -> {len(df_clean)}")
     print(f"Saved {OUT_PATH}")
     print("Remaining missing values (expected: imputed later):")
-    print(clean.isna().sum()[lambda s: s > 0].to_string())
+    print(df_clean.isna().sum()[lambda s: s > 0].to_string())
 
 
 if __name__ == "__main__":

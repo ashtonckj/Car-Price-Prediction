@@ -1,5 +1,14 @@
-from common import evaluate, load_data, predict, train_torch
+import sys
+from pathlib import Path
+
 from torch import nn
+
+ROOT_DIR = Path(__file__).resolve().parents[3]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.append(str(ROOT_DIR))
+
+from src.models.neural_network.neural_network_utils import predict, train_torch
+from src.shared.core_utils import evaluate, load_data
 
 
 class GRURegressor(nn.Module):

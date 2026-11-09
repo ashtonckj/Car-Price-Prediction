@@ -1,29 +1,20 @@
+import sys
 import time
+from pathlib import Path
 
 import numpy as np
-import pandas as pd
-from sklearn.base import BaseEstimator, RegressorMixin
-from sklearn.compose import ColumnTransformer
-from sklearn.metrics import (
-    mean_absolute_error,
-    mean_absolute_percentage_error,
-    mean_squared_error,
-    r2_score,
-)
-from sklearn.model_selection import train_test_split
 from sklearn.neighbors import NearestNeighbors
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, TargetEncoder
 
-# ----------------------------- Settings -----------------------------
-DATA_PATH = "data/processed/cars.csv"
-RANDOM_STATE = 42  
-TEST_SIZE = 0.2     # 80% train / 20% test
-CATEGORICAL_COLS = ["Brand", "Model"]
-BATCH_SIZE = 500    # test cars solved at once (only affects speed/memory)
+ROOT_DIR = Path(__file__).resolve().parents[3]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.append(str(ROOT_DIR))
 
-# --------------------- Locally Weighted Regression -------------------
-class LocallyWeightedRegressor(BaseEstimator, RegressorMixin):
+from src.shared.core_utils import evaluate, load_data
+
+BATCH_SIZE = 100  # test cars solved at once (only affects speed/memory)
+
+
+class LocallyWeightedRegressor:
     def __init__(self, n_neighbors=100, bandwidth=1.0, ridge=1.0):
         self.n_neighbors = n_neighbors
         self.bandwidth = bandwidth
@@ -33,7 +24,7 @@ class LocallyWeightedRegressor(BaseEstimator, RegressorMixin):
         # "Training" only stores the data and builds a fast neighbour search.
         # The real work (the local regressions) happens at prediction time.
         self.X_train_ = np.asarray(X, dtype=float)
-        self.y_train_ = np.asarray(y, dtype=float)
+        self.y_train_ = np.asarray(y, dtype=float).ravel()
         self.nn_ = NearestNeighbors(n_neighbors=self.n_neighbors).fit(self.X_train_)
         self.y_min_, self.y_max_ = self.y_train_.min(), self.y_train_.max()
         return self
@@ -48,19 +39,18 @@ class LocallyWeightedRegressor(BaseEstimator, RegressorMixin):
         penalty[0, 0] = 0.0
 
         for start in range(0, len(X), BATCH_SIZE):
-            xb = X[start:start + BATCH_SIZE]                 # (B, d) cars to predict
-            dist, idx = self.nn_.kneighbors(xb)              # (B, k) neighbours
+            xb = X[start:start + BATCH_SIZE]             # (B, d) cars to predict
+            dist, idx = self.nn_.kneighbors(xb)          # (B, k) neighbours
 
-            # Kernel weights (subtract the smallest squared distance first for
-            # numerical stability - it does not change the fitted line).
+            # Kernel weights (smallest squared distance subtracted for stability)
             d2 = dist ** 2
             d2 = d2 - d2.min(axis=1, keepdims=True)
-            w = np.exp(-d2 / (2 * self.bandwidth ** 2))     # (B, k)
+            w = np.exp(-d2 / (2 * self.bandwidth ** 2))  # (B, k)
 
             # Centre neighbours on the query car and add a column of 1s (intercept)
-            Z = self.X_train_[idx] - xb[:, None, :]          # (B, k, d)
+            Z = self.X_train_[idx] - xb[:, None, :]      # (B, k, d)
             A = np.concatenate([np.ones(Z.shape[:2] + (1,)), Z], axis=2)  # (B, k, d+1)
-            yn = self.y_train_[idx]                          # (B, k)
+            yn = self.y_train_[idx]                      # (B, k)
 
             # Weighted ridge normal equations, solved for the whole batch at once
             Aw = A * w[:, :, None]
@@ -71,48 +61,20 @@ class LocallyWeightedRegressor(BaseEstimator, RegressorMixin):
             predictions[start:start + BATCH_SIZE] = beta[:, 0]  # intercept = prediction
 
         # A local plane can extrapolate wildly for unusual cars, so keep
-        # predictions inside the range of prices seen in training.
+        # predictions inside the range of targets seen in training.
         return np.clip(predictions, self.y_min_, self.y_max_)
 
-# ------------------------- Load and split data -----------------------
-df = pd.read_csv(DATA_PATH)
-X = df.drop(columns=["Price"])
-y = np.log1p(df["Price"])
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE)
+X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price = load_data()
 
-encoder = ColumnTransformer(
-    [("target_enc", TargetEncoder(target_type="continuous", random_state=RANDOM_STATE),
-      CATEGORICAL_COLS)],
-    remainder="passthrough",
-)
+model = LocallyWeightedRegressor()  # default: k=100, bandwidth=1.0, ridge=1.0
 
-pipeline = Pipeline([
-    ("encode", encoder),
-    ("scale", StandardScaler()),
-    ("model", LocallyWeightedRegressor()),   # default: k=100, bandwidth=1.0, ridge=1.0
-])
-
-# ----------------------------- Train ---------------------------------
 t0 = time.time()
-pipeline.fit(X_train, y_train)
-fit_time = time.time() - t0
+model.fit(X_train, y_train)
+print(f"Fit time (s): {time.time() - t0:.2f}")
 
-# ---------------------------- Predict --------------------------------
 t0 = time.time()
-y_pred_log = pipeline.predict(X_test)
-predict_time = time.time() - t0
+y_pred = model.predict(X_test)
+print(f"Predict time (s): {time.time() - t0:.2f}")
 
-# ---------------------------- Evaluate -------------------------------
-y_true = np.expm1(y_test)
-y_pred = np.clip(np.expm1(y_pred_log), 0, None)   # prices cannot be negative
-
-print("\n===== Locally Weighted Regression (default parameters) =====")
-print(f"R2 (original price)  : {r2_score(y_true, y_pred):.4f}")
-print(f"RMSE                 : {np.sqrt(mean_squared_error(y_true, y_pred)):,.2f}")
-print(f"MAE                  : {mean_absolute_error(y_true, y_pred):,.2f}")
-print(f"MAPE (%)             : {100 * mean_absolute_percentage_error(y_true, y_pred):.2f}")
-print(f"R2 (log scale)       : {r2_score(y_test, y_pred_log):.4f}")
-print(f"Fit time (s)         : {fit_time:.2f}")
-print(f"Predict time (s)     : {predict_time:.2f}")
+evaluate("Locally Weighted Regression", y_test, y_pred, inverse_transform_price)

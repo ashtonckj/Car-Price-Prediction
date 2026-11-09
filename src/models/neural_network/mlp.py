@@ -1,4 +1,5 @@
 import sys
+import time
 from pathlib import Path
 
 from torch import nn
@@ -19,5 +20,9 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(64, 1),
 )
+
+t0 = time.time()
 model = train_torch(model, X_train, y_train, X_val, y_val)
+print(f"Fit time (s): {time.time() - t0:.2f}")
+
 evaluate("MLP", y_test, predict(model, X_test), inverse_transform_price)

@@ -10,7 +10,8 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.shared.core_utils import RANDOM_STATE
+from src.shared.core_utils import RANDOM_STATE, evaluate, load_data
+from src.shared.experiment import save_and_plot, timed
 
 
 # ---------------------------------------------------------------------------
@@ -57,9 +58,6 @@ def train_torch(model, X_train, y_train, X_val, y_val, epochs=100, learning_rate
     return model
 
 
-# ---------------------------------------------------------------------------
-# Models
-# ---------------------------------------------------------------------------
 class RNNRegressor(nn.Module):
     """GRU or LSTM; each feature is treated as one time step."""
 
@@ -73,21 +71,30 @@ class RNNRegressor(nn.Module):
         return self.output_layer(sequence_output[:, -1])
 
 
+# ---------------------------------------------------------------------------
+# Models: each run_*() trains, predicts and times both steps
+# ---------------------------------------------------------------------------
+def fit_and_predict(network, X_train, y_train, X_val, y_val, X_test):
+    model, fit_time = timed(train_torch, network, X_train, y_train, X_val, y_val)
+    y_pred, predict_time = timed(predict, model, X_test)
+    return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
+
+
 def run_mlp(X_train, y_train, X_val, y_val, X_test):
-    model = nn.Sequential(
+    network = nn.Sequential(
         nn.Linear(X_train.shape[1], 128), nn.ReLU(),
         nn.Linear(128, 64), nn.ReLU(),
         nn.Linear(64, 1),
     )
-    return predict(train_torch(model, X_train, y_train, X_val, y_val), X_test)
+    return fit_and_predict(network, X_train, y_train, X_val, y_val, X_test)
 
 
 def run_gru(X_train, y_train, X_val, y_val, X_test):
-    return predict(train_torch(RNNRegressor(nn.GRU), X_train, y_train, X_val, y_val), X_test)
+    return fit_and_predict(RNNRegressor(nn.GRU), X_train, y_train, X_val, y_val, X_test)
 
 
 def run_lstm(X_train, y_train, X_val, y_val, X_test):
-    return predict(train_torch(RNNRegressor(nn.LSTM), X_train, y_train, X_val, y_val), X_test)
+    return fit_and_predict(RNNRegressor(nn.LSTM), X_train, y_train, X_val, y_val, X_test)
 
 
 def run_tabnet(X_train, y_train, X_val, y_val, X_test):
@@ -96,12 +103,35 @@ def run_tabnet(X_train, y_train, X_val, y_val, X_test):
     )
 
     model = TabNetRegressor(seed=RANDOM_STATE, verbose=10)
-    model.fit(
-        X_train, y_train,
+    _, fit_time = timed(
+        model.fit, X_train, y_train,
         eval_set=[(X_val, y_val)], eval_metric=["rmse"],
         max_epochs=100, patience=10, batch_size=1024, virtual_batch_size=128,
     )
-    return model.predict(X_test)
+    y_pred, predict_time = timed(model.predict, X_test)
+    return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
 
 
 MODELS = {"MLP": run_mlp, "GRU": run_gru, "LSTM": run_lstm, "TabNet": run_tabnet}
+
+
+def main():
+    X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price = load_data()
+
+    results = {}
+    for name, run in MODELS.items():
+        print(f"\n===== {name} =====")
+        try:
+            results[name] = run(X_train, y_train, X_val, y_val, X_test)
+        except Exception as err:  # e.g. pytorch_tabnet not installed: skip it, keep the rest
+            print(f"FAILED {name}: {err}")
+            continue
+        r = results[name]
+        print(f"Fit time (s): {r['fit_time']:.2f} | Predict time (s): {r['predict_time']:.2f}")
+        evaluate(name, y_test, r["y_pred"], inverse_transform_price)
+
+    save_and_plot("neural", "Neural networks", results, y_test, inverse_transform_price)
+
+
+if __name__ == "__main__":
+    main()

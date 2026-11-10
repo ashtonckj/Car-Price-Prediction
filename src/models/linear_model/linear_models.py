@@ -3,42 +3,36 @@ import time
 import warnings
 from pathlib import Path
 
-print("Starting linear_models.py - loading libraries...", flush=True)
-
-import matplotlib  
-
-matplotlib.use("Agg")  
-import matplotlib.pyplot as plt  
-import numpy as np  
-import pandas as pd 
-from sklearn.exceptions import ConvergenceWarning 
-from sklearn.linear_model import HuberRegressor, Lasso, LinearRegression, Ridge 
-from sklearn.metrics import ( 
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import sklearn.linear_model
+from sklearn.exceptions import ConvergenceWarning
+from sklearn.metrics import (
     mean_absolute_error,
     mean_absolute_percentage_error,
     mean_squared_error,
     r2_score,
 )
 
-def _find_root() -> Path:
-    for folder in Path(__file__).resolve().parents:
-        if (folder / "src" / "shared" / "core_utils.py").exists():
-            return folder
-    raise FileNotFoundError("Could not find src/shared/core_utils.py above this file.")
+matplotlib.use("Agg")  
+print("Starting linear_models.py - loading libraries...", flush=True)
 
 
-ROOT_DIR = _find_root()
+ROOT_DIR = Path(__file__).resolve().parents[3]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.shared.core_utils import RANDOM_STATE, evaluate, load_data 
+from src.shared.core_utils import RANDOM_STATE, evaluate, load_data
+
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 
 MODELS = {
-    "Linear Regression": LinearRegression(),
-    "Ridge": Ridge(random_state=RANDOM_STATE),
-    "Lasso": Lasso(random_state=RANDOM_STATE),
-    "Huber": HuberRegressor(),
+    "Linear Regression": sklearn.linear_model.LinearRegression(),
+    "Ridge": sklearn.linear_model.Ridge(random_state=RANDOM_STATE),
+    "Lasso": sklearn.linear_model.Lasso(random_state=RANDOM_STATE),
+    "Huber": sklearn.linear_model.HuberRegressor(),
 }
 
 

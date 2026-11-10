@@ -1,26 +1,21 @@
 import sys
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
 
-def _find_root() -> Path:
-    for folder in Path(__file__).resolve().parents:
-        if (folder / "src" / "shared" / "core_utils.py").exists():
-            return folder
-    raise FileNotFoundError("Could not find src/shared/core_utils.py above this file.")
-
-ROOT_DIR = _find_root()
+ROOT_DIR = Path(__file__).resolve().parents[3]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.shared.core_utils import PROCESSED_CSV, RANDOM_STATE, load_data  
+from src.shared.core_utils import PROCESSED_CSV, RANDOM_STATE, load_data
 
 ALPHA = 1.0  # Lasso's default
 X_train, y_train, *_ = load_data()
 
-from sklearn.compose import ColumnTransformer  
-from sklearn.model_selection import train_test_split  
-from sklearn.preprocessing import OneHotEncoder 
 
 df = pd.read_csv(PROCESSED_CSV)
 X = df.drop(columns="Log Price")

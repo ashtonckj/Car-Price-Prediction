@@ -27,4 +27,8 @@ model.fit(
 )
 print(f"Fit time (s): {time.time() - t0:.2f}")
 
-evaluate("TabNet", y_test, model.predict(X_test), inverse_transform_price)
+t0 = time.time()
+y_pred = model.predict(X_test)
+print(f"Predict time (s): {time.time() - t0:.2f}")
+
+evaluate("TabNet", y_test, y_pred, inverse_transform_price)

@@ -1,11 +1,7 @@
 import sys
 from pathlib import Path
 
-from sklearn.ensemble import (
-    ExtraTreesRegressor,
-    GradientBoostingRegressor,
-    RandomForestRegressor,
-)
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
@@ -19,7 +15,6 @@ from src.shared.experiment import save_and_plot, timed
 MODELS = {
     "Decision Tree": lambda: DecisionTreeRegressor(random_state=RANDOM_STATE),
     "Random Forest": lambda: RandomForestRegressor(random_state=RANDOM_STATE),
-    "Extra Trees": lambda: ExtraTreesRegressor(random_state=RANDOM_STATE),
     "Gradient Boosting": lambda: GradientBoostingRegressor(random_state=RANDOM_STATE),
 }
 

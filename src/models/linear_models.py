@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from sklearn.linear_model import HuberRegressor, Lasso, LinearRegression, Ridge
+from sklearn.linear_model import HuberRegressor, Lasso, Ridge
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
@@ -12,7 +12,6 @@ from src.shared.experiment import save_and_plot, timed
 
 # All models use default parameters
 MODELS = {
-    "Linear Regression": lambda: LinearRegression(),
     "Ridge": lambda: Ridge(random_state=RANDOM_STATE),
     "Lasso": lambda: Lasso(random_state=RANDOM_STATE),
     "Huber": lambda: HuberRegressor(),

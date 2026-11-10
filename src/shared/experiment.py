@@ -20,6 +20,9 @@ from sklearn.metrics import (
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results" / "default_runs"
 
+# Colours by position in the family: 1st model, 2nd model, 3rd model (repeats if a family has more)
+COLORS = ["#2a78d6", "#eb6834", "#eda100"]
+
 
 def timed(function, *args, **kwargs):
     """Call function(*args, **kwargs) and return (its result, seconds it took)."""
@@ -89,26 +92,23 @@ def results_table(all_results):
 
 
 def plot_family(family_results, save_path=None):
-    """Actual vs predicted price, one panel per model (log axes, same limits in every panel)."""
+    """Actual vs predicted price, one panel per model side by side (log axes, same limits in every panel)."""
     true_price = np.array(family_results["y_true_price"])
     lo, hi = np.percentile(true_price, [0.1, 99.9])
     lo, hi = max(lo, 1000) / 1.5, hi * 1.5
 
     models = family_results["models"]
-    n_rows = int(np.ceil(len(models) / 2))
-    fig, axes = plt.subplots(n_rows, 2, figsize=(12, 5.5 * n_rows), squeeze=False)
-    for ax, (name, r) in zip(axes.flat, models.items()):
+    fig, axes = plt.subplots(1, len(models), figsize=(5.5 * len(models), 5.5), squeeze=False)
+    for i, (ax, (name, r)) in enumerate(zip(axes[0], models.items())):
         pred = np.array(r["y_pred_price"])
-        ax.scatter(true_price, np.clip(pred, lo, hi), s=4, alpha=0.25, linewidths=0, rasterized=True)
+        ax.scatter(true_price, np.clip(pred, lo, hi), s=6, alpha=0.3, color=COLORS[i % len(COLORS)], linewidths=0, rasterized=True)
         ax.plot([lo, hi], [lo, hi], "r--", linewidth=1)
         ax.set(xscale="log", yscale="log", xlim=(lo, hi), ylim=(lo, hi))
         ax.set_xlabel("Actual price (MAD, log scale)")
         ax.set_ylabel("Predicted price (MAD, log scale)")
-        ax.set_title(f"{name} | R2 {r['metrics']['R2']:.4f} | R2 log {r['metrics']['R2_log']:.4f}", fontsize=11)
-    for ax in list(axes.flat)[len(models):]:
-        ax.axis("off")
+        ax.set_title(f"{name}\nR2 {r['metrics']['R2']:.4f} | R2 log {r['metrics']['R2_log']:.4f}", fontsize=11)
     fig.suptitle(f"{family_results['family']}: actual vs predicted price (test set)", fontsize=14)
-    fig.tight_layout(rect=(0, 0, 1, 0.97))
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
     if save_path:
         Path(save_path).parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(save_path, dpi=200, bbox_inches="tight", facecolor="white")

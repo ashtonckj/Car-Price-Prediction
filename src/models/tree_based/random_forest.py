@@ -21,4 +21,4 @@ t0 = time.time()
 y_pred = model.predict(X_test)
 print(f"Predict time (s): {time.time() - t0:.2f}")
 
-evaluate("Random Forest", y_test, model.predict(X_test), inverse_transform_price)
+evaluate("Random Forest", y_test, model.predict(X_test), inverse_transform_price, is_log_target=True)

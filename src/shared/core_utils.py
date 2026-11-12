@@ -13,7 +13,7 @@ from sklearn.metrics import (
 from sklearn.model_selection import KFold, train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-DataCV = namedtuple('DataCV', ['folds', 'X_train', 'y_train', 'X_test', 'y_test', 'inverse_transform_price', 'n_folds'])
+DataCV = namedtuple('DataCV', ['folds', 'X_train', 'y_train', 'X_test', 'y_test', 'inverse_transform_price', 'n_folds', 'feature_names'])
 FoldData = namedtuple('FoldData', ['X_train', 'y_train', 'X_val', 'y_val'])
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
@@ -68,6 +68,8 @@ def load_data():
     global_preprocessor.fit(X_tv_global)
     X_train_arr = global_preprocessor.transform(X_tv_global).astype("float32")
     X_test_arr = global_preprocessor.transform(X_test_global).astype("float32")
+    raw_feature_names = global_preprocessor.get_feature_names_out()
+    feature_names = [name.split("__", 1)[-1] for name in raw_feature_names]
 
     global_target_scaler = StandardScaler().fit(y_trainval)
     y_train_arr = global_target_scaler.transform(y_trainval).astype("float32")
@@ -104,8 +106,8 @@ def load_data():
                               X_val=X_fold_val_arr, y_val=y_fold_val_arr))
 
     print(f"Features: {folds[0].X_train.shape[1]} | {N_FOLDS} folds, test {len(X_test_arr)}")
-    return DataCV(folds=folds, X_train=X_train_arr, y_train=y_train_arr, X_test=X_test_arr, 
-                  y_test=y_test_arr, inverse_transform_price=inverse_transform_price, n_folds=N_FOLDS)
+    return DataCV(folds=folds, X_train=X_train_arr, y_train=y_train_arr, X_test=X_test_arr,
+                  y_test=y_test_arr, inverse_transform_price=inverse_transform_price, n_folds=N_FOLDS, feature_names=feature_names)
 
 
 def load_minimal_data(csv_path: Path = MINIMAL_CSV):
@@ -190,7 +192,7 @@ def load_minimal_data(csv_path: Path = MINIMAL_CSV):
 def evaluate(model_name: str, y_true, y_pred, inverse_transform_price, is_log_target: bool = False):
     """
     Evaluates regression model predictions against true ground truth values.
-    
+   
     Parameters:
     - model_name: Name of the model for print formatting.
     - y_true: True target values (either raw price or log-transformed price).
@@ -201,17 +203,17 @@ def evaluate(model_name: str, y_true, y_pred, inverse_transform_price, is_log_ta
     # Flatten inputs to 1D arrays to guarantee shape alignment
     y_true_arr = np.asarray(y_true).ravel()
     y_pred_arr = np.asarray(y_pred).ravel()
-    
+   
     # Transform predictions and ground truth back to original price scale (MAD)
     true_price = np.asarray(inverse_transform_price(y_true_arr)).ravel()
     pred_price = np.asarray(inverse_transform_price(y_pred_arr)).ravel()
-    
+   
     print(f"\n--- {model_name} Test Results (Original Price Scale) ---")
     print(f"RMSE: {np.sqrt(mean_squared_error(true_price, pred_price)):,.2f}")
     print(f"MAE:  {mean_absolute_error(true_price, pred_price):,.2f}")
     print(f"R2:   {r2_score(true_price, pred_price):.4f}")
     print(f"MAPE: {mean_absolute_percentage_error(true_price, pred_price) * 100:.2f}%")
-    
+   
     # Only report log-space R2 if the target was actually log-transformed during training
     if is_log_target:
         print(f"R2 (model/log space): {r2_score(y_true_arr, y_pred_arr):.4f}")

@@ -26,7 +26,7 @@ def mileage_midpoint(text: str) -> float:
 def preprocess(df: pd.DataFrame, minimal: bool = False) -> pd.DataFrame:
     if minimal:
         # Minimal preprocessing: only remove rows where target Price is missing
-        return df.dropna(subset=["Price"]).copy()
+        return df.dropna().copy()
     else:
         # Full preprocessing
         # Remove the one corrupted row (a mileage range sitting in the Fuel column)
@@ -106,4 +106,4 @@ def main(minimal: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main(minimal=True)      # True for minimal preprocessing, False for full preprocessing

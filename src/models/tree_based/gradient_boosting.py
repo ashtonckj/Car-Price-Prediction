@@ -2,7 +2,9 @@ import sys
 import time
 from pathlib import Path
 
+import numpy as np
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_squared_error
 
 ROOT_DIR = Path(__file__).resolve().parents[3]
 if str(ROOT_DIR) not in sys.path:
@@ -10,15 +12,23 @@ if str(ROOT_DIR) not in sys.path:
 
 from src.shared.core_utils import RANDOM_STATE, evaluate, load_data
 
-X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price = load_data()
+data = load_data()
 
-model = GradientBoostingRegressor(random_state=RANDOM_STATE)  # default parameters
+# Cross-validation
+for i, fold in enumerate(data.folds):
+    model = GradientBoostingRegressor(random_state=RANDOM_STATE)
+    model.fit(fold.X_train, fold.y_train.ravel())
+    y_val_pred = model.predict(fold.X_val)
+    val_rmse = np.sqrt(mean_squared_error(fold.y_val, y_val_pred))
+    print(f"Fold {i+1}/{data.n_folds} - Val RMSE: {val_rmse:.4f}")
+
+model = GradientBoostingRegressor(random_state=RANDOM_STATE)
 t0 = time.time()
-model.fit(X_train, y_train.ravel())
+model.fit(data.X_train, data.y_train.ravel())
 print(f"Fit time (s): {time.time() - t0:.2f}")
 
 t0 = time.time()
-y_pred = model.predict(X_test)
+y_pred = model.predict(data.X_test)
 print(f"Predict time (s): {time.time() - t0:.2f}")
 
-evaluate("Gradient Boosting", y_test, model.predict(X_test), inverse_transform_price, is_log_target=True)
+evaluate("Gradient Boosting", data.y_test, y_pred, data.inverse_transform_price, is_log_target=True)

@@ -1,5 +1,4 @@
 """
-eda.py
 Exploratory Data Analysis script for data/raw/cars_dataframe.csv
 Saves visual reports to reports/figures/
 """
@@ -11,10 +10,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-# File paths
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
-FIG_DIR = ROOT_DIR / "reports" / "figures"
+FIG_DIR = ROOT_DIR / "reports" / "a1_baseline"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 # Plotting settings
@@ -325,6 +323,7 @@ def detect_outliers_summary(num_df: pd.DataFrame) -> pd.DataFrame:
 
     return pd.DataFrame(summary_list)
 
+
 def main():
     print("Starting EDA for Raw Dataset...\n")
     df = load_raw_data()
@@ -343,7 +342,7 @@ def main():
     print(outlier_table.to_string(index=False))
 
     inspect_bivariate_relationships(df)
-    
+
     print("=" * 60)
     print(f"EDA Complete! Diagnostic charts saved to: {FIG_DIR}")
     print("=" * 60)

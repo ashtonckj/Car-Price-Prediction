@@ -1,0 +1,91 @@
+{
+  "stage": "a2_preprocessed",
+  "stage_title": "A2 full preprocessing",
+  "family": "Tree-based models",
+  "n_features": 463,
+  "n_train": 43672,
+  "n_test": 12478,
+  "models": {
+    "Decision Tree": {
+      "metrics": {
+        "RMSE": 332467.4512,
+        "MAE": 47593.9578,
+        "R2": -0.7876,
+        "MAPE": 45.1923,
+        "R2_log": 0.5834
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 313547.8758,
+          "MAE": 47117.2091,
+          "R2": -0.6438,
+          "MAPE": 44.1155,
+          "R2_log": 0.5915
+        },
+        "std": {
+          "RMSE": 36746.4168,
+          "MAE": 3018.3601,
+          "R2": 0.265,
+          "MAPE": 7.702,
+          "R2_log": 0.0152
+        }
+      },
+      "fit_time_s": 1.51,
+      "predict_time_s": 0.01
+    },
+    "Random Forest": {
+      "metrics": {
+        "RMSE": 226341.5849,
+        "MAE": 31319.564,
+        "R2": 0.1715,
+        "MAPE": 23.324,
+        "R2_log": 0.7649
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 224665.9819,
+          "MAE": 32338.8746,
+          "R2": 0.1666,
+          "MAPE": 23.5886,
+          "R2_log": 0.7566
+        },
+        "std": {
+          "RMSE": 27104.033,
+          "MAE": 2719.0483,
+          "R2": 0.0297,
+          "MAPE": 1.8145,
+          "R2_log": 0.0165
+        }
+      },
+      "fit_time_s": 30.57,
+      "predict_time_s": 0.18
+    },
+    "Gradient Boosting": {
+      "metrics": {
+        "RMSE": 227904.9935,
+        "MAE": 35832.8328,
+        "R2": 0.16,
+        "MAPE": 25.8184,
+        "R2_log": 0.7603
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 225381.4595,
+          "MAE": 36220.2966,
+          "R2": 0.1616,
+          "MAPE": 25.0894,
+          "R2_log": 0.7578
+        },
+        "std": {
+          "RMSE": 27698.2286,
+          "MAE": 3004.8354,
+          "R2": 0.0327,
+          "MAPE": 0.8353,
+          "R2_log": 0.0184
+        }
+      },
+      "fit_time_s": 62.55,
+      "predict_time_s": 0.04
+    }
+  }
+}

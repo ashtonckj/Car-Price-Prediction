@@ -1,0 +1,11 @@
+# Install with:  pip install -r requirements.txt
+# Versions are the ones the results were produced with (Python 3.13).
+numpy==2.5.1
+pandas==3.0.3
+scikit-learn==1.9.0
+scipy==1.18.0
+matplotlib==3.11.1
+seaborn==0.13.2
+# PyPI's default torch wheel; for an NVIDIA GPU install the CUDA build from https://pytorch.org instead
+torch==2.13.0
+pytorch-tabnet==4.1.0

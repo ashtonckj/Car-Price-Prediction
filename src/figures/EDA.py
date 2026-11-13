@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import scipy.stats as stats
 
 # File paths
 ROOT_DIR = Path(__file__).resolve().parents[2]

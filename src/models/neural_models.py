@@ -1,3 +1,4 @@
+"""Neural networks: MLP, LSTM, TabNet. Run it and type a stage number. The 10% val set is used for early stopping."""
 import sys
 from pathlib import Path
 
@@ -10,8 +11,9 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.shared.core_utils import RANDOM_STATE, evaluate, load_data
-from src.shared.experiment import save_and_plot, timed
+from src.shared.core_utils import RANDOM_STATE, evaluate
+from src.shared.experiment import cross_validate, save_results, timed
+from src.shared.stages import choose_stage, load_data
 
 
 # Training utilities (shared by the PyTorch models)
@@ -69,29 +71,29 @@ class RNNRegressor(nn.Module):
         return self.output_layer(sequence_output[:, -1])
 
 
-# Models: each run_*() trains, predicts and times both steps
-def fit_and_predict(network, X_train, y_train, X_val, y_val, X_test):
-    model, fit_time = timed(train_torch, network, X_train, y_train, X_val, y_val)
-    y_pred, predict_time = timed(predict, model, X_test)
+# Models: each run_*(split) trains on split.X_train (early stopping on split.X_val) and predicts split.X_test
+def fit_and_predict(network, split):
+    model, fit_time = timed(train_torch, network, split.X_train, split.y_train, split.X_val, split.y_val)
+    y_pred, predict_time = timed(predict, model, split.X_test)
     return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
 
 
-def run_mlp(X_train, y_train, X_val, y_val, X_test):
+def run_mlp(split):
     network = nn.Sequential(
-        nn.Linear(X_train.shape[1], 128),
+        nn.Linear(split.X_train.shape[1], 128),
         nn.ReLU(),
         nn.Linear(128, 64),
         nn.ReLU(),
         nn.Linear(64, 1),
     )
-    return fit_and_predict(network, X_train, y_train, X_val, y_val, X_test)
+    return fit_and_predict(network, split)
 
 
-def run_lstm(X_train, y_train, X_val, y_val, X_test):
-    return fit_and_predict(RNNRegressor(nn.LSTM), X_train, y_train, X_val, y_val, X_test)
+def run_lstm(split):
+    return fit_and_predict(RNNRegressor(nn.LSTM), split)
 
 
-def run_tabnet(X_train, y_train, X_val, y_val, X_test):
+def run_tabnet(split):
     from pytorch_tabnet.tab_model import (
         TabNetRegressor,  # imported here so the other models still work if it is missing
     )
@@ -99,16 +101,16 @@ def run_tabnet(X_train, y_train, X_val, y_val, X_test):
     model = TabNetRegressor(seed=RANDOM_STATE, verbose=10)
     _, fit_time = timed(
         model.fit,
-        X_train,
-        y_train,
-        eval_set=[(X_val, y_val)],
+        split.X_train,
+        split.y_train,
+        eval_set=[(split.X_val, split.y_val)],
         eval_metric=["rmse"],
         max_epochs=100,
         patience=10,
         batch_size=1024,
         virtual_batch_size=128,
     )
-    y_pred, predict_time = timed(model.predict, X_test)
+    y_pred, predict_time = timed(model.predict, split.X_test)
     return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
 
 
@@ -116,17 +118,18 @@ MODELS = {"MLP": run_mlp, "LSTM": run_lstm, "TabNet": run_tabnet}
 
 
 def main():
-    X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price = load_data()
+    stage = choose_stage()
+    split = load_data(stage)
 
-    results = {}
+    results, cv_results = {}, {}
     for name, run in MODELS.items():
         print(f"\n===== {name} =====")
-        results[name] = run(X_train, y_train, X_val, y_val, X_test)
-        r = results[name]
-        print(f"Fit time (s): {r['fit_time']:.2f} | Predict time (s): {r['predict_time']:.2f}")
-        evaluate(name, y_test, r["y_pred"], inverse_transform_price)
+        cv_results[name] = cross_validate(stage, run)
+        results[name] = run(split)
+        print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
+        evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
 
-    save_and_plot("neural", "Neural networks", results, y_test, inverse_transform_price)
+    save_results(stage, "neural", "Neural networks", results, split, cv_results)
 
 
 if __name__ == "__main__":

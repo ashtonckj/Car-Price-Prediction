@@ -1,0 +1,91 @@
+{
+  "stage": "a2_preprocessed",
+  "stage_title": "A2 full preprocessing",
+  "family": "Distance-based models",
+  "n_features": 463,
+  "n_train": 43672,
+  "n_test": 12478,
+  "models": {
+    "KNN": {
+      "metrics": {
+        "RMSE": 227220.1095,
+        "MAE": 35576.5273,
+        "R2": 0.1651,
+        "MAPE": 26.6343,
+        "R2_log": 0.7412
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 225828.9006,
+          "MAE": 36599.6109,
+          "R2": 0.1579,
+          "MAPE": 26.2788,
+          "R2_log": 0.7365
+        },
+        "std": {
+          "RMSE": 27055.9175,
+          "MAE": 2832.3318,
+          "R2": 0.0273,
+          "MAPE": 0.689,
+          "R2_log": 0.0156
+        }
+      },
+      "fit_time_s": 0.02,
+      "predict_time_s": 2.9
+    },
+    "Radius Neighbours": {
+      "metrics": {
+        "RMSE": 235641.4904,
+        "MAE": 42898.9961,
+        "R2": 0.102,
+        "MAPE": 37.9977,
+        "R2_log": 0.5926
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 253891.6488,
+          "MAE": 45963.2148,
+          "R2": -0.0691,
+          "MAPE": 40.4833,
+          "R2_log": 0.5671
+        },
+        "std": {
+          "RMSE": 30199.7162,
+          "MAE": 2934.7226,
+          "R2": 0.1155,
+          "MAPE": 3.6387,
+          "R2_log": 0.0069
+        }
+      },
+      "fit_time_s": 0.02,
+      "predict_time_s": 2.92
+    },
+    "Kernel Regression": {
+      "metrics": {
+        "RMSE": 228272.0816,
+        "MAE": 35728.2161,
+        "R2": 0.1573,
+        "MAPE": 26.1196,
+        "R2_log": 0.7558
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 226145.2885,
+          "MAE": 36861.6843,
+          "R2": 0.1556,
+          "MAPE": 25.808,
+          "R2_log": 0.7499
+        },
+        "std": {
+          "RMSE": 27321.8313,
+          "MAE": 2927.2816,
+          "R2": 0.0287,
+          "MAPE": 0.7723,
+          "R2_log": 0.0162
+        }
+      },
+      "fit_time_s": 0.03,
+      "predict_time_s": 3.13
+    }
+  }
+}

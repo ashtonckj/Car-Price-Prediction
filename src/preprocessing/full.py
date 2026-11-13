@@ -1,6 +1,4 @@
-"""
-Full preprocessing (Part A, step 5): data/raw/cars_dataframe.csv -> data/processed/cars_full.csv
-"""
+"""Full preprocessing (Part A, step 5): data/raw/cars_dataframe.csv -> data/processed/cars_full.csv"""
 import ast
 from pathlib import Path
 

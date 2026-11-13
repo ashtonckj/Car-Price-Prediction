@@ -19,8 +19,7 @@ from src.shared.stages import choose_stage, load_data
 
 
 class RadiusRegressor(RadiusNeighborsRegressor):
-    """Default RadiusNeighborsRegressor (radius=1.0), but cars with no neighbour
-    inside the radius get the average training target instead of NaN."""
+    """Default RadiusNeighborsRegressor (radius=1.0), but cars with no neighbour inside the radius get the average training target instead of NaN."""
 
     def fit(self, X, y):
         self.fallback_ = float(np.mean(y))

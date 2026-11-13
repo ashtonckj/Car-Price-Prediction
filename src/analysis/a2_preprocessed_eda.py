@@ -1,6 +1,6 @@
 """
-Exploratory Data Analysis script for data/raw/cars_dataframe.csv
-Saves visual reports to reports/figures/
+Exploratory Data Analysis script for data/raw/cars_full.csv
+Saves visual reports to reports/a2_preprocessed/
 """
 from pathlib import Path
 

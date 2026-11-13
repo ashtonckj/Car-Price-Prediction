@@ -21,14 +21,14 @@ from sklearn.metrics import (
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results" / "default_runs"
 
 # Colours by position in the family: 1st model, 2nd model, 3rd model (repeats if a family has more)
-COLORS = ["#2a78d6", "#eb6834", "#eda100"]
+COLORS = ["#2a78d6", "#800080", "#eda100"]
 
 
 def timed(function, *args, **kwargs):
     """Call function(*args, **kwargs) and return (its result, seconds it took)."""
-    t0 = time.perf_counter()
+    t_start = time.perf_counter()
     result = function(*args, **kwargs)
-    return result, time.perf_counter() - t0
+    return result, time.perf_counter() - t_start
 
 
 def compute_metrics(y_true_scaled, y_pred_scaled, inverse_transform_price):
@@ -43,9 +43,7 @@ def compute_metrics(y_true_scaled, y_pred_scaled, inverse_transform_price):
     }
 
 
-# ---------------------------------------------------------------------------
 # Saving (called at the end of every family file)
-# ---------------------------------------------------------------------------
 def save_and_plot(key, title, results, y_test, inverse_transform_price):
     """Write <key>_results.json (metrics, times, test predictions in MAD) and <key>_pred_vs_actual.png.
 
@@ -72,9 +70,7 @@ def save_and_plot(key, title, results, y_test, inverse_transform_price):
     print(f"\nSaved {RESULTS_DIR / f'{key}_results.json'} and {key}_pred_vs_actual.png")
 
 
-# ---------------------------------------------------------------------------
 # Loading, comparisons and graphs (work from the saved JSON, no model re-runs)
-# ---------------------------------------------------------------------------
 def load_results(results_dir=RESULTS_DIR):
     """Load every *_results.json in a folder -> {family_key: saved dict}."""
     return {p.stem.removesuffix("_results"): json.loads(p.read_text())

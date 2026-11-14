@@ -51,7 +51,7 @@ def main():
 
     csv_path, target = {"a1_baseline": (minimal.OUT_PATH, "Price"),
                         "a2_preprocessed": (full.OUT_PATH, "Log Price")}[stage]
-    N_NUMERIC = pd.read_csv(csv_path, nrows=100).drop(columns=target).select_dtypes(include="number").shape[1]
+    N_NUMERIC = pd.read_csv(csv_path).drop(columns=target).select_dtypes(include="number").shape[1]
 
     results, cv_results = {}, {}
     for name, make_model in MODELS.items():

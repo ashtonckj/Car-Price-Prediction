@@ -27,6 +27,8 @@ import shap
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.model_selection import KFold, train_test_split
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 
@@ -55,10 +57,17 @@ MODELS = {
         "title": "Gradient Boosting",
         "make": lambda: GradientBoostingRegressor(random_state=RANDOM_STATE),
     },
+    "mlp": {
+        "title": "Multi-Layer Perceptron",
+        "make": lambda: MLPRegressor(random_state=RANDOM_STATE, max_iter=500),
+    },
+    "knn": {
+        "title": "K-Nearest Neighbors",
+        "make": lambda: KNeighborsRegressor(n_jobs=-1),
+    },
 }
-
+TREE_MODELS = {"decision_tree", "random_forest", "gradient_boosting"}
 BRAND_MODEL_COLS = ["Brand", "Model"]
-SAMPLE_SIZE = 500
 
 
 # ---------------------------------------------------------------------------
@@ -208,17 +217,33 @@ def run_shap(stage_key: str, model_key: str) -> None:
     X_test_df = pd.DataFrame(X_test, columns=feature_names)
     X_train_df = pd.DataFrame(X_train, columns=feature_names)
 
-    if SAMPLE_SIZE and len(X_test_df) > SAMPLE_SIZE:
-        print(f"Subsampling test set from {len(X_test_df)} to {SAMPLE_SIZE} samples for fast SHAP computation...")
-        X_test_sample = X_test_df.sample(n=SAMPLE_SIZE, random_state=RANDOM_STATE)
+    # For tree models, 500-1000 test samples is fast.
+    # For MLP/KNN with 300+ features, permutation explanation is slower, so use 50-100 samples.
+    if model_key in TREE_MODELS:
+        eval_sample_size = 500
+    else:
+        eval_sample_size = 100
+
+    if eval_sample_size and len(X_test_df) > eval_sample_size:
+        print(f"Subsampling test set to {eval_sample_size} samples...")
+        X_test_sample = X_test_df.sample(n=eval_sample_size, random_state=RANDOM_STATE)
     else:
         X_test_sample = X_test_df
 
     print(f"\n[3/4] Computing SHAP values (TreeExplainer, path-dependent) ...")
     # Use path-dependent feature perturbation (the tree-native approach):
     # no background dataset needed, fast, and exact for tree models.
-    explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
-    shap_values = explainer(X_test_sample)
+    if model_key in TREE_MODELS:
+        # Fast, tree-native explainer
+        explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
+        shap_values = explainer(X_test_sample)
+    else:
+        # Model-agnostic explainer for MLP and KNN
+        # Requires a small background dataset from training data (e.g. 50-100 samples)
+        print("Creating background summary dataset from training set (50 samples)...")
+        background = shap.sample(X_train_df, 50, random_state=RANDOM_STATE)
+        explainer = shap.Explainer(model.predict, background)
+        shap_values = explainer(X_test_sample)
     # shap_values is a shap.Explanation object; .values is (n_samples, n_features)
 
     out_dir = ROOT_DIR / "results" / stage_key / "shap" / model_key

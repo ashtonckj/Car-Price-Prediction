@@ -146,6 +146,7 @@ def inspect_categorical_anomalies(df: pd.DataFrame) -> None:
 
     # Fiscal Power values
     if "Fiscal Power" in df.columns:
+        print(f"Fiscal Power Summary ({df['Fiscal Power'].nunique():,} unique values)")
         print("Fiscal Power Value Counts (Top 10):")
         print(df["Fiscal Power"].value_counts(dropna=False).head(10).to_string())
         print("-" * 40)

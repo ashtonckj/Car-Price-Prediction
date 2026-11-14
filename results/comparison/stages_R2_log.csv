@@ -1,0 +1,13 @@
+Model,a1_baseline,a2_preprocessed
+Neural networks: MLP,-1.3348,0.795
+Neural networks: TabNet,-0.3922,0.7863
+Linear models: Polynomial Regression,-59.5157,0.7827
+Linear models: Ridge,-59.4063,0.7669
+Tree-based models: Random Forest,0.2369,0.7649
+Linear models: Huber,0.2047,0.7631
+Tree-based models: Gradient Boosting,-0.6257,0.7603
+Distance-based models: Kernel Regression,0.0662,0.7558
+Distance-based models: KNN,0.2571,0.7412
+Neural networks: LSTM,-49.2566,0.7254
+Distance-based models: Radius Neighbours,-1.6758,0.5926
+Tree-based models: Decision Tree,0.1331,0.5834

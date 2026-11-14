@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from pytorch_tabnet.tab_model import TabNetRegressor
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
@@ -94,10 +95,6 @@ def run_lstm(split):
 
 
 def run_tabnet(split):
-    from pytorch_tabnet.tab_model import (
-        TabNetRegressor,  # imported here so the other models still work if it is missing
-    )
-
     model = TabNetRegressor(seed=RANDOM_STATE, verbose=10)
     _, fit_time = timed(
         model.fit,

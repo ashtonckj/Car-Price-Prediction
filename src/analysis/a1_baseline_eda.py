@@ -1,6 +1,6 @@
 """
 Exploratory Data Analysis script for data/raw/cars_dataframe.csv
-Saves visual reports to reports/figures/
+Saves visual reports to reports/a1_baseline/
 """
 import ast
 from pathlib import Path

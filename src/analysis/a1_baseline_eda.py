@@ -148,6 +148,92 @@ def inspect_categorical_anomalies(df: pd.DataFrame) -> None:
     if "Fiscal Power" in df.columns:
         print("Fiscal Power Value Counts (Top 10):")
         print(df["Fiscal Power"].value_counts(dropna=False).head(10).to_string())
+        print("-" * 40)
+
+    # Brand anomalies (numeric IDs, missing values)
+    if "Brand" in df.columns:
+        print(f"Brand Summary ({df['Brand'].nunique():,} unique brands):")
+        print("Top 10 Brands:")
+        print(df["Brand"].value_counts(dropna=False).head(10).to_string())
+        brand_str = df["Brand"].dropna().astype(str)
+        numeric_brands = brand_str[brand_str.str.isnumeric()]
+        print(f"Corrupted / Numeric Brand IDs: {len(numeric_brands):,} rows (e.g., {numeric_brands.unique()[:5].tolist()})")
+        print(f"Missing Brand: {df['Brand'].isna().sum():,} rows")
+        print("-" * 40)
+
+    # Model anomalies (slug format, numeric values, missing values)
+    if "Model" in df.columns:
+        print(f"Model Summary ({df['Model'].nunique():,} unique models):")
+        print("Top 10 Models:")
+        print(df["Model"].value_counts(dropna=False).head(10).to_string())
+        model_str = df["Model"].dropna().astype(str)
+        slug_models = model_str[model_str.str.contains("_", na=False)]
+        print(f"Slug / Underscore Formatted Models: {len(slug_models):,} rows (e.g., {slug_models.unique()[:5].tolist()})")
+        print(f"Missing Model: {df['Model'].isna().sum():,} rows")
+        print("-" * 40)
+
+    # Origin categories and missingness
+    if "Origin" in df.columns:
+        print("Origin Value Counts:")
+        print(df["Origin"].value_counts(dropna=False).to_string())
+        missing_origin = df["Origin"].isna().sum()
+        print(f"Missing Origin: {missing_origin:,} ({missing_origin / len(df) * 100:.2f}%)")
+        print("-" * 40)
+
+    # First Owner categories and missingness
+    if "First Owner" in df.columns:
+        print("First Owner Value Counts:")
+        print(df["First Owner"].value_counts(dropna=False).to_string())
+        missing_fo = df["First Owner"].isna().sum()
+        print(f"Missing First Owner: {missing_fo:,} ({missing_fo / len(df) * 100:.2f}%)")
+        print("-" * 40)
+
+    # Location (cardinality, rare categories, Arabic vs Latin script mismatch)
+    if "Location" in df.columns:
+        print(f"Location Summary ({df['Location'].nunique():,} unique locations):")
+        print("Top 10 Locations:")
+        print(df["Location"].value_counts(dropna=False).head(10).to_string())
+        loc_series = df["Location"].dropna().astype(str)
+        arabic_locs = loc_series[loc_series.apply(lambda s: any('\u0600' <= c <= '\u06ff' for c in s))]
+        print(f"Non-Latin / Arabic Script Locations: {len(arabic_locs):,} rows ({arabic_locs.unique().tolist()})")
+        rare_locs = (df["Location"].value_counts() == 1).sum()
+        print(f"Rare Locations (Only 1 listing): {rare_locs:,}")
+        print("-" * 40)
+
+    # Sector (high cardinality, placeholders, missingness)
+    if "Sector" in df.columns:
+        print(f"Sector Summary ({df['Sector'].nunique():,} unique sectors, Missing: {df['Sector'].isna().sum():,}):")
+        print("Top 10 Sectors:")
+        print(df["Sector"].value_counts(dropna=False).head(10).to_string())
+        generic_sectors = ["Toute la ville", "City Center", "Other", "Autre"]
+        generic_count = df["Sector"].isin(generic_sectors).sum()
+        print(f"Generic / Placeholder Sectors: {generic_count:,} ({generic_count / len(df) * 100:.2f}%)")
+        print("-" * 40)
+
+    # Mileage (range format, open-ended bucket, anomalies, missingness)
+    if "Mileage" in df.columns:
+        print(f"Mileage Summary ({df['Mileage'].nunique():,} unique range formats):")
+        print("Top 10 Mileage Buckets:")
+        print(df["Mileage"].value_counts(dropna=False).head(10).to_string())
+        mileage_series = df["Mileage"].dropna().astype(str)
+        has_range = mileage_series.str.contains("-", na=False)
+        has_plus = mileage_series.str.startswith("Plus de")
+        non_standard = mileage_series[~has_range & ~has_plus]
+        print(f"Standard Ranges ('X - Y'): {has_range.sum():,}")
+        print(f"Open-Ended Bucket ('Plus de 500 000'): {has_plus.sum():,}")
+        if len(non_standard) > 0:
+            print(f"Non-standard / Anomalous Mileage Entries: {len(non_standard):,} (Values: {non_standard.tolist()})")
+        print(f"Missing Mileage: {df['Mileage'].isna().sum():,} rows")
+        print("-" * 40)
+
+    # Number of Doors (discrete category distribution, missingness, unexpected values)
+    if "Number of Doors" in df.columns:
+        print("Number of Doors Value Counts:")
+        print(df["Number of Doors"].value_counts(dropna=False).to_string())
+        missing_doors = df["Number of Doors"].isna().sum()
+        unexpected_doors = df["Number of Doors"].dropna()[~df["Number of Doors"].dropna().isin([3.0, 5.0, 3, 5])]
+        print(f"Unexpected Door Values (outside 3 and 5): {len(unexpected_doors):,}")
+        print(f"Missing Number of Doors: {missing_doors:,} ({missing_doors / len(df) * 100:.2f}%)")
         print("\n")
 
 
@@ -332,16 +418,16 @@ def main():
     inspect_overview(df)
     inspect_target(df)
     inspect_categorical_anomalies(df)
-    inspect_mileage_and_year(df)
+    #inspect_mileage_and_year(df)
 
     print("=" * 60)
-    plot_all_boxplots(num_df)
-    plot_z_scores(num_df)
+    #plot_all_boxplots(num_df)
+    #plot_z_scores(num_df)
     outlier_table = detect_outliers_summary(num_df)
     print("\nStatistical Outlier Summary:")
     print(outlier_table.to_string(index=False))
 
-    inspect_bivariate_relationships(df)
+    #inspect_bivariate_relationships(df)
 
     print("=" * 60)
     print(f"EDA Complete! Diagnostic charts saved to: {FIG_DIR}")

@@ -1,0 +1,1549 @@
+Rank,Feature,Mean |SHAP|
+1,Condition_Excellent,225237.00584011237
+2,Year_2020,123549.61729018555
+3,Fuel_Petrol,122449.01245727536
+4,Brand_Ford,92597.51279311527
+5,Number of Doors,87815.56961225586
+6,Origin_Customs-cleared car,86389.18996970216
+7,Sector_infrequent_sklearn,80799.1738561279
+8,Sector_Toute la ville,69041.79447607422
+9,Fiscal Power_6 CV,66349.41462421879
+10,Fuel_Diesel,60927.30735935061
+11,Brand_Citroen,56836.04205190431
+12,Gearbox_Manual,56235.24763918458
+13,First Owner_Yes,54203.983147460945
+14,Origin_WW in Morocco,51535.373091162124
+15,Mileage_200 000 - 249 999,50421.72982690428
+16,Gearbox_Automatic,46598.85790534669
+17,First Owner_No,45057.334182104496
+18,Condition_Good,40402.47667551269
+19,Location_Casablanca,39369.59717976072
+20,Condition_Very Good,38927.75101071779
+21,Equipment_infrequent_sklearn,37841.436263012685
+22,Year_2006,32390.224567504894
+23,Model_Kuga,31316.87127080078
+24,Model_Range Rover Sport,30431.977495312505
+25,Fiscal Power_8 CV,30295.058237963854
+26,Brand_Volkswagen,28859.369643798826
+27,Model_C3,28657.354513281247
+28,Year_2016,28087.7581327881
+29,Fiscal Power_7 CV,27611.292324877937
+30,Location_Taourirt,25195.342247070308
+31,Year_2021,22474.520734960948
+32,Brand_Renault,22454.954592626946
+33,Fiscal Power_4 CV,21870.84679455566
+34,Brand_Dacia,20836.714642626954
+35,"Equipment_['Leather Seats', 'Electric Windows']",20212.455994824224
+36,Brand_Mercedes-Benz,19922.373139672847
+37,Mileage_190 000 - 199 999,19088.559236328114
+38,Fiscal Power_9 CV,19047.543748730477
+39,Location_Rabat,18218.578747631844
+40,Location_Taza,17383.442757128912
+41,Location_Tanger,16015.413229101569
+42,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",15011.12152729492
+43,Condition_New,14744.237986083997
+44,Mileage_170 000 - 179 999,14300.438650219738
+45,Mileage_250 000 - 299 999,14277.13461372071
+46,Fiscal Power_11 CV,14155.856078613286
+47,Sector_City Center,14073.919005200198
+48,Year_2013,13737.61484692383
+49,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",13332.443536669924
+50,Location_Marrakech,12734.214221411128
+51,Model_220,11784.493976708985
+52,Location_Temara,11625.821524169918
+53,Sector_Aïn Chock,11522.007395898436
+54,Brand_Peugeot,11047.822316381833
+55,Mileage_0 - 4 999,10606.138219189455
+56,"Equipment_['CD/MP3/Bluetooth', 'CD/MP3/Bluetooth']",10456.602031982422
+57,Location_Agadir,10392.995782324215
+58,Model_Dokker Van,10305.366628515627
+59,Model_Autres,9986.302310693358
+60,Mileage_45 000 - 49 999,9966.225650830076
+61,Year_2019,9940.545050585935
+62,Brand_Land Rover,9924.705642041017
+63,"Equipment_['Electric Windows', 'CD/MP3/Bluetooth']",9901.675346044922
+64,Brand_Hyundai,9568.820239697268
+65,Origin_Imported New,9560.963542968744
+66,Fiscal Power_5 CV,9347.428183081061
+67,"Equipment_['Electric Windows', 'Leather Seats']",8969.079317724609
+68,Year_2018,8599.101983349607
+69,Model_Clio,7797.805563891598
+70,Year_2010,7699.978559545897
+71,"Equipment_['Alloy Wheels', 'Alloy Wheels']",7478.581985888667
+72,Mileage_100 000 - 109 999,7116.640328027342
+73,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",6951.980058105468
+74,Mileage_180 000 - 189 999,6883.084998901362
+75,Sector_Souissi,6599.265032324218
+76,"Equipment_['Electric Windows', 'Rear Camera']",6463.332542236329
+77,Model_Logan,6280.191919458008
+78,Year_2014,6001.982980126959
+79,Year_2023,5961.680813916017
+80,Year_2012,5950.30965986328
+81,Sector_Guéliz,5598.125795214841
+82,Year_2002,5579.65195847168
+83,"Equipment_['Alloy Wheels', 'Leather Seats']",5447.3024355712905
+84,Model_208,5318.096408593751
+85,Mileage_10 000 - 14 999,5288.631000488281
+86,Mileage_300 000 - 349 999,5218.791395166017
+87,Model_Megane,5207.745929907225
+88,Year_1993,5204.98473623047
+89,Mileage_Plus de 500 000,5159.199872607423
+90,Brand_Toyota,5007.999763330079
+91,Year_2003,4999.832687329105
+92,Brand_Fiat,4914.360119824216
+93,Fiscal Power_12 CV,4775.089486108399
+94,Location_Kénitra,4557.922471166991
+95,Location_Fès,4472.20571035156
+96,Model_19,4419.914931762696
+97,Year_2011,4328.302600048829
+98,Fiscal Power_10 CV,4244.295862768555
+99,Model_infrequent_sklearn,4200.148527685549
+100,"Equipment_['CD/MP3/Bluetooth', 'Electric Windows']",4189.968549218749
+101,Location_Meknès,4162.539803491212
+102,Brand_Audi,4126.4943114502
+103,Mileage_120 000 - 129 999,4087.9618790527293
+104,Mileage_160 000 - 169 999,4076.561764404297
+105,Model_Grand Cherokee,3956.9304211425765
+106,Mileage_150 000 - 159 999,3931.9676773437513
+107,Mileage_30 000 - 34 999,3872.4452203613264
+108,Model_308,3836.77688144531
+109,Sector_Hamria,3756.3747410644537
+110,Brand_Jeep,3714.472894726564
+111,Brand_Opel,3711.5648362060547
+112,Sector_Malabata,3656.1330573730474
+113,Model_Touareg,3615.1063279785158
+114,Location_Tifelt,3601.472193017577
+115,Year_1996,3531.7649526855466
+116,Brand_Skoda,3525.0497522460955
+117,Mileage_110 000 - 119 999,3507.2940243896487
+118,Model_A3,3455.825493359375
+119,Location_Nador,3410.1190458984374
+120,Model_406,3387.9657177734375
+121,Sector_Ouled Oujih,3364.2522371093683
+122,Model_Partner,3278.2255307128926
+123,Location_Deroua,3271.715219873046
+124,Mileage_35 000 - 39 999,3207.4795751953125
+125,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Speed Limiter', 'Cruise Control', 'Central Locking', 'Electric Windows']",3204.792863134765
+126,Model_Serie 2,3204.3634513671855
+127,Brand_Nissan,3184.856382666013
+128,Model_Astra,3142.4887174316405
+129,Sector_Tilila,3106.2510729003907
+130,Year_2009,3019.9924176269533
+131,Mileage_25 000 - 29 999,2958.819798437499
+132,Year_2015,2949.809488623049
+133,Year_2008,2872.0904547363293
+134,Mileage_65 000 - 69 999,2870.0307513671873
+135,Mileage_60 000 - 64 999,2848.4353644531243
+136,Mileage_70 000 - 74 999,2840.0242619628884
+137,Mileage_140 000 - 149 999,2823.002709619142
+138,Year_2017,2809.511028124999
+139,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",2715.0169244140625
+140,Sector_Hivernage,2658.161531933595
+141,Brand_Mitsubishi,2637.707118383789
+142,Year_2007,2558.3084198242177
+143,Mileage_130 000 - 139 999,2443.0450708496096
+144,Location_Oujda,2438.202424902342
+145,Model_Classe C,2430.0638764648443
+146,Brand_BMW,2417.621050073246
+147,Model_Kangoo,2371.197859472656
+148,Mileage_5 000 - 9 999,2367.3966195068356
+149,Model_Octavia,2352.674245410156
+150,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",2272.436539843751
+151,Sector_Sidi Maarouf,2258.2486548339834
+152,Sector_Hay Nahda,2247.8394449707034
+153,Location_Béni Mellal,2220.1941384033203
+154,Sector_Oulfa,2211.626499609375
+155,Model_GOLF 7,2209.474773974613
+156,Model_Dokker,2197.1592947265626
+157,Mileage_20 000 - 24 999,2180.8434579101577
+158,Sector_Ain Atig,2164.8159840332023
+159,Model_Touran,2163.7566892578125
+160,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",2152.93035234375
+161,Model_classe_a_berline,2137.226609423829
+162,Model_sandero_stepway,2135.411203564449
+163,"Equipment_['CD/MP3/Bluetooth', 'Leather Seats']",2116.1867500000017
+164,Model_Spark,2116.012302294922
+165,Year_1999,2093.198932617186
+166,Model_Jetta,2074.2398557617184
+167,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",2071.249178662109
+168,Sector_Ain Sebaa,2048.816547265625
+169,Model_Xsara Picasso,2044.8499650146484
+170,Location_Khouribga,2021.7979109863213
+171,Mileage_85 000 - 89 999,2011.2257550292968
+172,Model_Range Rover Evoque,1983.85438828125
+173,Sector_Hay el matar,1979.5634416503901
+174,Sector_Old Medina,1974.1624871582044
+175,Mileage_80 000 - 84 999,1971.856687792968
+176,Model_AX,1971.741904785157
+177,Mileage_15 000 - 19 999,1963.5700927001951
+178,Sector_Hay Hassani,1955.3004333496078
+179,Brand_Suzuki,1932.5353055175767
+180,Sector_Other,1928.7532041259765
+181,Equipment_['Alloy Wheels'],1914.7661570312503
+182,Model_190,1907.4945181152298
+183,Model_Doblo,1895.3287302734361
+184,Sector_Afaq,1895.2665321777345
+185,Model_DS 3 Crossback,1885.1603800781252
+186,Model_205,1877.2092310546882
+187,Model_206,1875.521634106445
+188,Location_El Jadida,1865.720695898438
+189,Location_Essaouira,1856.3008082031251
+190,Year_2024,1854.9712908691413
+191,"Equipment_['Electric Windows', 'Alloy Wheels']",1850.1756289550779
+192,"Equipment_['CD/MP3/Bluetooth', 'Rear Camera']",1843.8463074707024
+193,Model_Fiesta,1842.0238997070314
+194,Model_Classe GLC,1833.493909423828
+195,Model_2008,1830.599561816406
+196,Sector_Oued Fès,1826.6085493164053
+197,Location_Tan-Tan,1813.6704975097653
+198,"Equipment_['Airbags', 'Air Conditioning']",1806.5941537109375
+199,Sector_Oued Ourika,1799.55847109375
+200,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",1790.0075676757808
+201,Model_A4,1785.3723692382816
+202,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",1782.8625502441407
+203,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",1782.3282600097655
+204,Sector_Hay Mohammadi,1781.0337074218749
+205,Sector_Californie,1780.6664599609376
+206,Location_Ouazzane,1780.663502392578
+207,Model_cooper,1780.5670797363284
+208,Model_Micra,1779.9083747070315
+209,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Central Locking', 'Electric Windows']",1779.28849230957
+210,Model_L200,1778.8762215576176
+211,Location_Mechra Bel Ksiri,1776.6155979492187
+212,"Equipment_['CD/MP3/Bluetooth', 'Central Locking']",1774.5048580078126
+213,Location_Fnideq,1774.209843652344
+214,Location_Oued Zem,1767.8666991455038
+215,Equipment_['Central Locking'],1765.0062252929683
+216,"Equipment_['Airbags', 'Air Conditioning', 'Alloy Wheels']",1763.7638376464874
+217,"Equipment_['Airbags', 'Air Conditioning', 'Alloy Wheels', 'Electric Windows']",1741.012364941406
+218,Location_Souk Sebt Ouled Nemma,1737.3456477539075
+219,Location_Mohammedia,1729.4312175048847
+220,Sector_Ain Mezouar,1728.0593149902345
+221,Equipment_['Air Conditioning'],1727.854301416016
+222,Mileage_50 000 - 54 999,1723.524955371093
+223,Sector_Abattoirs,1723.0761221679672
+224,Sector_Fes Jdid,1717.7398947265629
+225,Model_270,1697.2804097167966
+226,Year_1998,1695.611357470703
+227,Model_Fusion,1693.6726577636719
+228,Model_X3,1686.0751603027345
+229,Location_Salé,1642.6523535644528
+230,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Central Locking']",1634.7649577148438
+231,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",1629.668579833985
+232,Location_Tiznit,1629.4825222656252
+233,Condition_Damaged,1617.0247503417968
+234,Model_X5,1612.9766818359376
+235,Model_Focus,1608.8074431152352
+236,Location_Settat,1597.4953414550814
+237,Model_Prado,1586.4177552734382
+238,"Equipment_['Electric Windows', 'Electric Windows']",1534.3086815429706
+239,Model_Tiguan,1533.4747927246076
+240,Sector_Hay Chmaou,1525.70611044922
+241,"Equipment_['Leather Seats', 'Alloy Wheels']",1492.4762449707032
+242,Model_megane_4,1489.5774520263672
+243,Sector_Hay Al Falah,1483.674042675781
+244,Sector_Massira 1,1478.8014075683539
+245,Model_pajero,1475.1790723632814
+246,Model_Ranger,1458.6083104492216
+247,Model_A5,1455.310409716792
+248,Model_YRV,1400.0217902832037
+249,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",1247.1982847167972
+250,Year_2004,1225.2962038818364
+251,Year_2022,1171.9989521240227
+252,Sector_2 Mars,1161.4709609863278
+253,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking']",1096.3526540527341
+254,Location_Sidi Kacem,899.8986324707035
+255,Model_Duster,890.4770838623049
+256,Sector_Agdal,852.0706375000003
+257,Brand_DS,821.4793550292966
+258,Year_2005,806.3167349609369
+259,Model_Classe A,661.6575770507807
+260,Sector_Achakar,605.3050787109373
+261,Location_Safi,602.4074858154297
+262,"Equipment_['Alloy Wheels', 'CD/MP3/Bluetooth']",553.6184994628904
+263,"Equipment_['Alloy Wheels', 'Electric Windows']",540.2001290527336
+264,Sector_Route de Casablanca,533.2212724609374
+265,Brand_Volvo,530.5985046386719
+266,Brand_Kia,513.6051977539064
+267,Sector_Mesnana,483.13001513672003
+268,Model_Corsa,471.78159335937596
+269,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",448.7130614257812
+270,Model_PASSAT CC,432.5380934082033
+271,Location_Tétouan,412.96880332031236
+272,"Equipment_['Rear Camera', 'Rear Camera']",411.5093104003905
+273,"Equipment_['Leather Seats', 'CD/MP3/Bluetooth']",410.8227569335934
+274,Sector_Aïn Diab,407.791990527344
+275,"Equipment_['Central Locking', 'Electric Windows']",405.77466601562514
+276,Sector_Achennad,396.46639296875003
+277,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",384.7290893554686
+278,Year_1995,378.4031501220702
+279,Year_1980 ou plus ancien,373.5519876464842
+280,Year_1992,365.50410100097497
+281,Location_Fquih Ben Saleh,359.34308862304687
+282,Model_Q3,354.2170331054686
+283,Sector_Safir,348.9248772460936
+284,Sector_Sala El Jadida,342.35706962890595
+285,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Parking Sensors', 'Central Locking', 'Electric Windows']",323.61979243164
+286,"Equipment_['Rear Camera', 'Electric Windows']",319.77622563476604
+287,Model_Punto,318.863787695313
+288,Sector_Les Cretes,314.7859978515624
+289,Model_Santa Fe,305.44537954101565
+290,Model_Tucson,304.0169975097661
+291,Model_Uno,296.5478276611331
+292,Brand_Seat,285.9140966308596
+293,Model_GOLF 4,283.09642885742636
+294,Location_Youssoufia,280.6465550292973
+295,Brand_mini,280.0849333496097
+296,Model_Q5,275.9389849121094
+297,Fuel_Hybrid,274.88815336914047
+298,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",270.6061685058624
+299,Sector_Ben M'sick,263.0585733398437
+300,Model_country man,253.32691850585965
+301,Model_Corolla,249.41506010742182
+302,Sector_Al Azhar,241.2499204101563
+303,Model_i 10,238.95141660156253
+304,Location_Laâyoune,229.5277580078125
+305,Sector_Maarif,227.44677172851507
+306,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",224.54181796875
+307,Model_Leon,220.20473623046848
+308,"Equipment_['ABS', 'Air Conditioning', 'Central Locking', 'Electric Windows']",219.07469013671874
+309,Location_Errachidia,215.85839047851613
+310,Model_CLASSE ML,210.81249199218757
+311,Model_Polo,198.47824921874974
+312,Model_FIORINO,194.10146396484387
+313,Sector_Massira,192.75621489257762
+314,Sector_Haut Agdal,190.25310000000002
+315,Brand_Chevrolet,188.48982714843729
+316,Brand_Maserati,184.23830073242166
+317,Location_Inzegan,183.36670246581932
+318,Sector_Hay Izdihar,174.51658984375004
+319,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",172.79525683593744
+320,Model_Classe E,171.47203891601555
+321,Model_Accent,171.11368261718758
+322,Model_Q7,169.6824849121092
+323,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",169.5038024658201
+324,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",167.7895250000021
+325,Model_EXPRESS,165.17800488281253
+326,Model_Renegade,163.1310983398428
+327,Model_Compass,162.5927698242181
+328,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking']",159.41549946289084
+329,Mileage_350 000 - 399 999,158.51483666992223
+330,Sector_Route d'Immouzere,152.60199252929706
+331,Model_VERSO,151.6367269531252
+332,Year_1984,150.09098256835998
+333,Sector_Hay Riad,149.9986190429689
+334,Model_C4,149.7294875976563
+335,Sector_Hay Ennasr,147.59414980468753
+336,Model_Alto,140.63755004882753
+337,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Central Locking']",137.90117636718816
+338,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",136.38847705078132
+339,Model_H-1,132.38209028320253
+340,Model_Talisman,127.36992021483678
+341,Sector_Bournazil,124.85093142089823
+342,Sector_Targa,123.61326762695329
+343,Location_El Hajeb,122.15621235351519
+344,Brand_Ssangyong,120.61050185546873
+345,Location_infrequent_sklearn,119.9046901855469
+346,Sector_Errahma,119.63825019531228
+347,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",119.62643310546868
+348,"Equipment_['Airbags', 'Alloy Wheels']",117.7898801269532
+349,"Equipment_['Alloy Wheels', 'Rear Camera']",116.88758076171871
+350,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Central Locking', 'Electric Windows']",114.43061010741492
+351,Model_Carens,114.0003587890627
+352,Year_2001,113.29408916015637
+353,Sector_Harhoura,113.08133510741904
+354,Brand_Autres,110.7291397460938
+355,Sector_Ahlane,110.63523930664076
+356,Sector_Zouagha,109.43301186523435
+357,Model_Ghibli,108.82510737304678
+358,Sector_Daoudiate,106.64180766601562
+359,Model_q5_sportback,100.87659082031252
+360,Condition_Fair,100.62387470703125
+361,Sector_Zitoune,98.58210957031253
+362,Model_CLASSE GLK,97.4711339355473
+363,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",96.52749023437522
+364,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",93.91755258789082
+365,Sector_Hassan,93.56553491210909
+366,Model_Serie 5,91.25749829101568
+367,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",88.66730048828133
+368,Sector_Drissia,88.25849541015629
+369,Model_Twingo,87.47457348632659
+370,Brand_Daihatsu,87.09681752929687
+371,Location_Dar Bouazza,85.01081342773459
+372,Model_corolla_prestige,84.48819228515626
+373,Model_508,82.78169951172151
+374,Location_Khemisset,82.47814770507786
+375,Sector_Mghogha,80.70147753906254
+376,Model_Korando,76.8050240722657
+377,Model_Grand Vitara,76.56893100585953
+378,Model_Juke,75.6885470214843
+379,Location_Bouskoura,73.29611816406253
+380,Sector_Hay El Qods,72.33016201171881
+381,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",69.43735732421884
+382,Sector_Essaouira El Jadida,67.97762373046885
+383,Year_1991,67.83519013671881
+384,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Electric Windows']",66.36347265624983
+385,Sector_Marjane 2,61.730156884765655
+386,Model_Vito,61.14743627929695
+387,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",59.669718164062466
+388,Mileage_75 000 - 79 999,58.215109375000104
+389,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",56.54923417968755
+390,Sector_Narjiss,55.504827783203325
+391,Mileage_55 000 - 59 999,54.85027172851565
+392,Model_Super 5,54.26784467773438
+393,Model_Megane 3,54.043904833984435
+394,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",51.351797460937576
+395,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",50.10081440429704
+396,Model_ix 35,46.95814013671896
+397,Model_Megane Sedan,46.44418315429708
+398,Sector_Sidi Moumen,43.57807993164068
+399,Location_Midelt,43.16671284179691
+400,Location_Kasba Tadla,35.93148481445311
+401,Fiscal Power_16 CV,34.408254736328146
+402,Model_XC60,33.21764169921866
+403,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",32.62008828125003
+404,Equipment_['Sunroof'],32.37556484375018
+405,Sector_Branes 1,31.80767016601556
+406,Sector_Sidi Bernoussi,30.6890997802735
+407,Model_Sprinter,29.09899785156251
+408,Location_Larache,29.093994873046924
+409,"Equipment_['Leather Seats', 'Leather Seats']",28.15747504882813
+410,Mileage_90 000 - 94 999,26.828335351562508
+411,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Central Locking']",26.81598544921877
+412,"Equipment_['Rear Camera', 'Alloy Wheels']",26.810278881835984
+413,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",26.667357714843764
+414,Sector_Les Portes de Marrakech,26.5802921875
+415,Sector_Andalous,26.51383256835936
+416,Model_Sportage,26.354044531249965
+417,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",25.91802744140621
+418,Location_Khénifra,24.671425244140355
+419,Location_Zagora,24.494007031249986
+420,Location_Al Hoceima,23.882320556640643
+421,Sector_Bouargane,22.50726235351567
+422,"Equipment_['CD/MP3/Bluetooth', 'Alloy Wheels']",21.944387548828164
+423,Sector_Roches Noires,21.075731347656255
+424,Model_GOLF 6,19.518947607421723
+425,"Equipment_['Rear Camera', 'CD/MP3/Bluetooth']",18.28697978515629
+426,Location_Jorf El Melha,17.900367626953184
+427,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",16.799376269531205
+428,Model_outlander,16.583451269531288
+429,Sector_Lissasfa,16.10545512695311
+430,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",15.931814892578187
+431,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",11.922979931640585
+432,Sector_Av Mohammed V,10.067692333984414
+433,Sector_Amal,9.825115185546911
+434,Sector_Abbadi,8.685983496093758
+435,Equipment_['CD/MP3/Bluetooth'],7.688468457031286
+436,Sector_Ben Souda,7.200007812499971
+437,Location_Tinghir,6.14934956054687
+438,Model_Classe B,6.010472851562572
+439,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Central Locking']",5.918157617187535
+440,Sector_Assaka,5.8040157714843374
+441,Year_2000,4.825014892578128
+442,Sector_El Houda,4.385962060546863
+443,Location_Ouarzazate,3.326977734374941
+444,Sector_Al Maghrib Al Arabi,2.785570654296862
+445,Sector_Assif,2.709259033203125
+446,Sector_Amsernate,2.3017676757812295
+447,"Equipment_['Airbags', 'Air Conditioning', 'Central Locking']",2.147854931640577
+448,Sector_Aïn Borja,2.123329589843779
+449,"Equipment_['Airbags', 'Air Conditioning', 'Navigation System/GPS']",1.8239099609375262
+450,Sector_Azib Derai,0.9553327636718768
+451,Sector_Bouskoura centre,0.23994980468753055
+452,Model_Scala,0.0
+453,Model_Sandero,0.0
+454,Model_Toledo,0.0
+455,Model_Tiggo,0.0
+456,Model_Terios,0.0
+457,Model_Tercel,0.0
+458,Model_Tepee,0.0
+459,Model_TIPO,0.0
+460,Model_Symbol,0.0
+461,Model_Swift,0.0
+462,Model_Superb,0.0
+463,Model_Stelvio,0.0
+464,Model_Soul,0.0
+465,Model_ForTwo,0.0
+466,Model_Fluence,0.0
+467,Model_Fabia,0.0
+468,Model_Vitara,0.0
+469,Model_Vento,0.0
+470,Model_Velar,0.0
+471,Model_V40,0.0
+472,Model_Transit,0.0
+473,Model_Trafic,0.0
+474,Model_X6,0.0
+475,Model_X1,0.0
+476,Model_X-Trail,0.0
+477,Model_Wrangler,0.0
+478,Model_GOLF 5,0.0
+479,Model_GOLF 3,0.0
+480,Model_GOLF 2,0.0
+481,Model_GIULIA,0.0
+482,Model_Freelander,0.0
+483,Model_Fox,0.0
+484,Model_Formentor,0.0
+485,Model_arkana,0.0
+486,Model_amg_glc,0.0
+487,Model_a5_sportback,0.0
+488,Model_a3_sportback,0.0
+489,Model_Zafira,0.0
+490,Model_Ypsilon,0.0
+491,Model_Yeti,0.0
+492,Model_Yaris,0.0
+493,Model_XSARA,0.0
+494,Model_XJ,0.0
+495,Model_XF,0.0
+496,Model_XE,0.0
+497,Model_XC90,0.0
+498,Model_XC40,0.0
+499,Model_grand_santa_fe,0.0
+500,Model_fusion_berline,0.0
+501,Model_fullback,0.0
+502,Model_florid,0.0
+503,Model_express_van,0.0
+504,Model_doblo_panorama,0.0
+505,Model_doblo_classic,0.0
+506,Model_corolla_sport,0.0
+507,Model_corolla_millenium,0.0
+508,Model_classe_gle_coupe,0.0
+509,Model_classe_e_coupe,0.0
+510,Model_civic_berline,0.0
+511,Model_cayenne_coupe,0.0
+512,Model_c4x,0.0
+513,Model_pajero sport,0.0
+514,Model_one,0.0
+515,Model_mustang_cabriolet,0.0
+516,Model_land_cruiser_prado,0.0
+517,Model_lancer,0.0
+518,Model_kuv_100,0.0
+519,Model_kona,0.0
+520,Model_kangoo_ze,0.0
+521,Model_i 40,0.0
+522,Model_i 30,0.0
+523,Model_i 20,0.0
+524,Year_1981,0.0
+525,Model_tonale,0.0
+526,Model_tipo_hatchback,0.0
+527,Model_t-roc,0.0
+528,Model_sq5,0.0
+529,Model_serie_2_gran_coupe,0.0
+530,Model_serie_1_coupe,0.0
+531,Model_sandero_streetway,0.0
+532,Model_range_rover_vogue,0.0
+533,Model_range_rover_velar,0.0
+534,Model_q3_sportback,0.0
+535,Model_punto_classic,0.0
+536,Model_polo_sedan,0.0
+537,Model_pick up,0.0
+538,Year_1997,0.0
+539,Year_1994,0.0
+540,Year_1990,0.0
+541,Year_1989,0.0
+542,Year_1988,0.0
+543,Year_1987,0.0
+544,Year_1986,0.0
+545,Year_1985,0.0
+546,Year_1983,0.0
+547,Year_1982,0.0
+548,Model_FREEMONT,0.0
+549,Model_F-PACE,0.0
+550,Model_Expert,0.0
+551,Model_Espace,0.0
+552,Model_Elantra,0.0
+553,Model_Ecosport,0.0
+554,Model_ESCORT,0.0
+555,Model_E-PACE,0.0
+556,Model_Ducato,0.0
+557,Model_Discovery Sport,0.0
+558,Model_Discovery,0.0
+559,Model_Defender,0.0
+560,Model_DS 7 Crossback,0.0
+561,Model_DS 5,0.0
+562,Model_DS 4,0.0
+563,Model_D-MAX,0.0
+564,Model_Cruze,0.0
+565,Model_Crossland X,0.0
+566,Model_Corolla verso,0.0
+567,Model_Cordoba,0.0
+568,Model_Classe S,0.0
+569,Model_Classe GLE,0.0
+570,Model_Classe GLA,0.0
+571,Model_Classe G,0.0
+572,Model_Classe CLS,0.0
+573,Model_Classe CLA,0.0
+574,Model_Civic,0.0
+575,Model_City,0.0
+576,Model_Cherokee,0.0
+577,Model_Cerato,0.0
+578,Model_Celerio,0.0
+579,Model_Ceed,0.0
+580,Condition_For Parts,0.0
+581,Model_Cayenne,0.0
+582,Model_Carry,0.0
+583,Model_Captur,0.0
+584,Model_Captiva,0.0
+585,Model_Caliber,0.0
+586,Model_Caddy,0.0
+587,Model_CRETA,0.0
+588,Model_CR-V,0.0
+589,Model_CONNECT,0.0
+590,Model_COMBO,0.0
+591,Model_COCCINELLE,0.0
+592,Model_Vectra,0.0
+593,Model_CLASSE GLC COUPE,0.0
+594,Model_CLASSE C COUPE,0.0
+595,Fiscal Power_20 CV,0.0
+596,Fiscal Power_19 CV,0.0
+597,Fiscal Power_18 CV,0.0
+598,Fiscal Power_17 CV,0.0
+599,Fiscal Power_15 CV,0.0
+600,Fiscal Power_14 CV,0.0
+601,Fiscal Power_13 CV,0.0
+602,Mileage_95 000 - 99 999,0.0
+603,Mileage_450 000 - 499 999,0.0
+604,Mileage_400 000 - 449 999,0.0
+605,Mileage_40 000 - 44 999,0.0
+606,Model_CC,0.0
+607,Model_CARNIVAL,0.0
+608,Model_C5 Aircross,0.0
+609,Model_C5,0.0
+610,Model_C4 Picasso,0.0
+611,Model_C4 CACTUS,0.0
+612,Model_C3 Picasso,0.0
+613,Model_C3 Aircross,0.0
+614,Model_C15,0.0
+615,Model_C1,0.0
+616,Model_C-Max,0.0
+617,Model_C-HR,0.0
+618,Model_C-Elysée,0.0
+619,Model_C-ELYSEE,0.0
+620,Fiscal Power_21 CV,0.0
+621,"Equipment_['ABS', 'Air Conditioning', 'Alloy Wheels']",0.0
+622,"Equipment_['ABS', 'Air Conditioning', 'Alloy Wheels', 'Electric Windows']",0.0
+623,"Equipment_['ABS', 'Air Conditioning', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+624,Fuel_LPG,0.0
+625,Fuel_Electrique,0.0
+626,Fiscal Power_infrequent_sklearn,0.0
+627,Fiscal Power_Plus de 41 CV,0.0
+628,Fiscal Power_31 CV,0.0
+629,Fiscal Power_30 CV,0.0
+630,Fiscal Power_29 CV,0.0
+631,Fiscal Power_28 CV,0.0
+632,Fiscal Power_24 CV,0.0
+633,Fiscal Power_23 CV,0.0
+634,Fiscal Power_22 CV,0.0
+635,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+636,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+637,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+638,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Central Locking', 'Electric Windows']",0.0
+639,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+640,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+641,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Alloy Wheels', 'Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+642,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Alloy Wheels', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+643,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Alloy Wheels', 'Electric Windows']",0.0
+644,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Alloy Wheels', 'Central Locking']",0.0
+645,"Equipment_['ABS', 'Air Conditioning']",0.0
+646,"Equipment_['ABS', 'Air Conditioning', 'Electric Windows']",0.0
+647,"Equipment_['ABS', 'Air Conditioning', 'Central Locking']",0.0
+648,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+649,"Equipment_['ABS', 'Airbags', 'Alloy Wheels']",0.0
+650,"Equipment_['ABS', 'Airbags', 'Alloy Wheels', 'Electric Windows']",0.0
+651,"Equipment_['ABS', 'Airbags', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+652,"Equipment_['ABS', 'Airbags', 'Air Conditioning']",0.0
+653,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'Electric Windows']",0.0
+654,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+655,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+656,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+657,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Electric Windows']",0.0
+658,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Central Locking', 'Electric Windows']",0.0
+659,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+660,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+661,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+662,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+663,"Equipment_['ABS', 'Airbags', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+664,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+665,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+666,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Electric Windows']",0.0
+667,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+668,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+669,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+670,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+671,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+672,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+673,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+674,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Onboard Computer', 'Central Locking']",0.0
+675,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+676,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+677,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+678,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+679,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+680,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+681,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+682,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+683,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Central Locking']",0.0
+684,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+685,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Central Locking', 'Electric Windows']",0.0
+686,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels']",0.0
+687,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+688,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Electric Windows']",0.0
+689,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+690,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+691,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+692,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking']",0.0
+693,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+694,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+695,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+696,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Electric Windows']",0.0
+697,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking']",0.0
+698,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+699,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+700,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Electric Windows']",0.0
+701,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Central Locking']",0.0
+702,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+703,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+704,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+705,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+706,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Electric Windows']",0.0
+707,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking']",0.0
+708,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+709,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Electric Windows']",0.0
+710,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Electric Windows']",0.0
+711,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking']",0.0
+712,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Electric Windows']",0.0
+713,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking']",0.0
+714,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Electric Windows']",0.0
+715,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking']",0.0
+716,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+717,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+718,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+719,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+720,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+721,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Central Locking']",0.0
+722,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Central Locking', 'Electric Windows']",0.0
+723,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+724,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+725,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+726,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Electric Windows']",0.0
+727,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+728,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Electric Windows']",0.0
+729,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking']",0.0
+730,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+731,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+732,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+733,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+734,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+735,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Electric Windows']",0.0
+736,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+737,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+738,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+739,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+740,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+741,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+742,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Electric Windows']",0.0
+743,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking']",0.0
+744,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+745,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+746,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+747,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+748,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+749,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Onboard Computer', 'Electric Windows']",0.0
+750,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Central Locking']",0.0
+751,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Central Locking', 'Electric Windows']",0.0
+752,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+753,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Alloy Wheels', 'Electric Windows']",0.0
+754,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+755,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning']",0.0
+756,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+757,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+758,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+759,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+760,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Speed Limiter', 'Cruise Control', 'Electric Windows']",0.0
+761,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Parking Sensors', 'Electric Windows']",0.0
+762,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Onboard Computer', 'Electric Windows']",0.0
+763,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Onboard Computer', 'Central Locking']",0.0
+764,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+765,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+766,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+767,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+768,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+769,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+770,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Electric Windows']",0.0
+771,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+772,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Central Locking', 'Electric Windows']",0.0
+773,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+774,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+775,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+776,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+777,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+778,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+779,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+780,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+781,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+782,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+783,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+784,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+785,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+786,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+787,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+788,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+789,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+790,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Electric Windows']",0.0
+791,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+792,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Electric Windows']",0.0
+793,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Electric Windows']",0.0
+794,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking']",0.0
+795,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Electric Windows']",0.0
+796,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking']",0.0
+797,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+798,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+799,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking']",0.0
+800,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+801,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Electric Windows']",0.0
+802,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+803,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+804,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+805,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+806,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+807,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+808,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+809,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+810,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Electric Windows']",0.0
+811,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking']",0.0
+812,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Electric Windows']",0.0
+813,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking']",0.0
+814,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+815,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Sunroof', 'Central Locking']",0.0
+816,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+817,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Electric Windows']",0.0
+818,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Electric Windows']",0.0
+819,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+820,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+821,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+822,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+823,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+824,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+825,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Electric Windows']",0.0
+826,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+827,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+828,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+829,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+830,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+831,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Leather Seats', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+832,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+833,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+834,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+835,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+836,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+837,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+838,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+839,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+840,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+841,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+842,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+843,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Electric Windows']",0.0
+844,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+845,"Equipment_['ABS', 'Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+846,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+847,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+848,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+849,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+850,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+851,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+852,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+853,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+854,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+855,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+856,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+857,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+858,"Equipment_['ABS', 'Airbags', 'Electric Windows']",0.0
+859,"Equipment_['ABS', 'Airbags', 'ESP', 'Central Locking', 'Electric Windows']",0.0
+860,"Equipment_['ABS', 'Airbags', 'Central Locking']",0.0
+861,"Equipment_['ABS', 'Airbags', 'Central Locking', 'Electric Windows']",0.0
+862,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+863,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+864,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+865,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+866,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Central Locking']",0.0
+867,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Central Locking', 'Electric Windows']",0.0
+868,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+869,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+870,"Equipment_['ABS', 'Alloy Wheels']",0.0
+871,"Equipment_['ABS', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+872,"Equipment_['ABS', 'Airbags']",0.0
+873,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+874,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+875,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Leather Seats', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+876,"Equipment_['ABS', 'Airbags', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+877,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+878,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+879,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+880,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+881,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+882,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Electric Windows']",0.0
+883,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Central Locking']",0.0
+884,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Central Locking', 'Electric Windows']",0.0
+885,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+886,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+887,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Electric Windows']",0.0
+888,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+889,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Central Locking', 'Electric Windows']",0.0
+890,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+891,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+892,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+893,Model_Ateca,0.0
+894,Model_Arteon,0.0
+895,Model_Arona,0.0
+896,"Equipment_['Air Conditioning', 'Alloy Wheels', 'Leather Seats', 'Electric Windows']",0.0
+897,"Equipment_['Air Conditioning', 'Alloy Wheels', 'Electric Windows']",0.0
+898,"Equipment_['Air Conditioning', 'Alloy Wheels', 'Central Locking']",0.0
+899,"Equipment_['Air Conditioning', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+900,Equipment_['ABS'],0.0
+901,"Equipment_['ABS', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+902,"Equipment_['ABS', 'Electric Windows']",0.0
+903,"Equipment_['ABS', 'Central Locking']",0.0
+904,"Equipment_['ABS', 'Central Locking', 'Electric Windows']",0.0
+905,"Equipment_['ABS', 'CD/MP3/Bluetooth']",0.0
+906,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+907,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+908,"Equipment_['ABS', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+909,"Equipment_['Air Conditioning', 'Electric Windows']",0.0
+910,"Equipment_['Air Conditioning', 'Central Locking']",0.0
+911,"Equipment_['Air Conditioning', 'Central Locking', 'Electric Windows']",0.0
+912,"Equipment_['Air Conditioning', 'Alloy Wheels']",0.0
+913,"Equipment_['Air Conditioning', 'Alloy Wheels', 'Navigation System/GPS']",0.0
+914,Model_Bravo,0.0
+915,Model_Boxer,0.0
+916,Model_Bora,0.0
+917,Model_Bipper,0.0
+918,Model_Berlingo,0.0
+919,Model_BRAVA,0.0
+920,Model_Aygo,0.0
+921,Model_Aveo,0.0
+922,Model_Avensis,0.0
+923,Model_Auris,0.0
+924,Model_Atos,0.0
+925,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Central Locking']",0.0
+926,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+927,Sector_Tanja Balia,0.0
+928,"Equipment_['Airbags', 'Alloy Wheels', 'Navigation System/GPS']",0.0
+929,"Equipment_['Airbags', 'Alloy Wheels', 'Electric Windows']",0.0
+930,"Equipment_['Airbags', 'Alloy Wheels', 'Central Locking']",0.0
+931,"Equipment_['Airbags', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+932,Sector_Taqaddoum,0.0
+933,"Equipment_['Airbags', 'Air Conditioning', 'Electric Windows']",0.0
+934,Sector_Tassila,0.0
+935,"Equipment_['Airbags', 'Air Conditioning', 'Central Locking', 'Electric Windows']",0.0
+936,"Equipment_['Airbags', 'Air Conditioning', 'Alloy Wheels', 'Central Locking']",0.0
+937,"Equipment_['Airbags', 'Air Conditioning', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+938,"Equipment_['Air Conditioning', 'Parking Sensors', 'Electric Windows']",0.0
+939,"Equipment_['Air Conditioning', 'Leather Seats']",0.0
+940,"Equipment_['Air Conditioning', 'Leather Seats', 'Electric Windows']",0.0
+941,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+942,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Central Locking', 'Electric Windows']",0.0
+943,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+944,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+945,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+946,Sector_Temara Plage,0.0
+947,Sector_Tghat,0.0
+948,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+949,Sector_Touilaa,0.0
+950,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Central Locking', 'Electric Windows']",0.0
+951,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels']",0.0
+952,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+953,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+954,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+955,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Parking Sensors', 'Electric Windows']",0.0
+956,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Electric Windows']",0.0
+957,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+958,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+959,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+960,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Electric Windows']",0.0
+961,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Central Locking']",0.0
+962,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Central Locking', 'Electric Windows']",0.0
+963,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Alloy Wheels']",0.0
+964,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Alloy Wheels', 'Electric Windows']",0.0
+965,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Alloy Wheels', 'Central Locking']",0.0
+966,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+967,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning']",0.0
+968,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Speed Limiter', 'Cruise Control', 'Electric Windows']",0.0
+969,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+970,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Onboard Computer', 'Central Locking', 'Electric Windows']",0.0
+971,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'Electric Windows']",0.0
+972,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Cruise Control', 'Central Locking', 'Electric Windows']",0.0
+973,"Equipment_['Alloy Wheels', 'Central Locking']",0.0
+974,"Equipment_['Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+975,Sector_Toute la Ville,0.0
+976,Equipment_['Airbags'],0.0
+977,"Equipment_['Airbags', 'Leather Seats']",0.0
+978,"Equipment_['Airbags', 'Electric Windows']",0.0
+979,"Equipment_['Airbags', 'ESP', 'Central Locking', 'Electric Windows']",0.0
+980,"Equipment_['Airbags', 'Central Locking']",0.0
+981,"Equipment_['Airbags', 'Central Locking', 'Electric Windows']",0.0
+982,"Equipment_['Airbags', 'CD/MP3/Bluetooth']",0.0
+983,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+984,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Navigation System/GPS', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+985,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Sunroof', 'Central Locking', 'Electric Windows']",0.0
+986,Sector_Val Fleuri,0.0
+987,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Navigation System/GPS', 'Central Locking', 'Electric Windows']",0.0
+988,"Equipment_['Airbags', 'CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'ESP', 'Alloy Wheels', 'Speed Limiter', 'Onboard Computer', 'Parking Sensors', 'Cruise Control', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+989,Brand_Chery,0.0
+990,"Equipment_['CD/MP3/Bluetooth', 'Alloy Wheels', 'Electric Windows']",0.0
+991,"Equipment_['CD/MP3/Bluetooth', 'Alloy Wheels', 'Central Locking']",0.0
+992,"Equipment_['CD/MP3/Bluetooth', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+993,"Equipment_['CD/MP3/Bluetooth', 'Air Conditioning']",0.0
+994,"Equipment_['CD/MP3/Bluetooth', 'Air Conditioning', 'Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+995,"Equipment_['CD/MP3/Bluetooth', 'Air Conditioning', 'Electric Windows']",0.0
+996,"Equipment_['CD/MP3/Bluetooth', 'Air Conditioning', 'Central Locking']",0.0
+997,"Equipment_['CD/MP3/Bluetooth', 'Air Conditioning', 'Central Locking', 'Electric Windows']",0.0
+998,"Equipment_['CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels']",0.0
+999,"Equipment_['CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Electric Windows']",0.0
+1000,"Equipment_['CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Central Locking']",0.0
+1001,"Equipment_['CD/MP3/Bluetooth', 'Air Conditioning', 'Alloy Wheels', 'Central Locking', 'Electric Windows']",0.0
+1002,Sector_Tanger City Center,0.0
+1003,"Equipment_['Alloy Wheels', 'Leather Seats', 'Electric Windows']",0.0
+1004,Brand_97,0.0
+1005,"Equipment_['CD/MP3/Bluetooth', 'Rear Camera', 'Air Conditioning', 'Central Locking', 'Electric Windows']",0.0
+1006,"Equipment_['CD/MP3/Bluetooth', 'Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+1007,Model_Amarok,0.0
+1008,Model_GRANDE PUNTO,0.0
+1009,Model_Albea,0.0
+1010,Model_Actyon,0.0
+1011,Model_Accord,0.0
+1012,Model_GOLF PLUS,0.0
+1013,Model_ALTEA XL,0.0
+1014,Model_ALMERA,0.0
+1015,Model_ADAM,0.0
+1016,Model_A7,0.0
+1017,Model_A6,0.0
+1018,Model_GOLF 8,0.0
+1019,Model_A113,0.0
+1020,"Equipment_['CD/MP3/Bluetooth', 'Central Locking', 'Electric Windows']",0.0
+1021,Brand_73,0.0
+1022,Brand_Dodge,0.0
+1023,Equipment_['Parking Sensors'],0.0
+1024,"Equipment_['Parking Sensors', 'Electric Windows']",0.0
+1025,"Equipment_['Parking Sensors', 'Central Locking', 'Electric Windows']",0.0
+1026,Equipment_['Leather Seats'],0.0
+1027,"Equipment_['Leather Seats', 'Rear Camera']",0.0
+1028,Brand_Daewoo,0.0
+1029,"Equipment_['Leather Seats', 'Central Locking']",0.0
+1030,"Equipment_['Leather Seats', 'Central Locking', 'Electric Windows']",0.0
+1031,Brand_DFSK,0.0
+1032,Brand_Chrysler,0.0
+1033,Equipment_['Electric Windows'],0.0
+1034,Sector_Zone Industrielle Moulay Rachid,0.0
+1035,Sector_Zone Industrielle Agadir,0.0
+1036,Sector_Zone Industrielle,0.0
+1037,Location_Asilah,0.0
+1038,Sector_Ville verte,0.0
+1039,Location_Ait Melloul,0.0
+1040,Location_Ain Taoujdate,0.0
+1041,Location_Ain Harrouda,0.0
+1042,Location_Ain Aouda,0.0
+1043,Location_Ahfir,0.0
+1044,Location_Agadir Melloul,0.0
+1045,Origin_Car not yet customs-cleared,0.0
+1046,Model_Jazz,0.0
+1047,Equipment_['Speed Limiter'],0.0
+1048,"Equipment_['Speed Limiter', 'Central Locking']",0.0
+1049,Equipment_['Rear Camera'],0.0
+1050,Model_JIMNY,0.0
+1051,"Equipment_['Rear Camera', 'Leather Seats']",0.0
+1052,Model_Ioniq Hybrid,0.0
+1053,Model_405,0.0
+1054,Model_320,0.0
+1055,Model_Insignia,0.0
+1056,Location_Bouarfa,0.0
+1057,Location_Bir Jdid,0.0
+1058,Location_Biougra,0.0
+1059,Location_Berrechid,0.0
+1060,Location_Berkane,0.0
+1061,Location_Benslimane,0.0
+1062,Location_Ben Guerir,0.0
+1063,Location_Ben Ahmed,0.0
+1064,Location_Belfaa,0.0
+1065,Location_Bejaad,0.0
+1066,Location_Azrou,0.0
+1067,Location_Azilal,0.0
+1068,Location_Azemmour,0.0
+1069,Location_Chichaoua,0.0
+1070,Location_Chefchaouen,0.0
+1071,Location_Bouznika,0.0
+1072,Model_A1,0.0
+1073,Model_80,0.0
+1074,Model_607,0.0
+1075,Model_6,0.0
+1076,Model_595,0.0
+1077,Model_Ibiza,0.0
+1078,Model_504,0.0
+1079,Model_500X,0.0
+1080,Model_500L,0.0
+1081,Model_500C,0.0
+1082,Model_5008,0.0
+1083,Model_500,0.0
+1084,Model_407,0.0
+1085,Location_Ifrane,0.0
+1086,Location_Had Soualem,0.0
+1087,Location_Guercif,0.0
+1088,Location_Guelmim,0.0
+1089,Model_Hilux,0.0
+1090,Location_Es-Semara,0.0
+1091,Model_H-100,0.0
+1092,Location_Er-Rich,0.0
+1093,Location_El Mansouria,0.0
+1094,Location_El Kelâa des Sraghna,0.0
+1095,Model_Grandland X,0.0
+1096,Location_Driouch,0.0
+1097,Location_Demnate,0.0
+1098,Location_Dcheïra El Jihadia,0.0
+1099,Model_Grand i10,0.0
+1100,Location_Dakhla,0.0
+1101,Model_Grand Scenic,0.0
+1102,Location_Mehdia,0.0
+1103,Location_Mediouna,0.0
+1104,Location_Mdiq,0.0
+1105,Location_Martil,0.0
+1106,Model_Golf,0.0
+1107,Model_Gol,0.0
+1108,Location_Laattaouia,0.0
+1109,Location_Ksar es-Seghir,0.0
+1110,Location_Ksar el-Kebir,0.0
+1111,Model_Giulietta,0.0
+1112,Model_Lanos,0.0
+1113,Model_Land Cruiser,0.0
+1114,Location_Jrada,0.0
+1115,Model_Laguna Coupe,0.0
+1116,Model_Laguna,0.0
+1117,Location_Moulay Bousselham,0.0
+1118,Model_310D,0.0
+1119,Model_309,0.0
+1120,Model_307 CC,0.0
+1121,Model_307,0.0
+1122,Model_306,0.0
+1123,Model_301,0.0
+1124,Model_3008,0.0
+1125,Model_300,0.0
+1126,Model_3,0.0
+1127,Model_280,0.0
+1128,Model_Kyron,0.0
+1129,Model_250,0.0
+1130,Model_240,0.0
+1131,Model_210,0.0
+1132,Location_Missour,0.0
+1133,Model_Koleos,0.0
+1134,Location_Sidi Ifni,0.0
+1135,Location_Sidi Bennour,0.0
+1136,Location_Sidi Allal El Bahraoui,0.0
+1137,Model_Kodiaq,0.0
+1138,Location_Sefrou,0.0
+1139,Model_Karoq,0.0
+1140,Location_Saidia,0.0
+1141,Model_Kangoo Express,0.0
+1142,Location_Rommani,0.0
+1143,Location_Outat El Haj,0.0
+1144,Location_Ouled Teïma,0.0
+1145,Model_Kamiq,0.0
+1146,Location_Nouaceur,0.0
+1147,Location_N'khila,0.0
+1148,Location_Mrir't,0.0
+1149,Location_Zemamra,0.0
+1150,Model_Kadjar,0.0
+1151,Model_Ka,0.0
+1152,Model_K5,0.0
+1153,Model_K01s,0.0
+1154,Location_Tit Mellil,0.0
+1155,Model_Jumper,0.0
+1156,Location_Taroudant,0.0
+1157,Location_Taounate,0.0
+1158,Location_Tamesna,0.0
+1159,Location_Tahla,0.0
+1160,Location_Souk El Arbaa,0.0
+1161,Location_Skhirat,0.0
+1162,Location_Sidi Yahya El Gharb,0.0
+1163,Location_Sidi Slimane,0.0
+1164,Location_Sidi Rahal,0.0
+1165,Model_Mito,0.0
+1166,Sector_Agadir Oufella,0.0
+1167,Sector_Administratif,0.0
+1168,Model_Megane Coupe,0.0
+1169,Sector_Achbar,0.0
+1170,Model_Master,0.0
+1171,Sector_Abouab Sala,0.0
+1172,Sector_Abi Ragrag,0.0
+1173,Sector_Abdelmoumen,0.0
+1174,Model_Maruti,0.0
+1175,Sector_Aarid,0.0
+1176,Sector_Aaouinat Hajjaj,0.0
+1177,Sector_Aakkari,0.0
+1178,Model_Macan,0.0
+1179,Model_MOKKA,0.0
+1180,Location_الدار البيضاء,0.0
+1181,Sector_Ain El Hayani,0.0
+1182,Sector_Ain Amiyer,0.0
+1183,Sector_Aida,0.0
+1184,Model_M5,0.0
+1185,Sector_Aharrarine,0.0
+1186,Sector_Ahammar,0.0
+1187,Model_207D,0.0
+1188,Model_207,0.0
+1189,Model_206+,0.0
+1190,Model_2,0.0
+1191,Model_159,0.0
+1192,Model_156,0.0
+1193,Model_147,0.0
+1194,Model_126,0.0
+1195,Model_12,0.0
+1196,Model_107,0.0
+1197,Sector_Al Madina Aljadida,0.0
+1198,Sector_Al Kodia,0.0
+1199,Sector_Al Kassam,0.0
+1200,Sector_Al Irfane,0.0
+1201,Sector_Al Hadiqa,0.0
+1202,Sector_Al Ghoufrane,0.0
+1203,Sector_Al Filline,0.0
+1204,Sector_Al Fida,0.0
+1205,Sector_Al Boustane,0.0
+1206,Sector_Al Batha,0.0
+1207,Sector_Al Baladya,0.0
+1208,Model_M3,0.0
+1209,Sector_Al Amal,0.0
+1210,Sector_Ain kadous,0.0
+1211,Sector_Ain el Hayat,0.0
+1212,Sector_Ain Haroun,0.0
+1213,Sector_Amicales,0.0
+1214,Sector_Amerchich,0.0
+1215,Sector_Amelkis,0.0
+1216,Model_Logan Mcv,0.0
+1217,Sector_Alouane,0.0
+1218,Sector_Almaz,0.0
+1219,Sector_Allal El Fassi,0.0
+1220,Sector_Alaouiyine,0.0
+1221,Sector_Al aroui,0.0
+1222,Sector_Al Wifaq,0.0
+1223,Sector_Al Qods,0.0
+1224,Sector_Al Mostakbal,0.0
+1225,Sector_Al Massira,0.0
+1226,Sector_Al Mandar Al Jamil,0.0
+1227,Sector_Al Mallalienne,0.0
+1228,Model_Lodgy,0.0
+1229,Sector_Av des Far,0.0
+1230,Sector_Av Mohammed VI,0.0
+1231,Model_Linea,0.0
+1232,Sector_Av Abdelkrim El Khattabi,0.0
+1233,Sector_Atlas,0.0
+1234,Model_Levante,0.0
+1235,Sector_Assam,0.0
+1236,Model_Latitude,0.0
+1237,Sector_Aouama Gharbia,0.0
+1238,Sector_Anza,0.0
+1239,Sector_Anoual Souss,0.0
+1240,Sector_Annakhil,0.0
+1241,Sector_Anfa,0.0
+1242,Model_Picanto,0.0
+1243,Sector_Anahda,0.0
+1244,Model_Pathfinder,0.0
+1245,Sector_Bele Vue,0.0
+1246,Sector_Bel Air - Val fleuri,0.0
+1247,Sector_Beausejour,0.0
+1248,Sector_Bachkou,0.0
+1249,Sector_Bab Sebta,0.0
+1250,Sector_Bab Ghmat,0.0
+1251,Sector_Bab Fès,0.0
+1252,Sector_Bab Doukkala,0.0
+1253,Sector_Bab Atlas,0.0
+1254,Model_Passat,0.0
+1255,Model_Panda,0.0
+1256,Sector_Azzouzia,0.0
+1257,Sector_Azli,0.0
+1258,Model_Panamera,0.0
+1259,Sector_Aviation - Mabella,0.0
+1260,Sector_Aviation,0.0
+1261,Sector_Bir Rami Est,0.0
+1262,Sector_Bir Rami,0.0
+1263,Sector_Bir Chifa,0.0
+1264,Sector_Bir Anzarane,0.0
+1265,Sector_Bin Lkchali,0.0
+1266,Sector_Bettana,0.0
+1267,Sector_Benkirane,0.0
+1268,Sector_Beni Makada Lakdima,0.0
+1269,Model_Palio,0.0
+1270,Sector_Ben Serguaou,0.0
+1271,Sector_Ben Mohammed,0.0
+1272,Model_Optra,0.0
+1273,Sector_Ben Ejdia,0.0
+1274,Sector_Ben Dibane,0.0
+1275,Sector_Belvédère,0.0
+1276,Sector_Belle Vue,0.0
+1277,Sector_Casabarata,0.0
+1278,Sector_CGI,0.0
+1279,Sector_C.I.L,0.0
+1280,Sector_Branes 2,0.0
+1281,Model_Optima,0.0
+1282,Sector_Boustane,0.0
+1283,Model_Niro,0.0
+1284,Model_Nemo,0.0
+1285,Sector_Bourgogne,0.0
+1286,Model_Navara,0.0
+1287,Sector_Bouaakkaz,0.0
+1288,Sector_Borj,0.0
+1289,Sector_Bled Eljed,0.0
+1290,Sector_Biranzarane,0.0
+1291,Sector_Bir Rami Ouest,0.0
+1292,Sector_Bir Rami Industriel,0.0
+1293,Sector_Du Golf,0.0
+1294,Model_NOTE,0.0
+1295,Sector_Draoua,0.0
+1296,Sector_Diour Jamaa,0.0
+1297,Sector_Derb Omar,0.0
+1298,Sector_Derb Ghallef,0.0
+1299,Sector_Dar El Lhamra,0.0
+1300,Model_Mondeo,0.0
+1301,Sector_Corniche,0.0
+1302,Sector_Cité californie,0.0
+1303,Sector_Cité Militaire,0.0
+1304,Sector_Cité Adrar,0.0
+1305,Sector_Charf,0.0
+1306,Sector_Charaf,0.0
+1307,Sector_Castilla,0.0
+1308,Sector_Casablanca Finance City,0.0
+1309,Sector_Extension Dakhla,0.0
+1310,Model_RAPID,0.0
+1311,Sector_Essalam,0.0
+1312,Sector_Es Saada,0.0
+1313,Model_R9,0.0
+1314,Sector_El Youssoufia,0.0
+1315,Sector_El Qaria,0.0
+1316,Sector_El Matar,0.0
+1317,Sector_El Majd,0.0
+1318,Sector_El Kasbah,0.0
+1319,Sector_El Ismailia,0.0
+1320,Model_R5,0.0
+1321,Sector_El Haouzia,0.0
+1322,Sector_El Haddada,0.0
+1323,Sector_El Bassatine,0.0
+1324,Sector_El Alia,0.0
+1325,Sector_Hassania 2,0.0
+1326,Sector_Hassania 1,0.0
+1327,Model_R4,0.0
+1328,Model_R21,0.0
+1329,Sector_Haddad,0.0
+1330,Sector_Guich Oudaya,0.0
+1331,Sector_Girari,0.0
+1332,Sector_Gauthier,0.0
+1333,Sector_Fès Médina,0.0
+1334,Sector_Frougui,0.0
+1335,Sector_Founty,0.0
+1336,Sector_Fouarate,0.0
+1337,Sector_Florida,0.0
+1338,Sector_Firdaouss,0.0
+1339,Model_R19,0.0
+1340,Sector_Fath el Kheir,0.0
+1341,Model_R18,0.0
+1342,Sector_Hay Charaf,0.0
+1343,Sector_Hay Atlas,0.0
+1344,Sector_Hay Anas,0.0
+1345,Sector_Hay Alfalah,0.0
+1346,Sector_Hay Albaraka,0.0
+1347,Sector_Hay Al Wahda,0.0
+1348,Sector_Hay Al Matar,0.0
+1349,Sector_Hay Al Massar,0.0
+1350,Sector_Hay Al Kamal,0.0
+1351,Sector_Hay Al Hassani,0.0
+1352,Sector_Hay Al Farah,0.0
+1353,Model_R11,0.0
+1354,Sector_Hay Al Amal,0.0
+1355,Sector_Haut-Founty,0.0
+1356,Model_Qashqai,0.0
+1357,Sector_Hay Moulay Ismail,0.0
+1358,Sector_Hay Massira,0.0
+1359,Sector_Hay Lazaret,0.0
+1360,Sector_Hay Laymouna,0.0
+1361,Sector_Hay Karima,0.0
+1362,Model_QQ,0.0
+1363,Sector_Hay Inbiat,0.0
+1364,Sector_Hay Inara,0.0
+1365,Sector_Hay Hana,0.0
+1366,Sector_Hay Essalam,0.0
+1367,Model_Q8,0.0
+1368,Model_Q2,0.0
+1369,Sector_Hay El Farah,0.0
+1370,Sector_Hay El Andalous,0.0
+1371,Sector_Hay Dakhla,0.0
+1372,Sector_Hay Chrifa,0.0
+1373,Sector_Hay Rahma,0.0
+1374,Sector_Hay Ouifak,0.0
+1375,Sector_Hay Oued Dahab,0.0
+1376,Sector_Hay Moulay Rachid 6,0.0
+1377,Sector_Hay Moulay Rachid,0.0
+1378,Model_106,0.0
+1379,Brand_infrequent_sklearn,0.0
+1380,Model_STAVIC,0.0
+1381,Brand_lancia,0.0
+1382,Model_STARLET,0.0
+1383,Brand_Tesla,0.0
+1384,Model_SONATA,0.0
+1385,Brand_Smart,0.0
+1386,Model_SHARAN,0.0
+1387,Brand_Rover,0.0
+1388,Brand_Porsche,0.0
+1389,Sector_Jbel Kbir,0.0
+1390,Sector_Jawhara,0.0
+1391,Sector_Iziki,0.0
+1392,Sector_Inara,0.0
+1393,Sector_Iberie,0.0
+1394,Sector_Hay zitoune,0.0
+1395,Sector_Hay salam,0.0
+1396,Sector_Hay fath,0.0
+1397,Sector_Hay essalam,0.0
+1398,Sector_Hay el Fath,0.0
+1399,Sector_Hay Zaytoun,0.0
+1400,Sector_Hay Targa,0.0
+1401,Sector_Hay Salam,0.0
+1402,Sector_Hay Sadri,0.0
+1403,Sector_Hay Saada,0.0
+1404,Model_SAXO,0.0
+1405,Sector_Les Ambassadeurs,0.0
+1406,Sector_Lekhiam,0.0
+1407,Sector_Le centre-ville,0.0
+1408,Sector_Lallamaryem,0.0
+1409,Sector_Laimoune,0.0
+1410,Sector_Laazib,0.0
+1411,Sector_La Ville Haute,0.0
+1412,Sector_La Siesta,0.0
+1413,Sector_La Hacienda,0.0
+1414,Sector_La Gironde,0.0
+1415,Sector_La Colline,0.0
+1416,Sector_Kébibat,0.0
+1417,Sector_Kouilma,0.0
+1418,Sector_Khabazat,0.0
+1419,Sector_Jirrari,0.0
+1420,Sector_Jerifat,0.0
+1421,Sector_Massar,0.0
+1422,Model_S90,0.0
+1423,Sector_Marjane,0.0
+1424,Sector_Marchane,0.0
+1425,Sector_Marchan,0.0
+1426,Sector_Maghreb Arabi,0.0
+1427,Sector_Mabrouka,0.0
+1428,Sector_Mabella,0.0
+1429,Model_S60,0.0
+1430,Sector_Maamora,0.0
+1431,Sector_M'Hamid,0.0
+1432,Model_Rio,0.0
+1433,Sector_Les Princesses,0.0
+1434,Model_Rifter,0.0
+1435,Sector_Les Orangers,0.0
+1436,Model_Rexton,0.0
+1437,Sector_Moujahidine,0.0
+1438,Sector_Mouilha,0.0
+1439,Sector_Mont fleuri,0.0
+1440,Sector_Mont Fleuri 2,0.0
+1441,Sector_Monica,0.0
+1442,Sector_Mkinssia,0.0
+1443,Sector_Mimosas,0.0
+1444,Sector_Mhannech,0.0
+1445,Model_Range Rover,0.0
+1446,Model_RSQ3,0.0
+1447,Sector_Mers Sultan,0.0
+1448,Sector_Maârif Extension,0.0
+1449,Sector_Massira 3,0.0
+1450,Sector_Massira 2,0.0
+1451,Model_RS3,0.0
+1452,Model_RAV 4,0.0
+1453,Sector_Quartier Aérodrome,0.0
+1454,Sector_Polo,0.0
+1455,Sector_Plateau,0.0
+1456,Sector_Palmier,0.0
+1457,Sector_Palmeraie,0.0
+1458,Sector_Ouled mimoun,0.0
+1459,Sector_Ouled Tayeb,0.0
+1460,Sector_Ouled Arfa,0.0
+1461,Sector_Oasis,0.0
+1462,Sector_Nassim,0.0
+1463,Model_Sorento,0.0
+1464,Sector_Najmat Al Janoub,0.0
+1465,Sector_Najd,0.0
+1466,Sector_Médina de Rabat,0.0
+1467,Sector_Mozart,0.0
+1468,Sector_Moulay Youssef,0.0
+1469,Sector_Route d'Amezmiz,0.0
+1470,Sector_Route d'Agadir - Essaouira,0.0
+1471,Sector_Route Jerada,0.0
+1472,Sector_Route Ain Chkaf,0.0
+1473,Model_Sirion,0.0
+1474,Sector_Riyad,0.0
+1475,Sector_Riviera,0.0
+1476,Sector_Riad Toulal,0.0
+1477,Sector_Riad Salam,0.0
+1478,Sector_Riad Oulad Mtaa,0.0
+1479,Sector_Racine,0.0
+1480,Sector_Rachidia,0.0
+1481,Sector_Quartier du Parc,0.0
+1482,Sector_Quartier des Hôpitaux,0.0
+1483,Sector_Quartier de l'Océan,0.0
+1484,Sector_Quartier Du Soleil,0.0
+1485,Sector_Saniat Rmal,0.0
+1486,Model_Siena,0.0
+1487,Sector_Saies,0.0
+1488,Sector_Said Hajji,0.0
+1489,Model_Serie 7,0.0
+1490,Sector_Saada,0.0
+1491,Sector_Route de Tamansourt,0.0
+1492,Sector_Route de Sefrou,0.0
+1493,Sector_Route de Safi,0.0
+1494,Sector_Route de Ouarzazate,0.0
+1495,Sector_Route de Ceuta,0.0
+1496,Model_Serie 4 gran coupé,0.0
+1497,Sector_Route d'Ourika,0.0
+1498,Model_Serie 3 coupé,0.0
+1499,Sector_Route d'El Jadida,0.0
+1500,Sector_Route d'Azemmour,0.0
+1501,Sector_Sonaba,0.0
+1502,Sector_Smaâla,0.0
+1503,Sector_Skikina,0.0
+1504,Sector_Sidi Youssef Ben Ali,0.0
+1505,Sector_Sidi Yahya,0.0
+1506,Sector_Sidi Said,0.0
+1507,Sector_Sidi Othmane,0.0
+1508,Sector_Sidi Moussa,0.0
+1509,Model_Serie 3,0.0
+1510,Sector_Sidi Ghanem,0.0
+1511,Sector_Sidi Bouzekri,0.0
+1512,Model_Serie 2 coupé,0.0
+1513,Sector_Sidi Abdellah,0.0
+1514,Sector_Seyad,0.0
+1515,Sector_Sbata,0.0
+1516,Sector_Saâida 1 et 2,0.0
+1517,Model_Serie 1,0.0
+1518,Sector_Tan Tan,0.0
+1519,Sector_Talborjt,0.0
+1520,Sector_Tabriquet,0.0
+1521,Sector_Taboula,0.0
+1522,Sector_Souani,0.0
+1523,Brand_Mazda,0.0
+1524,Model_Seltos,0.0
+1525,Brand_Mahindra,0.0
+1526,Brand_Lexus,0.0
+1527,Model_Scorpion,0.0
+1528,Sector_Village,0.0
+1529,Sector_Victoria,0.0
+1530,Sector_Val d'Anfa,0.0
+1531,Sector_Val Fleury,0.0
+1532,Brand_76,0.0
+1533,Brand_75,0.0
+1534,Model_Scenic,0.0
+1535,Sector_Ville Nouvelle,0.0
+1536,Brand_Jaguar,0.0
+1537,Brand_Isuzu,0.0
+1538,Brand_Cupra,0.0
+1539,Brand_Honda,0.0
+1540,Sector_Ziatene,0.0
+1541,Sector_Zerhounia,0.0
+1542,Sector_Zemmouri,0.0
+1543,Sector_Yacoub El Mansour,0.0
+1544,Sector_Wislane,0.0
+1545,Sector_Wilaya,0.0
+1546,Sector_Wifaq,0.0
+1547,Sector_Wafa,0.0
+1548,Brand_Alfa Romeo,0.0

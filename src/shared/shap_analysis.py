@@ -1,16 +1,19 @@
 """
-SHAP analysis for a single tree-based model (Decision Tree, Random Forest, Gradient Boosting).
+SHAP analysis for specific models (Decision Tree, Random Forest, Gradient Boosting, KNN, PyTorch MLP).
 
 Run this script and it will:
   1. Ask which stage (a1_baseline / a2_preprocessed)
   2. Ask which model
   3. Train the model on the final split
-  4. Compute SHAP values on the test set using TreeExplainer
+  4. Compute SHAP values on the test set using the appropriate explainer:
+       - TreeExplainer for tree models (Decision Tree, Random Forest, Gradient Boosting)
+       - Explainer with background dataset for KNN and PyTorch MLP (from neural_models.py)
   5. Save to  results/<stage>/shap/<model_key>/
         <model_key>_shap_bar.png
         <model_key>_shap_beeswarm.png
         <model_key>_shap_importance.csv
         <model_key>_shap_values.joblib
+        <model_key>_model.joblib
 
 Feature names come directly from the CSV columns (OHE categories use the
 exact CSV text, e.g. "Brand_Toyota", "Fuel_Diesel").
@@ -24,11 +27,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import shap
+import torch
+from torch import nn
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
-from sklearn.model_selection import KFold, train_test_split
 from sklearn.neighbors import KNeighborsRegressor
-from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 
@@ -38,34 +41,47 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.shared.core_utils import RANDOM_STATE, N_FOLDS, split_rows, fill_from_train
+from src.models.neural_models import train_torch
+from src.shared.core_utils import RANDOM_STATE, fill_from_train, split_rows
 from src.preprocessing import full, minimal
 
 # ---------------------------------------------------------------------------
 # Model registry
 # ---------------------------------------------------------------------------
+def make_mlp(n_features: int) -> nn.Module:
+    """PyTorch MLP architecture matching src/models/neural_models.py."""
+    return nn.Sequential(
+        nn.Linear(n_features, 128),
+        nn.ReLU(),
+        nn.Linear(128, 64),
+        nn.ReLU(),
+        nn.Linear(64, 1),
+    )
+
+
 MODELS = {
     "decision_tree": {
         "title": "Decision Tree",
-        "make": lambda: DecisionTreeRegressor(random_state=RANDOM_STATE),
+        "make": lambda n_features=None: DecisionTreeRegressor(random_state=RANDOM_STATE),
     },
     "random_forest": {
         "title": "Random Forest",
-        "make": lambda: RandomForestRegressor(random_state=RANDOM_STATE, n_jobs=-1),
+        "make": lambda n_features=None: RandomForestRegressor(random_state=RANDOM_STATE, n_jobs=-1),
     },
     "gradient_boosting": {
         "title": "Gradient Boosting",
-        "make": lambda: GradientBoostingRegressor(random_state=RANDOM_STATE),
-    },
-    "mlp": {
-        "title": "Multi-Layer Perceptron",
-        "make": lambda: MLPRegressor(random_state=RANDOM_STATE, max_iter=500),
+        "make": lambda n_features=None: GradientBoostingRegressor(random_state=RANDOM_STATE),
     },
     "knn": {
         "title": "K-Nearest Neighbors",
-        "make": lambda: KNeighborsRegressor(n_jobs=-1),
+        "make": lambda n_features=None: KNeighborsRegressor(n_jobs=-1),
+    },
+    "mlp": {
+        "title": "Multi-Layer Perceptron (PyTorch)",
+        "make": make_mlp,
     },
 }
+
 TREE_MODELS = {"decision_tree", "random_forest", "gradient_boosting"}
 BRAND_MODEL_COLS = ["Brand", "Model"]
 
@@ -73,56 +89,40 @@ BRAND_MODEL_COLS = ["Brand", "Model"]
 # ---------------------------------------------------------------------------
 # Data loading with feature-name reconstruction
 # ---------------------------------------------------------------------------
-def _get_feature_names(preprocessor: ColumnTransformer, remainder_cols: list[str]) -> list[str]:
-    """Extract human-readable feature names from a fitted ColumnTransformer.
+def _get_feature_names(preprocessor: ColumnTransformer) -> list[str]:
+    """Extract clean feature names from a fitted ColumnTransformer.
 
-    OHE columns get names like  "Brand_Toyota",  "Fuel_Diesel".
-    Pass-through / StandardScaler columns keep their original CSV name.
+    Uses preprocessor.get_feature_names_out() and strips transformer prefixes
+    (e.g., 'text__', 'remainder__', 'numeric__') so names match the exact CSV features.
     """
-    names = []
-    for name, transformer, columns in preprocessor.transformers_:
-        if name == "remainder":
-            # remainder="passthrough" or remainder="drop"
-            if transformer == "passthrough":
-                names.extend(remainder_cols)
-        elif hasattr(transformer, "get_feature_names_out"):
-            # OneHotEncoder
-            ohe_names = transformer.get_feature_names_out(columns)
-            # get_feature_names_out returns  "Brand_Toyota" style already
-            names.extend(ohe_names.tolist())
-        else:
-            # StandardScaler or any other transformer without feature names
-            if isinstance(columns, list):
-                names.extend(columns)
-            else:
-                names.extend(list(columns))
-    return names
+    return [name.split("__", 1)[-1] if "__" in name else name for name in preprocessor.get_feature_names_out()]
 
 
 def load_minimal_with_names():
-    """Load a1_baseline data and return (X_train, y_train, X_test, y_test, feature_names)."""
+    """Load a1_baseline data and return (X_train, y_train, X_val, y_val, X_test, y_test, feature_names)."""
     df = pd.read_csv(minimal.OUT_PATH)
     X, y = df.drop(columns="Price"), df[["Price"]]
     X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y)
 
     text_cols = X_train.select_dtypes(exclude="number").columns.tolist()
-    numeric_cols = X_train.select_dtypes(include="number").columns.tolist()
 
     preprocessor = ColumnTransformer(
         [("text", OneHotEncoder(handle_unknown="ignore", min_frequency=10, sparse_output=False), text_cols)],
         remainder="passthrough",
     )
     X_train_t = preprocessor.fit_transform(X_train).astype("float32")
+    X_val_t = preprocessor.transform(X_val).astype("float32")
     X_test_t = preprocessor.transform(X_test).astype("float32")
     y_train_arr = y_train.to_numpy().astype("float32").ravel()
+    y_val_arr = y_val.to_numpy().astype("float32").ravel()
     y_test_arr = y_test.to_numpy().astype("float32").ravel()
 
-    feature_names = _get_feature_names(preprocessor, numeric_cols)
-    return X_train_t, y_train_arr, X_test_t, y_test_arr, feature_names
+    feature_names = _get_feature_names(preprocessor)
+    return X_train_t, y_train_arr, X_val_t, y_val_arr, X_test_t, y_test_arr, feature_names
 
 
 def load_full_with_names():
-    """Load a2_preprocessed data and return (X_train, y_train, X_test, y_test, feature_names)."""
+    """Load a2_preprocessed data and return (X_train, y_train, X_val, y_val, X_test, y_test, feature_names)."""
     df = pd.read_csv(full.OUT_PATH)
     X, y = df.drop(columns="Log Price"), df[["Log Price"]]
     X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y)
@@ -139,18 +139,20 @@ def load_full_with_names():
         ("numeric", StandardScaler(), numeric),
     ])
     X_train_t = preprocessor.fit_transform(X_train).astype("float32")
+    X_val_t = preprocessor.transform(X_val).astype("float32")
     X_test_t = preprocessor.transform(X_test).astype("float32")
 
     target_scaler = StandardScaler().fit(y_train)
     y_train_arr = target_scaler.transform(y_train).astype("float32").ravel()
+    y_val_arr = target_scaler.transform(y_val).astype("float32").ravel()
     y_test_arr = target_scaler.transform(y_test).astype("float32").ravel()
 
-    feature_names = _get_feature_names(preprocessor, numeric)
-    return X_train_t, y_train_arr, X_test_t, y_test_arr, feature_names
+    feature_names = _get_feature_names(preprocessor)
+    return X_train_t, y_train_arr, X_val_t, y_val_arr, X_test_t, y_test_arr, feature_names
 
 
 # ---------------------------------------------------------------------------
-# Stage registry  (matches stages.py structure)
+# Stage registry
 # ---------------------------------------------------------------------------
 STAGES = {
     "a1_baseline": {
@@ -169,7 +171,6 @@ STAGES = {
 # ---------------------------------------------------------------------------
 # Interactive prompts
 # ---------------------------------------------------------------------------
-
 def choose_stage() -> str:
     keys = list(STAGES)
     print("\nWhich stage / dataset do you want to use?")
@@ -196,55 +197,88 @@ def choose_model() -> str:
 # ---------------------------------------------------------------------------
 # SHAP computation + saving
 # ---------------------------------------------------------------------------
-
 def run_shap(stage_key: str, model_key: str) -> None:
     stage = STAGES[stage_key]
     model_cfg = MODELS[model_key]
 
     print(f"\n[1/4] Loading data  ({stage['dataset']}) ...")
     if stage_key == "a1_baseline":
-        X_train, y_train, X_test, y_test, feature_names = load_minimal_with_names()
+        X_train, y_train, X_val, y_val, X_test, y_test, feature_names = load_minimal_with_names()
     else:
-        X_train, y_train, X_test, y_test, feature_names = load_full_with_names()
+        X_train, y_train, X_val, y_val, X_test, y_test, feature_names = load_full_with_names()
 
-    print(f"      Features: {len(feature_names)} | Train: {len(X_train)} | Test: {len(X_test)}")
+    print(f"      Features: {len(feature_names)} | Train: {len(X_train)} | Val: {len(X_val)} | Test: {len(X_test)}")
 
     print(f"\n[2/4] Training  {model_cfg['title']} ...")
-    model = model_cfg["make"]()
-    model.fit(X_train, y_train)
+    if model_key == "mlp":
+        # PyTorch MLP from src/models/neural_models.py
+        model = make_mlp(n_features=X_train.shape[1])
+        model = train_torch(
+            model,
+            X_train,
+            y_train.reshape(-1, 1),
+            X_val,
+            y_val.reshape(-1, 1),
+            epochs=100,
+            patience=10,
+        )
+
+        def predict_fn(X_batch):
+            device = next(model.parameters()).device
+            model.eval()
+            with torch.no_grad():
+                # Copy to ensure a contiguous, writable array for PyTorch
+                arr = np.array(X_batch, dtype=np.float32, copy=True)
+                # Batch evaluation to avoid high memory usage during permutation evaluation
+                batch_size = 1024
+                preds = []
+                for i in range(0, len(arr), batch_size):
+                    tensor = torch.as_tensor(arr[i : i + batch_size], dtype=torch.float32, device=device)
+                    preds.append(model(tensor).detach().cpu().numpy().ravel())
+                return np.concatenate(preds) if preds else np.array([], dtype=np.float32)
+
+    else:
+        # Scikit-learn models (Tree-based or KNN)
+        model = model_cfg["make"]()
+        model.fit(X_train, y_train)
+
+        def predict_fn(X_batch):
+            # Pass as raw numpy array to prevent scikit-learn feature name mismatch warnings
+            return model.predict(np.asarray(X_batch))
 
     # Wrap arrays in DataFrames so SHAP uses exact feature names
     X_test_df = pd.DataFrame(X_test, columns=feature_names)
     X_train_df = pd.DataFrame(X_train, columns=feature_names)
 
-    # For tree models, 500-1000 test samples is fast.
-    # For MLP/KNN with 300+ features, permutation explanation is slower, so use 50-100 samples.
+    # Subsample test set for fast SHAP calculation
+    # Tree models: 500 samples (~1-2 min)
+    # Non-tree models (MLP, KNN with 300+ features): 50-100 samples
+    '''(100 samples) is recommended because with 300+ features, using 500 background samples 
+    will cause the explanation to evaluate 5 times more forward passes, making it noticeably 
+    slower with virtually no difference in the resulting plots or rankings.'''
     if model_key in TREE_MODELS:
         eval_sample_size = 500
     else:
         eval_sample_size = 100
 
     if eval_sample_size and len(X_test_df) > eval_sample_size:
-        print(f"Subsampling test set to {eval_sample_size} samples...")
+        print(f"Subsampling test set to {eval_sample_size} samples for fast SHAP computation...")
         X_test_sample = X_test_df.sample(n=eval_sample_size, random_state=RANDOM_STATE)
     else:
         X_test_sample = X_test_df
 
-    print(f"\n[3/4] Computing SHAP values (TreeExplainer, path-dependent) ...")
-    # Use path-dependent feature perturbation (the tree-native approach):
-    # no background dataset needed, fast, and exact for tree models.
+    print(f"\n[3/4] Computing SHAP values ...")
     if model_key in TREE_MODELS:
-        # Fast, tree-native explainer
         explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
         shap_values = explainer(X_test_sample)
     else:
-        # Model-agnostic explainer for MLP and KNN
-        # Requires a small background dataset from training data (e.g. 50-100 samples)
-        print("Creating background summary dataset from training set (50 samples)...")
-        background = shap.sample(X_train_df, 50, random_state=RANDOM_STATE)
-        explainer = shap.Explainer(model.predict, background)
-        shap_values = explainer(X_test_sample)
-    # shap_values is a shap.Explanation object; .values is (n_samples, n_features)
+        print("Creating background summary dataset from training set (100 samples)...")
+        background = shap.sample(X_train_df, 100, random_state=RANDOM_STATE)
+        explainer = shap.Explainer(predict_fn, background)
+        # PermutationExplainer requires at least 2 * num_features + 1 evaluations per sample
+        min_evals = 2 * len(feature_names) + 1
+        print(f"Running PermutationExplainer with max_evals={min_evals} across {len(X_test_sample)} samples...")
+        shap_values = explainer(X_test_sample, max_evals=min_evals)
 
     out_dir = ROOT_DIR / "results" / stage_key / "shap" / model_key
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -263,7 +297,7 @@ def run_shap(stage_key: str, model_key: str) -> None:
 
     # --- Beeswarm plot ---
     fig, ax = plt.subplots(figsize=(10, 7))
-    shap.plots.beeswarm(shap_values, max_display=20, show=False, ax=ax)
+    shap.plots.beeswarm(shap_values, max_display=20, show=False, ax=ax, plot_size=None)
     ax.set_title(f"SHAP Beeswarm  —  {model_cfg['title']}  [{stage['dataset']}]")
     fig.tight_layout()
     beeswarm_path = out_dir / f"{model_key}_shap_beeswarm.png"
@@ -284,19 +318,23 @@ def run_shap(stage_key: str, model_key: str) -> None:
     importance_df.to_csv(csv_path)
     print(f"  Saved: {csv_path.name}")
 
-    # --- joblib (full Explanation object for downstream use) ---
-    joblib_path = out_dir / f"{model_key}_shap_values.joblib"
-    joblib.dump(shap_values, joblib_path)
-    print(f"  Saved: {joblib_path.name}")
+    # --- joblib: SHAP values ---
+    shap_joblib_path = out_dir / f"{model_key}_shap_values.joblib"
+    joblib.dump(shap_values, shap_joblib_path)
+    print(f"  Saved: {shap_joblib_path.name}")
 
-    print(f"\nDone!  Top-5 features by mean |SHAP|:")
+    # --- joblib: Trained Model ---
+    model_joblib_path = out_dir / f"{model_key}_model.joblib"
+    joblib.dump(model, model_joblib_path)
+    print(f"  Saved: {model_joblib_path.name}")
+
+    print(f"\nDone! Top-5 features by mean |SHAP|:")
     print(importance_df.head(5).to_string())
 
-13
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
-
 def main():
     stage_key = choose_stage()
     model_key = choose_model()

@@ -1,0 +1,464 @@
+Rank,Feature,Mean |SHAP|
+1,Year,0.46717859789786564
+2,Brand_Mercedes-Benz,0.09483888400836539
+3,Gearbox,0.06867891479393004
+4,Brand_Fiat,0.05958211605080868
+5,Fuel_Petrol,0.0472416656014044
+6,Brand_Dacia,0.04524200912372518
+7,Brand_Peugeot,0.04413662161449123
+8,Brand_Renault,0.03496721252762559
+9,Brand_Audi,0.028016444357903677
+10,Brand_Volkswagen,0.02686079990125727
+11,Mileage,0.025445669350912793
+12,Condition,0.02311701952229875
+13,Brand_Citroen,0.02268655846586141
+14,Fiscal Power (CV),0.02036127871371185
+15,Equipment Amount,0.017405292113241735
+16,Model_Logan,0.016678643155206615
+17,Fuel_Diesel,0.014009562660489862
+18,Model_Duster,0.013399078980600464
+19,Model_Clio,0.013047637174123279
+20,Model_205,0.012941106026371321
+21,Brand_Suzuki,0.01174649001901659
+22,Number of Doors,0.011429529409731425
+23,Brand_Toyota,0.011092924984032287
+24,Model_Tiguan,0.011079985502595086
+25,Brand_Chevrolet,0.010764328312998013
+26,Model_Uno,0.010621103870434068
+27,Brand_Opel,0.00927301603166076
+28,Brand_Kia,0.00909423233460014
+29,Fiscal Power Above 41,0.008418696800619364
+30,Brand_Land Rover,0.00838745396404217
+31,Brand_Daewoo,0.008269942431772748
+32,Model_Corsa,0.007900630933294692
+33,Model_3008,0.007876587189858165
+34,Model_301,0.007732804919810346
+35,Brand_Nissan,0.007638978073094039
+36,Model_250,0.007629138786345721
+37,Brand_Porsche,0.007481396426741655
+38,Model_220,0.007251039569126444
+39,Model_500,0.0067157073871543
+40,Model_Prado,0.00654297113811287
+41,Model_Fiesta,0.006439098578194775
+42,Model_Maruti,0.006292046167515219
+43,Model_Qashqai,0.006038408802760144
+44,Model_Picanto,0.005938574098842218
+45,Model_infrequent_sklearn,0.0057839237249378735
+46,Model_XC90,0.005599213624497256
+47,Model_JIMNY,0.0052059750436494745
+48,Model_190,0.005187938427490491
+49,Model_Yaris,0.005093746854737402
+50,Model_Classe A,0.004952612078562379
+51,Model_80,0.004420312897907572
+52,Model_405,0.004360914331426223
+53,Model_Alto,0.004346586741476009
+54,Model_Palio,0.004284110311170419
+55,Model_C15,0.004279883201327176
+56,Model_Polo,0.004185865529114381
+57,Model_lancer,0.004063883816264571
+58,Brand_Ssangyong,0.004052909933511791
+59,Model_Classe E,0.003930858046049253
+60,Model_GOLF 7,0.003822681708789123
+61,Model_Sorento,0.0036308642088590803
+62,Model_2008,0.0036304249543386187
+63,Model_500X,0.0035404643474922825
+64,Model_309,0.003534791804663837
+65,Model_206,0.003524554854631423
+66,Model_Classe C,0.0033874281038374977
+67,Model_Range Rover Evoque,0.0033093536484365667
+68,Model_308,0.003213718880293889
+69,Model_Fabia,0.0031966788614789642
+70,Brand_BMW,0.0031268666042325393
+71,Model_C3,0.0030875347212422654
+72,Model_Accent,0.00306013141715278
+73,Model_C3 Aircross,0.00305992145712177
+74,Model_Spark,0.0028946759718780687
+75,Model_407,0.00289208541624248
+76,Model_express_van,0.002814043469975392
+77,Model_Scenic,0.002738285544747486
+78,Brand_Hyundai,0.0027153215576739363
+79,Model_Touran,0.0026313673124338187
+80,Model_Ranger,0.0025856100420777995
+81,Model_306,0.002541399888694286
+82,Brand_Alfa Romeo,0.002541325619878869
+83,Brand_infrequent_sklearn,0.0024406524807214737
+84,Model_Tucson,0.0023846924504886072
+85,Model_q5_sportback,0.0023705010558323315
+86,Model_CLASSE ML,0.002338844684418293
+87,Model_Q3,0.0023269337834169465
+88,Model_Punto,0.002225705553653343
+89,Brand_Volvo,0.0021586415252337855
+90,Model_Aveo,0.002129687166276078
+91,Model_A7,0.0020287815388292073
+92,Model_GOLF 5,0.002014780217797185
+93,Model_ix 35,0.0020057401357684293
+94,Model_Santa Fe,0.0018629692388543234
+95,Brand_97,0.0018260875598372236
+96,Model_Sandero,0.0018139504537607232
+97,Model_Focus,0.0018093029223692908
+98,Model_508,0.0017454831049467127
+99,Model_A6,0.001734655159836014
+100,Model_Megane Sedan,0.0016738284761396568
+101,Model_Doblo,0.0016230654623592279
+102,Brand_Ford,0.0016103608162607965
+103,Model_Giulietta,0.0014719726366301377
+104,Brand_Mitsubishi,0.0014668674678852164
+105,Model_Megane,0.0014230747365858393
+106,Model_307,0.0014019443489300693
+107,Model_208,0.001385593207754814
+108,Model_C-HR,0.0013575520902561647
+109,Model_Touareg,0.0013413793013275918
+110,Model_VERSO,0.0013162317359820012
+111,Brand_Skoda,0.001277807492141922
+112,Model_C-Elysée,0.0012602270287306377
+113,Model_EXPRESS,0.0012136131696868669
+114,Model_GOLF 4,0.0011989182741148372
+115,Model_A4,0.0011935530563350763
+116,Model_Avensis,0.001150808134969946
+117,Model_Classe S,0.001142541529967757
+118,Model_Captur,0.0011360927344610293
+119,Model_Jazz,0.0011320071806510275
+120,Model_Carens,0.0011298741325580833
+121,Model_t-roc,0.0010057772828886912
+122,Model_Accord,0.0009904494756367058
+123,Model_GOLF 8,0.0009707882634674509
+124,Mileage Above 500000,0.0009381047473909962
+125,Brand_Honda,0.0009030056897550822
+126,Model_Panda,0.0008784351093849801
+127,Model_Crossland X,0.0008741858721400309
+128,Model_C4,0.000836971512095382
+129,Model_Juke,0.0008295233907566138
+130,Fuel_LPG,0.0008145139030025653
+131,Fuel_Hybrid,0.0008098542949805689
+132,Model_Rifter,0.0008020363762974747
+133,Model_Kyron,0.0007972045490518173
+134,Model_Autres,0.0007818096021500739
+135,Model_RAV 4,0.0007784492554608753
+136,Model_Octavia,0.0007719075045703585
+137,Model_Grand Cherokee,0.0007660307701987518
+138,Model_Insignia,0.0007625610020632555
+139,Model_Serie 5,0.0007617326030197268
+140,Model_Dokker,0.0007536101690027867
+141,Model_FIORINO,0.0007415533431805691
+142,Model_punto_classic,0.0007311146360511585
+143,Model_Cayenne,0.0007062429752045623
+144,Model_Caddy,0.0006983152278078088
+145,Model_A3,0.0006765852890287835
+146,Model_Xsara Picasso,0.0006558936009338737
+147,Model_X-Trail,0.0006124341909463204
+148,Model_Kangoo,0.0005963343578701219
+149,Brand_Autres,0.000547073288649942
+150,Model_280,0.0005249990804741781
+151,Brand_Jeep,0.0005185274666175275
+152,Model_C5,0.0005113372535600026
+153,Model_Captiva,0.0003990746106486772
+154,Model_C-Max,0.0003805281214571259
+155,Model_Fusion,0.00035256208274513296
+156,Model_Astra,0.00026211930532008416
+157,Model_sandero_stepway,0.0001161660908410947
+158,Model_CC,0.0
+159,Model_C5 Aircross,0.0
+160,Model_C4 Picasso,0.0
+161,Model_C4 CACTUS,0.0
+162,Model_C30,0.0
+163,Model_C3 Picasso,0.0
+164,Brand_Chery,0.0
+165,Fuel_Electric,0.0
+166,Model_tipo_hatchback,0.0
+167,Model_sq5,0.0
+168,Model_serie_1_coupe,0.0
+169,Model_sandero_streetway,0.0
+170,Brand_Isuzu,0.0
+171,Brand_Daihatsu,0.0
+172,Model_Cherokee,0.0
+173,Model_Cerato,0.0
+174,Model_Celerio,0.0
+175,Model_Ceed,0.0
+176,Model_Carry,0.0
+177,Model_CRETA,0.0
+178,Model_CR-V,0.0
+179,Model_CONNECT,0.0
+180,Model_COMBO,0.0
+181,Model_COCCINELLE,0.0
+182,Model_CLASSE GLK,0.0
+183,Model_CLASSE GLC COUPE,0.0
+184,Model_CLASSE C COUPE,0.0
+185,Model_Classe G,0.0
+186,Model_Classe CLS,0.0
+187,Model_Classe CLA,0.0
+188,Model_Classe B,0.0
+189,Model_C1,0.0
+190,Model_C-ELYSEE,0.0
+191,Model_Bravo,0.0
+192,Model_Boxer,0.0
+193,Model_Bora,0.0
+194,Model_Bipper,0.0
+195,Model_Berlingo,0.0
+196,Model_BRAVA,0.0
+197,Model_Aygo,0.0
+198,Model_Civic,0.0
+199,Model_City,0.0
+200,Model_Discovery Sport,0.0
+201,Model_Discovery,0.0
+202,Model_Defender,0.0
+203,Model_DS7,0.0
+204,Model_DS 7 Crossback,0.0
+205,Model_DS 5,0.0
+206,Model_DS 4,0.0
+207,Model_D-MAX,0.0
+208,Model_Cruze,0.0
+209,Model_Corolla verso,0.0
+210,Model_Corolla,0.0
+211,Model_Cordoba,0.0
+212,Model_Compass,0.0
+213,Model_Classe GLE,0.0
+214,Model_Classe GLC,0.0
+215,Model_Classe GLA,0.0
+216,Model_Freelander,0.0
+217,Model_Fox,0.0
+218,Model_Formentor,0.0
+219,Model_Fluence,0.0
+220,Model_FREEMONT,0.0
+221,Model_F-PACE,0.0
+222,Model_Expert,0.0
+223,Model_Espace,0.0
+224,Model_Elantra,0.0
+225,Model_Ecosport,0.0
+226,Model_ESCORT,0.0
+227,Model_Ducato,0.0
+228,Model_Dokker Van,0.0
+229,Model_GOLF 3,0.0
+230,Model_GOLF 2,0.0
+231,Model_GIULIA,0.0
+232,Model_Auris,0.0
+233,Model_Atos Prime,0.0
+234,Model_Atos,0.0
+235,Model_Ateca,0.0
+236,Model_Arteon,0.0
+237,Model_Arona,0.0
+238,Model_Amarok,0.0
+239,Model_Albea,0.0
+240,Model_Actyon,0.0
+241,Model_AX,0.0
+242,Model_AMG GT,0.0
+243,Model_ALTEA XL,0.0
+244,Model_Ideal,0.0
+245,Model_Ibiza,0.0
+246,Model_Hilux,0.0
+247,Model_H-100,0.0
+248,Model_H-1,0.0
+249,Model_Grandland X,0.0
+250,Model_Grand i10,0.0
+251,Model_Grand Vitara,0.0
+252,Model_Grand Scenic,0.0
+253,Model_Golf,0.0
+254,Model_Gol,0.0
+255,Model_Ghibli,0.0
+256,Model_GRANDE PUNTO,0.0
+257,Model_GOLF PLUS,0.0
+258,Model_GOLF 6,0.0
+259,Model_Lanos,0.0
+260,Model_Laguna Coupe,0.0
+261,Model_Laguna,0.0
+262,Model_L200,0.0
+263,Model_Korando,0.0
+264,Model_Koleos,0.0
+265,Model_Kodiaq,0.0
+266,Model_Karoq,0.0
+267,Model_Kangoo Express,0.0
+268,Model_Kadjar,0.0
+269,Model_Ka,0.0
+270,Model_K5,0.0
+271,Model_Jumper,0.0
+272,Model_Jetta,0.0
+273,Model_Logan Mcv,0.0
+274,Model_Lodgy,0.0
+275,Model_Linea,0.0
+276,Model_ALMERA,0.0
+277,Model_ADAM,0.0
+278,Model_A5,0.0
+279,Model_A113,0.0
+280,Model_A1,0.0
+281,Model_607,0.0
+282,Model_6,0.0
+283,Model_504,0.0
+284,Model_500L,0.0
+285,Model_Levante,0.0
+286,Model_Leon,0.0
+287,Model_Latitude,0.0
+288,Model_500C,0.0
+289,Model_5008,0.0
+290,Model_406,0.0
+291,Model_310D,0.0
+292,Model_307 SW,0.0
+293,Model_300,0.0
+294,Model_3,0.0
+295,Model_Mondeo,0.0
+296,Model_Model 3,0.0
+297,Model_Mito,0.0
+298,Model_Micra,0.0
+299,Model_Megane Coupe,0.0
+300,Model_Kuga,0.0
+301,Model_Master,0.0
+302,Model_Macan,0.0
+303,Model_MOKKA,0.0
+304,Model_R11,0.0
+305,Model_QQ,0.0
+306,Model_Q8,0.0
+307,Model_Q7,0.0
+308,Model_Q5,0.0
+309,Model_Q2,0.0
+310,Model_Pathfinder,0.0
+311,Model_Passat,0.0
+312,Model_Partner,0.0
+313,Model_Panamera,0.0
+314,Model_PASSAT CC,0.0
+315,Model_Optra,0.0
+316,Model_Optima,0.0
+317,Model_Nemo,0.0
+318,Model_Navara,0.0
+319,Model_NOTE,0.0
+320,Model_S60,0.0
+321,Model_S40,0.0
+322,Model_Rio,0.0
+323,Model_Rexton,0.0
+324,Model_Renegade,0.0
+325,Model_Range Rover Sport,0.0
+326,Model_Range Rover,0.0
+327,Model_RSQ3,0.0
+328,Model_RS3,0.0
+329,Model_RAPID,0.0
+330,Model_R9,0.0
+331,Model_R5,0.0
+332,Model_R4,0.0
+333,Model_R21,0.0
+334,Model_R19,0.0
+335,Model_R18,0.0
+336,Model_Scala,0.0
+337,Model_STAVIC,0.0
+338,Model_STARLET,0.0
+339,Model_SONATA,0.0
+340,Model_Megane 3,0.0
+341,Model_270,0.0
+342,Model_240,0.0
+343,Model_210,0.0
+344,Model_207D,0.0
+345,Model_207,0.0
+346,Model_206+,0.0
+347,Model_2,0.0
+348,Model_19,0.0
+349,Model_SHARAN,0.0
+350,Model_SAXO,0.0
+351,Model_S90,0.0
+352,Model_Stelvio,0.0
+353,Model_Sprinter,0.0
+354,Model_Sportage,0.0
+355,Model_Soul,0.0
+356,Model_Sirion,0.0
+357,Model_Siena,0.0
+358,Model_Serie 7,0.0
+359,Model_mustang_cabriolet,0.0
+360,Model_Serie 4 gran coupé,0.0
+361,Model_Serie 4,0.0
+362,Model_Serie 3 coupé,0.0
+363,Model_Serie 3,0.0
+364,Model_Serie 2 coupé,0.0
+365,Model_Serie 1,0.0
+366,Model_Seltos,0.0
+367,Model_Scorpion,0.0
+368,Model_159,0.0
+369,Model_147,0.0
+370,Model_126,0.0
+371,Model_12,0.0
+372,Model_107,0.0
+373,Model_106,0.0
+374,Brand_mini,0.0
+375,Brand_lancia,0.0
+376,Brand_Tesla,0.0
+377,Model_Talisman,0.0
+378,Model_TIPO,0.0
+379,Model_Symbol,0.0
+380,Model_Swift,0.0
+381,Model_Superb,0.0
+382,Model_Super 5,0.0
+383,Model_Sunny,0.0
+384,Brand_Geely,0.0
+385,Model_Wrangler,0.0
+386,Model_Vito,0.0
+387,Model_Vitara,0.0
+388,Model_Vento,0.0
+389,Model_Velar,0.0
+390,Model_Vectra,0.0
+391,Model_V40,0.0
+392,Model_UP,0.0
+393,Model_Twingo,0.0
+394,Model_Transit,0.0
+395,Model_Toledo,0.0
+396,Model_Tiggo,0.0
+397,Model_Terios,0.0
+398,Model_Tercel,0.0
+399,Model_Tepee,0.0
+400,Model_a5_sportback,0.0
+401,Model_a3_sportback,0.0
+402,Model_Zafira,0.0
+403,Model_ZX,0.0
+404,Model_YRV,0.0
+405,Brand_73,0.0
+406,Model_XSARA,0.0
+407,Model_XJ,0.0
+408,Model_XF,0.0
+409,Model_XE,0.0
+410,Model_XC60,0.0
+411,Model_XC40,0.0
+412,Model_X6,0.0
+413,Model_X5,0.0
+414,Model_X3,0.0
+415,Model_X1,0.0
+416,Model_grand_santa_fe,0.0
+417,Model_fullback,0.0
+418,Model_florid,0.0
+419,Model_doblo_panorama,0.0
+420,Model_doblo_classic,0.0
+421,Model_country man,0.0
+422,Model_corolla_sport,0.0
+423,Model_corolla_prestige,0.0
+424,Model_corolla_millenium,0.0
+425,Model_cooper,0.0
+426,Model_classe_gle_coupe,0.0
+427,Model_classe_e_coupe,0.0
+428,Model_classe_a_berline,0.0
+429,Model_civic_coupe,0.0
+430,Model_civic_berline,0.0
+431,Model_arkana,0.0
+432,Brand_DS,0.0
+433,Model_megane_4,0.0
+434,Model_land_cruiser_prado,0.0
+435,Brand_Seat,0.0
+436,Brand_Rover,0.0
+437,Brand_Mazda,0.0
+438,Brand_Maserati,0.0
+439,Brand_Mahindra,0.0
+440,Brand_Chrysler,0.0
+441,Brand_Jaguar,0.0
+442,Model_kuv_100,0.0
+443,Model_kangoo_ze,0.0
+444,Model_i 40,0.0
+445,Model_i 30,0.0
+446,Model_i 20,0.0
+447,Model_i 10,0.0
+448,Brand_Dodge,0.0
+449,Brand_75,0.0
+450,Brand_Cupra,0.0
+451,Brand_Cadillac,0.0
+452,Brand_Changhe,0.0
+453,Model_range_rover_vogue,0.0
+454,Model_range_rover_velar,0.0
+455,Model_q3_sportback,0.0
+456,Brand_DFSK,0.0
+457,Model_primera,0.0
+458,Model_polo_sedan,0.0
+459,Model_pick up,0.0
+460,Model_pajero sport,0.0
+461,Model_pajero,0.0
+462,Model_outlander,0.0
+463,Model_one,0.0

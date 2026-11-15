@@ -10,12 +10,6 @@ import numpy as np
 COLORS = ["#2a78d6", "#800080", "#eda100", "#2ca02c"]  # by position: 1st model, 2nd model, ...
 
 
-def save(fig, save_path):
-    Path(save_path).parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(save_path, dpi=200, bbox_inches="tight", facecolor="white")
-    plt.close(fig)
-
-
 def plot_family(title, y_true_price, predicted_prices, models, save_path):
     """Actual vs predicted price, one panel per model. predicted_prices: {name: prices in MAD}; models: {name: {"metrics": ...}}."""
     lo, hi = np.percentile(y_true_price, [0.1, 99.9])
@@ -31,7 +25,9 @@ def plot_family(title, y_true_price, predicted_prices, models, save_path):
         ax.set_title(f"{name}\nR2 {r['metrics']['R2']:.4f} | R2 log {r['metrics']['R2_log']:.4f}", fontsize=11)
     fig.suptitle(f"{title}: actual vs predicted price (test set)", fontsize=14)
     fig.tight_layout(rect=(0, 0, 1, 0.95))
-    save(fig, save_path)
+    Path(save_path).parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
 
 
 def plot_metric_bars(table, metric, title, save_path):
@@ -44,7 +40,9 @@ def plot_metric_bars(table, metric, title, save_path):
     ax.set_xlabel(f"{metric} (test set; error bars = CV std)" if errors is not None else metric)
     ax.set_title(title)
     fig.tight_layout()
-    save(fig, save_path)
+    Path(save_path).parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
 
 
 def plot_stage_comparison(pivot, metric, save_path):
@@ -63,4 +61,6 @@ def plot_stage_comparison(pivot, metric, save_path):
     ax.set_title(f"{metric} on the test set, by stage")
     ax.legend()
     fig.tight_layout()
-    save(fig, save_path)
+    Path(save_path).parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(save_path, dpi=200, bbox_inches="tight", facecolor="white")
+    plt.close(fig)

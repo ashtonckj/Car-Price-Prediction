@@ -1,18 +1,20 @@
-"""The stages the model files can run. To add one: write its load_data_* in core_utils.py and add a line to STAGES."""
+"""The stages the scripts can run. Part A = default parameters (src/models), Part B = tuning (src/tuning, src/tuned_models).
+To add a stage: write its load_data_* in core_utils.py and add a line to STAGES."""
 import sys
 
 from src.shared.core_utils import load_data_full, load_data_minimal
 
 STAGES = {
-    "a1_baseline": {"title": "A1 baseline (minimal preprocessing)", "load": load_data_minimal},
-    "a2_preprocessed": {"title": "A2 full preprocessing", "load": load_data_full},
+    "a1_baseline": {"part": "A", "title": "A1 baseline (minimal preprocessing)", "load": load_data_minimal},
+    "a2_preprocessed": {"part": "A", "title": "A2 full preprocessing", "load": load_data_full},
+    "b1_tuned": {"part": "B", "title": "B1 tuned (full preprocessing, missing values imputed)", "load": load_data_full},
 }
 
 
-def choose_stage():
-    """Ask which stage to run by number (the menu is built from STAGES) and return its key."""
-    keys = list(STAGES)
-    print("Which stage do you want to run?")
+def choose_stage(part="A"):
+    """Ask which stage of Part A or Part B to run, by number (the menu is built from STAGES), and return its key."""
+    keys = [key for key, stage in STAGES.items() if stage["part"] == part]
+    print(f"Which Part {part} stage do you want to run?")
     for number, key in enumerate(keys, start=1):
         print(f"  {number} = {key:<16} {STAGES[key]['title']}")
     choice = input("Type a number and press Enter: ").strip()

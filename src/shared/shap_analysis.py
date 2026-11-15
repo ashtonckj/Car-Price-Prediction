@@ -28,12 +28,12 @@ import numpy as np
 import pandas as pd
 import shap
 import torch
-from torch import nn
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
+from torch import nn
 
 matplotlib.use("Agg")
 
@@ -42,8 +42,9 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
 from src.models.neural_models import train_torch
-from src.shared.core_utils import RANDOM_STATE, fill_from_train, split_rows
 from src.preprocessing import full, minimal
+from src.shared.core_utils import RANDOM_STATE, fill_from_train, split_rows
+
 
 # ---------------------------------------------------------------------------
 # Model registry
@@ -203,9 +204,9 @@ def run_shap(stage_key: str, model_key: str) -> None:
 
     print(f"\n[1/4] Loading data  ({stage['dataset']}) ...")
     if stage_key == "a1_baseline":
-        X_train, y_train, X_val, y_val, X_test, y_test, feature_names = load_minimal_with_names()
+        X_train, y_train, X_val, y_val, X_test, _y_test, feature_names = load_minimal_with_names()
     else:
-        X_train, y_train, X_val, y_val, X_test, y_test, feature_names = load_full_with_names()
+        X_train, y_train, X_val, y_val, X_test, _y_test, feature_names = load_full_with_names()
 
     print(f"      Features: {len(feature_names)} | Train: {len(X_train)} | Val: {len(X_val)} | Test: {len(X_test)}")
 
@@ -267,7 +268,7 @@ def run_shap(stage_key: str, model_key: str) -> None:
     else:
         X_test_sample = X_test_df
 
-    print(f"\n[3/4] Computing SHAP values ...")
+    print("\n[3/4] Computing SHAP values ...")
     if model_key in TREE_MODELS:
         explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
         shap_values = explainer(X_test_sample)
@@ -328,7 +329,7 @@ def run_shap(stage_key: str, model_key: str) -> None:
     joblib.dump(model, model_joblib_path)
     print(f"  Saved: {model_joblib_path.name}")
 
-    print(f"\nDone! Top-5 features by mean |SHAP|:")
+    print("\nDone! Top-5 features by mean |SHAP|:")
     print(importance_df.head(5).to_string())
 
 

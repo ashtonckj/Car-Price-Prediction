@@ -23,7 +23,7 @@ from sklearn.model_selection import KFold, train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
-from src.preprocessing import full, minimal, detailed
+from src.preprocessing import full, minimal
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RESULTS_ROOT = ROOT_DIR / "results"
@@ -98,34 +98,6 @@ def load_data_full(fold=None):
     fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test)
     fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)
 
-    numeric = [c for c in X_train.columns if c not in BRAND_MODEL + ["Fuel"]]
-    preprocessor = ColumnTransformer([
-        ("brand_model", OneHotEncoder(min_frequency=10, handle_unknown="infrequent_if_exist", sparse_output=False), BRAND_MODEL),
-        ("fuel", OneHotEncoder(handle_unknown="ignore", sparse_output=False), ["Fuel"]),
-        ("numeric", StandardScaler(), numeric),
-    ])
-    X_train = preprocessor.fit_transform(X_train).astype("float32")
-    X_val, X_test = preprocessor.transform(X_val).astype("float32"), preprocessor.transform(X_test).astype("float32")
-
-    target_scaler = StandardScaler().fit(y_train)
-    y_train, y_val, y_test = (target_scaler.transform(a).astype("float32") for a in (y_train, y_val, y_test))
-
-    def inverse_transform_price(y_scaled):  # scaled log price -> price in MAD
-        return np.expm1(target_scaler.inverse_transform(np.asarray(y_scaled).reshape(-1, 1))).ravel()
-
-    return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price)
-
-
-def load_data_detailed(fold=None):
-    """a2_preprocessed: group-mode imputation, one-hot Brand/Model/Fuel, standardised numeric features and Log Price target."""
-    df = read_processed(detailed.OUT_PATH, detailed.main)
-    X, y = df.drop(columns="Log Price"), df[["Log Price"]]
-    X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
-    X_train, X_val, X_test = X_train.copy(), X_val.copy(), X_test.copy()
-
-    fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test)
-    fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)
-
     categorical = ["Condition", "Location"]
     numeric = [c for c in X_train.columns if c not in BRAND_MODEL + ["Fuel"] + categorical]
     numeric_transformer = Pipeline([
@@ -153,6 +125,7 @@ def load_data_detailed(fold=None):
         return np.expm1(target_scaler.inverse_transform(np.asarray(y_scaled).reshape(-1, 1))).ravel()
 
     return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price)
+
 
 def compute_metrics(y_true, y_pred, inverse_transform_price):
     """All metrics on the price in MAD, so every stage is comparable."""

@@ -9,3 +9,5 @@ seaborn==0.13.2
 # PyPI's default torch wheel; for an NVIDIA GPU install the CUDA build from https://pytorch.org instead
 torch==2.13.0
 pytorch-tabnet==4.1.0
+# SHAP explanations (joblib, used to cache them, is installed with scikit-learn)
+shap==0.54.1

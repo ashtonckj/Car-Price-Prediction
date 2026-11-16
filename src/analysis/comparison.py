@@ -42,7 +42,9 @@ def main():
         everything["Model"] = everything["Family"] + ": " + everything["Model"]
         for metric in STAGE_METRICS:
             pivot = everything.pivot_table(index="Model", columns="Stage", values=metric)[list(tables)]
-            pivot = pivot.sort_values(pivot.columns[-1], ascending=metric not in ("R2", "R2_log"))
+            higher_is_better = metric in ("R2", "R2_log")
+            best_stage_score = pivot.max(axis=1) if higher_is_better else pivot.min(axis=1)  # b1_tuned only has a few models
+            pivot = pivot.loc[best_stage_score.sort_values(ascending=not higher_is_better).index]
             pivot.to_csv(OUT_DIR / f"stages_{metric}.csv")
             plot_stage_comparison(pivot, metric, OUT_DIR / f"stages_{metric}.png")
             if metric == "R2_log":

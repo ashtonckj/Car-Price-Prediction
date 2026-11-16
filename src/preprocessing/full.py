@@ -1,5 +1,7 @@
 """Full preprocessing (Part A, step 5): data/raw/cars_dataframe.csv -> data/processed/cars_full.csv"""
 import ast
+import re
+import unicodedata
 from pathlib import Path
 
 import numpy as np
@@ -11,7 +13,31 @@ OUT_PATH = ROOT_DIR / "data" / "processed" / "cars_full.csv"
 
 # Price limits (MAD): anything outside is treated as a typo / placeholder
 MIN_PRICE = 3_000
-MAX_PRICE = 10_000_000
+MAX_PRICE = 3_000_000
+
+BRAND_CODES = {
+    "111": "DFSK", "97": "MG", "75": "Great Wall", "77": "Tata", "73": "Abarth",
+    "72": "Lada", "76": "Lifan", "112": "Leapmotor", "74": "Autres", "99": "Autres",
+}
+
+
+def clean_brand(brand: str) -> str:
+    # '97' -> 'MG' ; 'mini' -> 'Mini' ; 'lancia' -> 'Lancia' ; 'BMW' stays 'BMW'
+    brand = str(brand).strip()
+    if brand in BRAND_CODES:
+        return BRAND_CODES[brand]
+    return brand if brand[:1].isupper() else brand.title()
+
+
+def clean_model(brand: str, model: str) -> str:
+    # lowercase, remove accents, turn '_' and '-' into spaces: 'serie_3_gt' / 'Serie 3 GT' -> 'serie 3 gt'
+    text = unicodedata.normalize("NFKD", str(model)).encode("ascii", "ignore").decode().lower().strip()
+    text = re.sub(r"[_\-]+", " ", text)
+    text = re.sub(r"\s+", " ", text)
+    # Renault: 'R19' and '19' are the same car -> '19' (same for R4, R5, R9, R11 ...)
+    if brand == "Renault":
+        text = re.sub(r"^r ?(\d+)$", r"\1", text)
+    return text
 
 
 def mileage_midpoint(text: str) -> float:
@@ -28,6 +54,11 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
     # Price: remove rows without a price (we never invent a target value)
     df = df.dropna(subset=["Price"]).copy()
+
+    # Brand / Model: no missing values allowed, then clean the text (numeric brand codes, case, R19 -> 19 ...)
+    df = df.dropna(subset=["Brand", "Model"]).copy()
+    df["Brand"] = df["Brand"].map(clean_brand)
+    df["Model"] = [clean_model(b, m) for b, m in zip(df["Brand"], df["Model"])]
 
     # Price: remove impossible values (e.g. 1, 24, 180 or 1,600,000,000)
     df = df[df["Price"].between(MIN_PRICE, MAX_PRICE)].copy()

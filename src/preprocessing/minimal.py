@@ -3,10 +3,12 @@ Minimal preprocessing (Part A, step 1): data/raw/cars_dataframe.csv -> data/proc
 
 This is the baseline the full preprocessing is compared against, so it deliberately does as little as possible:
   - Price (the target) missing  -> remove the row (a made-up price would be fake data)
+  - Price impossible (below 3,000 or above 3,000,000 MAD, e.g. 1 or 1,600,000,000) -> remove the row.
+    Without this step the baseline R2 is zero or negative: a handful of typos dominate the squared error
   - Numeric feature missing     -> 0 (a constant: nothing is learned from the data, so it is not imputation)
   - Text feature missing        -> remove the row
   - Every text column stays as text; it is one-hot encoded later in src/shared/core_utils.py
-  - Price stays in MAD (no log transform, no outlier removal, no feature selection)
+  - Price stays in MAD (no log transform, no feature selection, no duplicate removal)
 """
 from pathlib import Path
 
@@ -17,10 +19,15 @@ RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
 OUT_PATH = ROOT_DIR / "data" / "processed" / "cars_minimal.csv"
 TARGET = "Price"
 
+# Price limits (MAD): anything outside is treated as a typo / placeholder
+MIN_PRICE = 3_000
+MAX_PRICE = 3_000_000
+
 
 def preprocess(df: pd.DataFrame) -> pd.DataFrame:
-    # Target: remove rows without a price
+    # Target: remove rows without a price, and rows with an impossible price
     df = df.dropna(subset=[TARGET]).copy()
+    df = df[df[TARGET].between(MIN_PRICE, MAX_PRICE)].copy()
 
     # Numeric features (only "Number of Doors" in the raw data): missing -> 0
     numeric = [c for c in df.select_dtypes(include="number").columns if c != TARGET]

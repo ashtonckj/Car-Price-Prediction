@@ -85,11 +85,15 @@ def load_data_minimal(fold=None):
 
 
 def load_data_full(fold=None):
-    """a2_preprocessed: group-mode imputation, one-hot Brand/Model/Fuel, standardised numeric features and Log Price target."""
     df = read_processed(full.OUT_PATH, full.main)
     X, y = df.drop(columns="Log Price"), df[["Log Price"]]
     X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
-    X_train, X_val, X_test = X_train.copy(), X_val.copy(), X_test.copy()
+
+    # Drop price outliers: limits come from the training rows only (no leakage)
+    low, high = y_train["Log Price"].quantile([0.01, 0.99])
+    in_train, in_val = y_train["Log Price"].between(low, high), y_val["Log Price"].between(low, high)
+    X_train, y_train, X_val, y_val = X_train[in_train].copy(), y_train[in_train], X_val[in_val].copy(), y_val[in_val]
+    X_test = X_test.copy()
 
     fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test)
     fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)

@@ -88,12 +88,14 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
     # Price: whole numbers only (it was a float because of the missing values)
     df["Price"] = df["Price"].astype(int)
+    pattern = r"0{4,}|1{4,}|2{4,}|3{4,}|4{4,}|5{4,}|6{4,}|7{4,}|8{4,}|9{4,}"
+    df = df[~df["Price"].astype(str).str.fullmatch(pattern)]
 
     # Year: "1980 ou plus ancien" -> 1980, and make it a number
     df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
 
     # Price: remove prices that are far away from similar cars
-    df = drop_price_outliers(df)
+    #df = drop_price_outliers(df)
 
     # Mileage: range text -> number (middle of the range) plus a flag column for the open-ended "Plus de 500 000" bucket
     df["Mileage Above 500000"] = (df["Mileage"] == "Plus de 500 000").astype(int)
@@ -119,16 +121,25 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     df["Equipment Amount"] = df["Equipment"].map(lambda x: len(ast.literal_eval(x)))
     df = df.drop(columns=["Equipment"])
 
+    #Replace the Arabic city names with the spelling used in the rest of the data
+    arabic_cities = {
+        "أكادير": "Agadir", "الجديدة": "El Jadida", "الدار البيضاء": "Casablanca",
+        "الرباط": "Rabat", "القنيطرة": "Kénitra", "المحمدية": "Mohammedia",
+        "الناظور": "Nador", "تطوان": "Tétouan", "تمارة": "Temara", "طنجة": "Tanger",
+        "فاس": "Fès", "مراكش": "Marrakech", "مكناس": "Meknès", "وجدة": "Oujda"
+    }
+    df["Location"] = df["Location"].replace(arabic_cities)
+
     # Number of Doors: missing values stay NaN
 
     # Drop columns that are not needed
-    df = df.drop(columns=["First Owner", "Origin", "Location", "Sector"])
+    df = df.drop(columns=["First Owner", "Origin", "Sector"])
 
     # Price -> log1p (the target column; use np.expm1 to get back to MAD)
     df["Log Price"] = np.log1p(df.pop("Price"))
 
     # Column order: categorical text columns, numeric columns, target
-    df = df[["Brand", "Model", "Fuel", "Year", "Condition", "Gearbox", "Number of Doors", "Equipment Amount",
+    df = df[["Brand", "Model", "Fuel", "Year", "Condition", "Gearbox", "Number of Doors", "Equipment Amount", "Location",
              "Mileage", "Mileage Above 500000", "Fiscal Power (CV)", "Fiscal Power Above 41", "Log Price"]]
 
     df = df.drop_duplicates()

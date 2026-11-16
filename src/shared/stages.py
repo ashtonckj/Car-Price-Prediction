@@ -2,11 +2,12 @@
 To add a stage: write its load_data_* in core_utils.py and add a line to STAGES."""
 import sys
 
-from src.shared.core_utils import load_data_full, load_data_minimal
+from src.shared.core_utils import load_data_detailed, load_data_full, load_data_minimal
 
 STAGES = {
     "a1_baseline": {"part": "A", "title": "A1 baseline (minimal preprocessing)", "load": load_data_minimal},
     "a2_preprocessed": {"part": "A", "title": "A2 full preprocessing", "load": load_data_full},
+    "a2_preprocessed_detailed": {"part": "A", "title": "A2 full preprocessing (Detailed version)", "load": load_data_detailed},
     "b1_tuned": {"part": "B", "title": "B1 tuned (full preprocessing, missing values imputed)", "load": load_data_full},
 }
 

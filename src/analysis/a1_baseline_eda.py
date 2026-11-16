@@ -97,9 +97,9 @@ def inspect_target(df: pd.DataFrame) -> None:
 
     # Count potential placeholder / corrupted prices
     extreme_low = (price_cleaned < 5_000).sum()
-    extreme_high = (price_cleaned > 2_000_000).sum()
+    extreme_high = (price_cleaned > 5_000_000).sum()
     print(f"\nSuspiciously Low Prices (< 5,000 MAD):   {extreme_low:,} rows")
-    print(f"Suspiciously High Prices (> 2M MAD):      {extreme_high:,} rows")
+    print(f"Suspiciously High Prices (> 5M MAD):      {extreme_high:,} rows")
 
     # Plot Price Distributions
     _fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -419,16 +419,16 @@ def main():
     inspect_overview(df)
     inspect_target(df)
     inspect_categorical_anomalies(df)
-    #inspect_mileage_and_year(df)
+    inspect_mileage_and_year(df)
 
     print("=" * 60)
-    #plot_all_boxplots(num_df)
-    #plot_z_scores(num_df)
+    plot_all_boxplots(num_df)
+    plot_z_scores(num_df)
     outlier_table = detect_outliers_summary(num_df)
     print("\nStatistical Outlier Summary:")
     print(outlier_table.to_string(index=False))
 
-    #inspect_bivariate_relationships(df)
+    inspect_bivariate_relationships(df)
 
     print("=" * 60)
     print(f"EDA Complete! Diagnostic charts saved to: {FIG_DIR}")

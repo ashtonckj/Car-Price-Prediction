@@ -1,0 +1,91 @@
+{
+  "stage": "a2_preprocessed_detailed",
+  "stage_title": "A2 full preprocessing (Detailed version)",
+  "family": "Tree-based models",
+  "n_features": 805,
+  "n_train": 43764,
+  "n_test": 12505,
+  "models": {
+    "Decision Tree": {
+      "metrics": {
+        "RMSE": 109650.3719,
+        "MAE": 30484.6436,
+        "R2": 0.3513,
+        "MAPE": 29.4175,
+        "R2_log": 0.6895
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 115009.7043,
+          "MAE": 32377.7371,
+          "R2": 0.2696,
+          "MAPE": 30.8164,
+          "R2_log": 0.6654
+        },
+        "std": {
+          "RMSE": 5583.2338,
+          "MAE": 1004.0856,
+          "R2": 0.0433,
+          "MAPE": 1.8535,
+          "R2_log": 0.0236
+        }
+      },
+      "fit_time_s": 2.07,
+      "predict_time_s": 0.01
+    },
+    "Random Forest": {
+      "metrics": {
+        "RMSE": 85601.0076,
+        "MAE": 23266.5267,
+        "R2": 0.6046,
+        "MAPE": 21.183,
+        "R2_log": 0.8051
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 87497.1746,
+          "MAE": 24079.4497,
+          "R2": 0.5775,
+          "MAPE": 21.2816,
+          "R2_log": 0.8011
+        },
+        "std": {
+          "RMSE": 7429.7921,
+          "MAE": 744.2971,
+          "R2": 0.0455,
+          "MAPE": 0.796,
+          "R2_log": 0.0075
+        }
+      },
+      "fit_time_s": 24.31,
+      "predict_time_s": 0.11
+    },
+    "Gradient Boosting": {
+      "metrics": {
+        "RMSE": 92742.9171,
+        "MAE": 29537.1812,
+        "R2": 0.5359,
+        "MAPE": 24.8884,
+        "R2_log": 0.7829
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 92639.9011,
+          "MAE": 29736.4859,
+          "R2": 0.5266,
+          "MAPE": 24.8904,
+          "R2_log": 0.7841
+        },
+        "std": {
+          "RMSE": 7299.4446,
+          "MAE": 971.1655,
+          "R2": 0.0434,
+          "MAPE": 0.8165,
+          "R2_log": 0.0087
+        }
+      },
+      "fit_time_s": 92.51,
+      "predict_time_s": 0.03
+    }
+  }
+}

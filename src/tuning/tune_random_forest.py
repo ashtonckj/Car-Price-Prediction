@@ -42,19 +42,12 @@ def train_model(params, split):
     return model, val_mse
 
 
-def tune(split, mode=SEARCH_MODE, n_iter=N_ITER):
-    """5-fold cross-validation search on the 70% train split.
-
-    Returns:
-        best_params: dict of optimal hyperparameters found.
-        trials: list of trial dicts with params, validation/cv MSE, and timing.
-        best_estimator: fitted best RandomForestRegressor instance.
-    """
+def tune(X_dev, y_dev, mode=SEARCH_MODE, n_iter=N_ITER):
+    """5-fold cross-validation search on the 80% development set (train + val)."""
     cv = KFold(n_splits=N_FOLDS, shuffle=True, random_state=RANDOM_STATE)
     base_estimator = RandomForestRegressor(random_state=RANDOM_STATE, n_jobs=-1)
-
     if mode == "random":
-        print(f"Running 5-Fold RandomizedSearchCV ({n_iter} random parameter configurations)...")
+        print(f"Running 5-Fold RandomizedSearchCV on 80% dev set ({n_iter} configurations)...")
         search = RandomizedSearchCV(
             estimator=base_estimator,
             param_distributions=PARAM_GRID,
@@ -68,7 +61,7 @@ def tune(split, mode=SEARCH_MODE, n_iter=N_ITER):
         )
     else:
         total_combos = len(list(ParameterGrid(PARAM_GRID)))
-        print(f"Running 5-Fold GridSearchCV ({total_combos} combinations x {N_FOLDS} folds = {total_combos * N_FOLDS} fits)...")
+        print(f"Running 5-Fold GridSearchCV on 80% dev set ({total_combos} combinations x {N_FOLDS} folds = {total_combos * N_FOLDS} fits)...")
         search = GridSearchCV(
             estimator=base_estimator,
             param_grid=PARAM_GRID,
@@ -78,22 +71,19 @@ def tune(split, mode=SEARCH_MODE, n_iter=N_ITER):
             verbose=1,
             return_train_score=False,
         )
-
-    _, search_time = timed(search.fit, split.X_train, split.y_train.ravel())
+    _, search_time = timed(search.fit, X_dev, y_dev)
     print(f"Search completed in {search_time:.1f}s ({search_time / 60:.1f}m)")
-
     trials = []
     cv_res = search.cv_results_
     for i in range(len(cv_res["params"])):
         trials.append({
             "params": cv_res["params"][i],
-            "val_mse": round(-float(cv_res["mean_test_score"][i]), 5),
+            "cv_mse": round(-float(cv_res["mean_test_score"][i]), 5),
             "std_mse": round(float(cv_res["std_test_score"][i]), 5),
             "rank": int(cv_res["rank_test_score"][i]),
             "time_s": round(float(cv_res["mean_fit_time"][i]), 2),
         })
     trials.sort(key=lambda tr: tr["rank"])
-
     return search.best_params_, trials, search.best_estimator_
 
 
@@ -111,13 +101,13 @@ def main():
     split = load_data(STAGE)
     print(f"Loaded {STAGE} (70/10/20 split): train {len(split.X_train)}, val {len(split.X_val)}, test {len(split.X_test)}")
 
-    best_params, trials, best_estimator = tune(split, mode=mode, n_iter=n_iter)
-    print(f"\nBest params: {best_params}")
+    # Combine 70% train and 10% val into an 80% development set
+    X_dev = np.vstack([split.X_train, split.X_val])
+    y_dev = np.concatenate([split.y_train.ravel(), split.y_val.ravel()])
+    print(f"Loaded {STAGE}: 80% Dev (train+val) {len(X_dev)} samples, 20% Test {len(split.X_test)} samples")
 
-    # Evaluate best estimator on the 10% validation set
-    val_pred = best_estimator.predict(split.X_val)
-    val_mse = float(np.mean((val_pred - split.y_val.ravel()) ** 2))
-    print(f"Validation set MSE (best model): {val_mse:.5f}")
+    best_params, trials, best_estimator = tune(X_dev, y_dev, mode=mode, n_iter=n_iter)
+    print(f"\nBest params: {best_params}")
 
     out_dir = RESULTS_ROOT / "tuning" / "random_forest"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -132,12 +122,13 @@ def main():
 
     name = "Random Forest (tuned)"
     print(f"\n===== {name} =====")
-    cv_results = {name: cross_validate(STAGE, fit_predict)}
+    final_model = RandomForestRegressor(**best_params, random_state=RANDOM_STATE, n_jobs=-1)
+    _, fit_time = timed(final_model.fit, X_dev, y_dev)
+    y_pred, predict_time = timed(final_model.predict, split.X_test)
+    
     results = {name: fit_predict(split)}
     print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
     evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
-
-    save_results("tuning", "random_forest_tuned", "Random Forest (tuned)", results, split, cv_results)
 
 
 if __name__ == "__main__":

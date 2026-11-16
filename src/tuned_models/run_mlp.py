@@ -1,5 +1,4 @@
-"""Tuned MLP (Part B): trains the MLP with BEST_PARAMS and reports 5-fold CV and test results.
-Choose a Part B stage when asked. Results go to results/<stage>/."""
+"""Tuned MLP (Part B): trains the MLP with BEST_PARAMS and reports 5-fold CV and test results."""
 import sys
 from pathlib import Path
 
@@ -16,13 +15,11 @@ from src.shared.core_utils import RANDOM_STATE, evaluate
 from src.shared.experiment import cross_validate, save_results, timed
 from src.shared.stages import choose_stage, load_data
 
-# Best parameters per Part B stage. After tuning, copy them from the LAST row of results/tuning/mlp_<stage>.csv.
 BEST_PARAMS = {
-    # best of the earlier random search; replace with the grid search's best row
-    "b1_tuned": {'n_layers': 3, 'units': 512, 'activation': 'gelu', 'dropout': 0.2, 'lr': 0.0003, 'weight_decay': 0.0001, 'batch_size': 256},
+    "b1_tuned": {'n_layers': 2, 'units': 128, 'activation': 'gelu', 'dropout': 0.2, 'lr': 0.003, 'weight_decay': 0.0, 'batch_size': 256},
 }
 
-MAX_EPOCHS = 100  # same limits as the default MLP in neural_models.py, so only the parameters differ
+MAX_EPOCHS = 100
 PATIENCE = 10
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ACTIVATIONS = {"relu": nn.ReLU, "gelu": nn.GELU}
@@ -47,7 +44,7 @@ def predict(model, X, batch_size=2048):
 
 def train_model(params, split):
     """Train with early stopping on split.X_val. Returns (model with the best weights, best val MSE)."""
-    torch.manual_seed(RANDOM_STATE)  # before building the model, so the starting weights are the same every run
+    torch.manual_seed(RANDOM_STATE)
     X_train = torch.as_tensor(split.X_train, device=DEVICE)
     y_train = torch.as_tensor(split.y_train, device=DEVICE)
     model = build_mlp(X_train.shape[1], params).to(DEVICE)
@@ -89,7 +86,7 @@ def main():
     print(f"Device: {DEVICE} | parameters: {params}")
     split = load_data(stage)
 
-    name = "MLP"  # same family and model name as the default run, so comparison.py lines the stages up
+    name = "MLP"
     print(f"\n===== {name} (tuned) =====")
     cv_results = {name: cross_validate(stage, lambda fold: fit_predict(fold, params))}
     results = {name: fit_predict(split, params)}

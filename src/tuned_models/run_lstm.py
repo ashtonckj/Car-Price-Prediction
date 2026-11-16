@@ -1,5 +1,4 @@
-"""Tuned LSTM (Part B): trains the patch-based LSTM with BEST_PARAMS and reports 5-fold CV and test results.
-Choose a Part B stage when asked. Results go to results/<stage>/."""
+"""Tuned LSTM (Part B): trains the patch-based LSTM with BEST_PARAMS and reports 5-fold CV and test results."""
 import math
 import sys
 from pathlib import Path
@@ -17,13 +16,11 @@ from src.shared.core_utils import RANDOM_STATE, evaluate
 from src.shared.experiment import cross_validate, save_results, timed
 from src.shared.stages import choose_stage, load_data
 
-# Best parameters per Part B stage. After tuning, copy them from the LAST row of results/tuning/lstm_<stage>.csv.
 BEST_PARAMS = {
-    # best of the earlier random search; replace with the grid search's best row
     "b1_tuned": {'patch_size': 30, 'hidden_size': 256, 'num_layers': 1, 'dropout': 0.3, 'lr': 0.001, 'weight_decay': 1e-05, 'batch_size': 128},
 }
 
-MAX_EPOCHS = 40  # upper limit per training run
+MAX_EPOCHS = 40
 PATIENCE = 5     # stop if val loss hasn't improved for this many epochs
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -100,7 +97,7 @@ def main():
     print(f"Device: {DEVICE} | parameters: {params}")
     split = load_data(stage)
 
-    name = "LSTM"  # same family and model name as the default run, so comparison.py lines the stages up
+    name = "LSTM"
     print(f"\n===== {name} (tuned) =====")
     cv_results = {name: cross_validate(stage, lambda fold: fit_predict(fold, params))}
     results = {name: fit_predict(split, params)}

@@ -2,80 +2,80 @@
   "stage": "a2_preprocessed",
   "stage_title": "A2 full preprocessing",
   "family": "Distance-based models",
-  "n_features": 461,
-  "n_train": 42784,
-  "n_test": 12210,
+  "n_features": 435,
+  "n_train": 41265,
+  "n_test": 11831,
   "models": {
     "KNN": {
       "metrics": {
-        "RMSE": 41535.8857,
-        "MAE": 21444.0616,
-        "R2": 0.8078,
-        "MAPE": 20.1032
+        "RMSE": 29276.9972,
+        "MAE": 17647.7458,
+        "R2": 0.8717,
+        "MAPE": 15.898
       },
       "cv": {
         "mean": {
-          "RMSE": 43328.1324,
-          "MAE": 22340.6872,
-          "R2": 0.791,
-          "MAPE": 20.2837
+          "RMSE": 30432.7341,
+          "MAE": 18197.7934,
+          "R2": 0.8627,
+          "MAPE": 16.1167
         },
         "std": {
-          "RMSE": 843.9345,
-          "MAE": 254.8998,
-          "R2": 0.0089,
-          "MAPE": 0.2758
-        }
-      },
-      "fit_time_s": 0.01,
-      "predict_time_s": 2.87
-    },
-    "Radius Neighbours": {
-      "metrics": {
-        "RMSE": 54651.6921,
-        "MAE": 29079.1557,
-        "R2": 0.6673,
-        "MAPE": 31.3126
-      },
-      "cv": {
-        "mean": {
-          "RMSE": 56699.8404,
-          "MAE": 30176.5095,
-          "R2": 0.6422,
-          "MAPE": 32.3069
-        },
-        "std": {
-          "RMSE": 574.3024,
-          "MAE": 162.8983,
-          "R2": 0.0075,
-          "MAPE": 0.2914
+          "RMSE": 726.7455,
+          "MAE": 231.2865,
+          "R2": 0.0067,
+          "MAPE": 0.1372
         }
       },
       "fit_time_s": 0.02,
-      "predict_time_s": 2.97
+      "predict_time_s": 2.93
     },
-    "Kernel Regression": {
+    "Radius Neighbours": {
       "metrics": {
-        "RMSE": 42617.3063,
-        "MAE": 22863.7147,
-        "R2": 0.7977,
-        "MAPE": 20.888
+        "RMSE": 42711.7357,
+        "MAE": 24656.2215,
+        "R2": 0.727,
+        "MAPE": 25.3377
       },
       "cv": {
         "mean": {
-          "RMSE": 44312.9079,
-          "MAE": 23615.8441,
-          "R2": 0.7814,
-          "MAPE": 21.1009
+          "RMSE": 44215.3038,
+          "MAE": 25431.5211,
+          "R2": 0.7103,
+          "MAPE": 26.1823
         },
         "std": {
-          "RMSE": 759.629,
-          "MAE": 202.3293,
-          "R2": 0.009,
-          "MAPE": 0.2426
+          "RMSE": 1244.8862,
+          "MAE": 496.9963,
+          "R2": 0.0152,
+          "MAPE": 0.5852
         }
       },
       "fit_time_s": 0.01,
+      "predict_time_s": 2.98
+    },
+    "Kernel Regression": {
+      "metrics": {
+        "RMSE": 31811.7162,
+        "MAE": 19773.9862,
+        "R2": 0.8486,
+        "MAPE": 17.3653
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 32521.0432,
+          "MAE": 20096.4797,
+          "R2": 0.8433,
+          "MAPE": 17.558
+        },
+        "std": {
+          "RMSE": 849.1874,
+          "MAE": 309.3546,
+          "R2": 0.0074,
+          "MAPE": 0.2229
+        }
+      },
+      "fit_time_s": 0.02,
       "predict_time_s": 3.2
     }
   }

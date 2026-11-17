@@ -80,9 +80,7 @@ def fit_and_predict(network, split):
     return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
 
 
-def run_mlp(split=None):
-    if split is None:
-        return lambda s: run_mlp(s)
+def run_mlp(split):
     network = nn.Sequential(
         nn.Linear(split.X_train.shape[1], 128),
         nn.ReLU(),

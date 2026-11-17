@@ -163,9 +163,9 @@ if __name__ == "__main__":
 
     models = [
         ("Linear Family (Polynomial Regression)", polynomial_regression()),
-        ("Tree Family (Random Forest)", RandomForestRegressor(max_features=0.70,n_estimators=500, max_depth=50, min_samples_leaf=5, min_samples_split=5, random_state=42, n_jobs=-1)),
+        ("Tree Family (Random Forest)", RandomForestRegressor(max_features=0.70, n_estimators=500, max_depth=50, min_samples_leaf=5, min_samples_split=5, random_state=42, n_jobs=-1)),
         ("Distance Family (KNN)", KNeighborsRegressor(n_neighbors=12, n_jobs=-1)),
-        ("Neural Network Family (MLP)", run_mlp),
+        ("Neural Network Family (MLP)", lambda s: run_mlp(s)),
     ]
 
     fig, axes = plt.subplots(2, 2, figsize=(14, 10), sharey=True)

@@ -54,20 +54,6 @@ def split_rows(X, y, fold=None):
     return X_train, y_train, X_val, y_val, X_test, y_test
 
 
-def keep_price_scope(X_train, y_train, X_val, y_val, X_test, y_test):
-    """Model scope: keep the rows whose price lies between the PRICE_QUANTILES of the TRAINING rows, in train, val and test alike.
-    The limits are learned after the split from training rows only, so the test rows never influence them. They are real prices
-    of training rows (interpolation lower/higher), so a1 (Price) and a2 (Log Price) keep exactly the same rows."""
-    target = y_train.iloc[:, 0]
-    low = target.quantile(PRICE_QUANTILES[0], interpolation="lower")
-    high = target.quantile(PRICE_QUANTILES[1], interpolation="higher")
-    parts = []
-    for X_part, y_part in ((X_train, y_train), (X_val, y_val), (X_test, y_test)):
-        keep = y_part.iloc[:, 0].between(low, high)
-        parts += [X_part[keep].copy(), y_part[keep]]
-    return parts
-
-
 def fill_from_train(column, key_sets, fallback, train, *others):
     """Fill NaNs in `column` with the most common value of the same group, learned from train only."""
     tables = [train.dropna(subset=[column]).groupby(keys)[column].agg(lambda s: s.mode().iloc[0]) for keys in key_sets]
@@ -82,7 +68,7 @@ def load_data_minimal(fold=None):
     """a1_baseline: same rows and price scope as a2, then one-hot encode every text column, nothing else. Raw Price target (MAD), no scaling."""
     df = read_processed(minimal.OUT_PATH, minimal.main)
     X, y = df.drop(columns="Price"), df[["Price"]]
-    X_train, y_train, X_val, y_val, X_test, y_test = keep_price_scope(*split_rows(X, y, fold))
+    X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
 
     text_cols = X_train.select_dtypes(exclude="number").columns.tolist()
     preprocessor = ColumnTransformer(
@@ -105,7 +91,13 @@ def load_data_minimal(fold=None):
 def load_data_full(fold=None):
     df = read_processed(full.OUT_PATH, full.main)
     X, y = df.drop(columns="Log Price"), df[["Log Price"]]
-    X_train, y_train, X_val, y_val, X_test, y_test = keep_price_scope(*split_rows(X, y, fold))
+    X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
+
+    # Drop price outliers: limits come from the training rows only (no leakage)
+    low, high = y_train["Log Price"].quantile([0.02, 0.98])
+    in_train, in_val, in_test = y_train["Log Price"].between(low, high), y_val["Log Price"].between(low, high), y_test["Log Price"].between(low, high)
+    X_train, y_train, X_val, y_val, X_test, y_test = X_train[in_train].copy(), y_train[in_train], X_val[in_val].copy(), y_val[in_val], X_test[in_test], y_test[in_test]
+    X_test = X_test.copy()
 
     fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test)
     fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)

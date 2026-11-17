@@ -29,7 +29,6 @@ RESULTS_ROOT = ROOT_DIR / "results"
 RANDOM_STATE = 42
 N_FOLDS = 5
 BRAND_MODEL = ["Brand", "Model"]
-PRICE_QUANTILES = (0.01, 0.99)
 
 Split = namedtuple("Split", ["X_train", "y_train", "X_val", "y_val", "X_test", "y_test", "inverse_transform_price", "smear"])
 # smear(y_val_pred, y_pred): log-target bias correction (Duan's smearing). Returns y_pred corrected.

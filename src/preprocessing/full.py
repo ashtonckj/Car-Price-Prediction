@@ -12,9 +12,8 @@ RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
 OUT_PATH = ROOT_DIR / "data" / "processed" / "cars_full.csv"
 
 # Price limits (MAD): anything outside is treated as a typo / placeholder
-MIN_PRICE = 3_000
-MAX_PRICE = 3_000_000
-
+MIN_PRICE = 5_000
+MAX_PRICE = 2_000_000
 BRAND_CODES = {
     "111": "DFSK", "97": "MG", "75": "Great Wall", "77": "Tata", "73": "Abarth",
     "72": "Lada", "76": "Lifan", "112": "Leapmotor", "74": "Autres", "99": "Autres",
@@ -48,6 +47,12 @@ def mileage_midpoint(text: str) -> float:
     return round((int(low) + int(high)) / 2)
 
 
+def is_placeholder_price(price: int) -> bool:
+    # 4+ copies of the same digit, e.g. 8888, 11111, 999999 (but not 9999 / 99999, which are real prices)
+    text = str(price)
+    return len(text) >= 4 and len(set(text)) == 1 and price not in (9_999, 99_999)
+
+
 def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Remove the one corrupted row (a mileage range sitting in the Fuel column)
     df = df[df["Fuel"].isin(["Diesel", "Petrol", "Hybrid", "Electrique", "LPG"])].copy()
@@ -65,6 +70,10 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
     # Price: whole numbers only (it was a float because of the missing values)
     df["Price"] = df["Price"].astype(int)
+
+    # Price: remove placeholder prices made of one repeated digit (11111, 222222, 999999, 1111111 ...).
+    # 9999 and 99999 are kept: they sit near the usual price of their model ("just under 10k / 100k" pricing)
+    df = df[~df["Price"].map(is_placeholder_price)].copy()
 
     # Year: "1980 ou plus ancien" -> 1980, and make it a number
     df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)

@@ -19,7 +19,7 @@ def save_tuning_csv(rows, model, stage, score_column, lower_is_better=True):
 
 
 def validation_scores(split, y_val_pred):
-    """Every metric on the validation rows (price in MAD), as val_RMSE, val_MAE, val_R2, val_MAPE, val_R2_log."""
+    """Every metric on the validation rows (price in MAD), as val_RMSE, val_MAE, val_R2, val_MAPE."""
     metrics = compute_metrics(split.y_val, y_val_pred, split.inverse_transform_price)
     return {f"val_{name}": value for name, value in rounded(metrics).items()}
 

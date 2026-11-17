@@ -9,7 +9,7 @@ from src.shared.core_utils import N_FOLDS, RESULTS_ROOT, compute_metrics
 from src.shared.plots import plot_family
 from src.shared.stages import STAGES, load_data
 
-METRICS = ["RMSE", "MAE", "R2", "MAPE", "R2_log"]
+METRICS = ["RMSE", "MAE", "R2", "MAPE"]
 
 
 def timed(function, *args, **kwargs):
@@ -27,10 +27,10 @@ def cross_validate(stage, fit_predict):
         split = load_data(stage, fold)
         y_pred = fit_predict(split)["y_pred"]
         fold_metrics.append(compute_metrics(split.y_test, y_pred, split.inverse_transform_price))
-        print(f"  CV fold {fold + 1}: R2 {fold_metrics[-1]['R2']:.4f} | R2 log {fold_metrics[-1]['R2_log']:.4f} | MAE {fold_metrics[-1]['MAE']:,.0f}")
+        print(f"  CV fold {fold + 1}: R2 {fold_metrics[-1]['R2']:.4f} | MAE {fold_metrics[-1]['MAE']:,.0f}")
     table = pd.DataFrame(fold_metrics)
     cv = {"mean": table.mean().to_dict(), "std": table.std().to_dict()}
-    print(f"  CV mean +/- std: R2 {cv['mean']['R2']:.4f} +/- {cv['std']['R2']:.4f} | R2 log {cv['mean']['R2_log']:.4f} +/- {cv['std']['R2_log']:.4f}")
+    print(f"  CV mean +/- std: R2 {cv['mean']['R2']:.4f} +/- {cv['std']['R2']:.4f}")
     return cv
 
 
@@ -74,7 +74,7 @@ def save_results(stage, key, title, results, split, cv_results=None):
 
 
 def load_stage_results(stage):
-    """One row per model for one stage (every family that has been run), best test R2_log first."""
+    """One row per model for one stage (every family that has been run), best test R2 first."""
     rows = []
     for path in sorted((RESULTS_ROOT / stage).glob("*_results.json")):
         family = json.loads(path.read_text())
@@ -87,4 +87,4 @@ def load_stage_results(stage):
             rows.append(row)
     if not rows:
         return pd.DataFrame()
-    return pd.DataFrame(rows).sort_values("R2_log", ascending=False).reset_index(drop=True)
+    return pd.DataFrame(rows).sort_values("R2", ascending=False).reset_index(drop=True)

@@ -102,22 +102,11 @@ def load_data_full(fold=None):
     fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test)
     fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)
 
-    categorical = ["Location"]
-    numeric = [c for c in X_train.columns if c not in BRAND_MODEL + ["Fuel"] + categorical]
-    numeric_transformer = Pipeline([
-        ("imputer", SimpleImputer(strategy="most_frequent")),  # median would be better but it is not supported for mixed types (int + float)
-        ("scaler", StandardScaler()),
-    ])
-    categorical_transformer = Pipeline([
-        ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False)),
-    ])
-
+    numeric = [c for c in X_train.columns if c not in BRAND_MODEL + ["Fuel"]]
     preprocessor = ColumnTransformer([
         ("brand_model", OneHotEncoder(min_frequency=10, handle_unknown="infrequent_if_exist", sparse_output=False), BRAND_MODEL),
         ("fuel", OneHotEncoder(handle_unknown="ignore", sparse_output=False), ["Fuel"]),
-        ("numeric", numeric_transformer, numeric),
-        ("categorical", categorical_transformer, categorical),
+        ("numeric", StandardScaler(), numeric),
     ])
     X_train = preprocessor.fit_transform(X_train).astype("float32")
     X_val, X_test = preprocessor.transform(X_val).astype("float32"), preprocessor.transform(X_test).astype("float32")

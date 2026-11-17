@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from pytorch_tabnet.tab_model import TabNetRegressor
+#from pytorch_tabnet.tab_model import TabNetRegressor
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
@@ -80,7 +80,9 @@ def fit_and_predict(network, split):
     return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
 
 
-def run_mlp(split):
+def run_mlp(split=None):
+    if split is None:
+        return lambda s: run_mlp(s)
     network = nn.Sequential(
         nn.Linear(split.X_train.shape[1], 128),
         nn.ReLU(),

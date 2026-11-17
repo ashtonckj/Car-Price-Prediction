@@ -72,24 +72,6 @@ def is_placeholder_price(price: int) -> bool:
     return len(text) >= 4 and len(set(text)) == 1 and price not in (9_999, 99_999)
 
 
-def drop_price_outliers(df: pd.DataFrame) -> pd.DataFrame:
-    # Compare every car with similar cars: remove it if its price is far from the typical price of its
-    # Brand + Model, after taking out the general "older = cheaper" trend. Catches typos such as a
-    # 2021 Dacia Sandero at 1,550,000 or a 2011 Touareg at 3,000 that a fixed MIN/MAX cannot see.
-    log_price = np.log1p(df["Price"])
-    slope = np.polyfit(df["Year"], log_price, 1)[0]
-    adjusted = log_price - slope * df["Year"]
-
-    key = df["Brand"] + "|" + df["Model"]
-    model_median = adjusted.groupby(key).transform("median")
-    model_count = adjusted.groupby(key).transform("count")
-    brand_median = adjusted.groupby(df["Brand"]).transform("median")
-    brand_count = adjusted.groupby(df["Brand"]).transform("count")
-
-    typical = np.where(model_count >= MIN_GROUP_SIZE, model_median, np.where(brand_count >= MIN_GROUP_SIZE, brand_median, adjusted.median()))
-    return df[(adjusted - typical).abs() <= PRICE_TOLERANCE]
-
-
 def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Remove the one corrupted row (a mileage range sitting in the Fuel column)
     df = df[df["Fuel"].isin(["Diesel", "Petrol", "Hybrid", "Electrique", "LPG"])].copy()
@@ -107,8 +89,6 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
     # Price: whole numbers only (it was a float because of the missing values)
     df["Price"] = df["Price"].astype(int)
-    pattern = r"0{4,}|1{4,}|2{4,}|3{4,}|4{4,}|5{4,}|6{4,}|7{4,}|8{4,}|9{4,}"
-    df = df[~df["Price"].astype(str).str.fullmatch(pattern)]
 
     # Price: remove placeholder prices made of one repeated digit (11111, 222222, 999999, 1111111 ...).
     # 9999 and 99999 are kept: they sit near the usual price of their model ("just under 10k / 100k" pricing)
@@ -144,25 +124,16 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     df["Equipment Amount"] = df["Equipment"].map(lambda x: len(ast.literal_eval(x)))
     df = df.drop(columns=["Equipment"])
 
-    #Replace the Arabic city names with the spelling used in the rest of the data
-    arabic_cities = {
-        "أكادير": "Agadir", "الجديدة": "El Jadida", "الدار البيضاء": "Casablanca",
-        "الرباط": "Rabat", "القنيطرة": "Kénitra", "المحمدية": "Mohammedia",
-        "الناظور": "Nador", "تطوان": "Tétouan", "تمارة": "Temara", "طنجة": "Tanger",
-        "فاس": "Fès", "مراكش": "Marrakech", "مكناس": "Meknès", "وجدة": "Oujda"
-    }
-    df["Location"] = df["Location"].replace(arabic_cities)
-
     # Number of Doors: missing values stay NaN
 
     # Drop columns that are not needed
-    df = df.drop(columns=["First Owner", "Origin", "Sector"])
+    df = df.drop(columns=["First Owner", "Origin", "Location", "Sector"])
 
     # Price -> log1p (the target column; use np.expm1 to get back to MAD)
     df["Log Price"] = np.log1p(df.pop("Price"))
 
     # Column order: categorical text columns, numeric columns, target
-    df = df[["Brand", "Model", "Fuel", "Year", "Condition", "Gearbox", "Number of Doors", "Equipment Amount", "Location",
+    df = df[["Brand", "Model", "Fuel", "Year", "Condition", "Gearbox", "Number of Doors", "Equipment Amount",
              "Mileage", "Mileage Above 500000", "Fiscal Power (CV)", "Fiscal Power Above 41", "Log Price"]]
 
     df = df.drop_duplicates()

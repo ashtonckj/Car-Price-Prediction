@@ -12,16 +12,15 @@ from sklearn.neighbors import KNeighborsRegressor
 ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
-SRC_DIR = ROOT_DIR / "src"
-if str(SRC_DIR) not in sys.path:
-    sys.path.append(str(SRC_DIR))
 
 import src.models.linear_models as lm
 from src.models.linear_models import polynomial_regression
 from src.models.neural_models import predict as predict_torch
 from src.models.neural_models import run_mlp
 from src.preprocessing import full
-from src.shared.core_utils import load_data_full
+from src.shared.core_utils import RESULTS_ROOT, load_data_full
+
+OUT_DIR = RESULTS_ROOT / "overfitting"
 
 
 def plot_universal_learning_curve(
@@ -175,4 +174,4 @@ if __name__ == "__main__":
 
     plt.tight_layout()
     plt.show()
-    plt.savefig("learning_curves1.png", dpi=300, bbox_inches="tight")
+    plt.savefig(OUT_DIR / "learning_curves1.png", dpi=300, bbox_inches="tight")

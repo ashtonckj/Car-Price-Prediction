@@ -31,6 +31,7 @@ RANDOM_STATE = 42
 N_FOLDS = 5
 BRAND_MODEL = ["Brand", "Model"]
 
+
 Split = namedtuple("Split", ["X_train", "y_train", "X_val", "y_val", "X_test", "y_test", "inverse_transform_price"])
 
 
@@ -90,15 +91,16 @@ def load_data_full(fold=None):
     X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
 
     # Drop price outliers: limits come from the training rows only (no leakage)
-    low, high = y_train["Log Price"].quantile([0.01, 0.99])
-    in_train, in_val = y_train["Log Price"].between(low, high), y_val["Log Price"].between(low, high)
-    X_train, y_train, X_val, y_val = X_train[in_train].copy(), y_train[in_train], X_val[in_val].copy(), y_val[in_val]
-    X_test = X_test.copy()
+    #low, high = y_train["Log Price"].quantile([0.01, 0.99])
+    #in_train, in_val = y_train["Log Price"].between(low, high), y_val["Log Price"].between(low, high)
+    #X_train, y_train, X_val, y_val = X_train[in_train].copy(), y_train[in_train], X_val[in_val].copy(), y_val[in_val]
+    #X_test = X_test.copy()
+    X_train, X_val, X_test = X_train.copy(), X_val.copy(), X_test.copy()
 
     fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test)
     fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)
 
-    categorical = ["Condition", "Location"]
+    categorical = ["Location"]
     numeric = [c for c in X_train.columns if c not in BRAND_MODEL + ["Fuel"] + categorical]
     numeric_transformer = Pipeline([
         ("imputer", SimpleImputer(strategy="most_frequent")),  # median would be better but it is not supported for mixed types (int + float)

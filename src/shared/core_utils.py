@@ -7,6 +7,7 @@ Every loader returns a Split and takes `fold`:
 Imputation, encoding and scaling are always fitted on that split's training rows only.
 y has shape (n, 1) (use y.ravel() for sklearn); inverse_transform_price(output) gives the price in MAD.
 """
+import sys
 from collections import namedtuple
 from pathlib import Path
 
@@ -21,11 +22,13 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import KFold, train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from src.preprocessing import full, minimal
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.append(str(ROOT_DIR))
+
+from src.preprocessing import full, minimal
+
 RESULTS_ROOT = ROOT_DIR / "results"
 RANDOM_STATE = 42
 N_FOLDS = 5

@@ -48,6 +48,7 @@ def mileage_midpoint(text: str) -> float:
     low, high = text.replace(" ", "").split("-")
     return round((int(low) + int(high)) / 2)
 
+
 def drop_price_outliers(df: pd.DataFrame) -> pd.DataFrame:
     # Compare every car with similar cars: remove it if its price is far from the typical price of its
     # Brand + Model, after taking out the general "older = cheaper" trend. Catches typos such as a

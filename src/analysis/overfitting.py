@@ -18,7 +18,8 @@ if str(SRC_DIR) not in sys.path:
 
 import src.models.linear_models as lm
 from src.models.linear_models import polynomial_regression
-from src.models.neural_models import predict as predict_torch, run_mlp
+from src.models.neural_models import predict as predict_torch
+from src.models.neural_models import run_mlp
 from src.preprocessing import full
 from src.shared.core_utils import load_data_full
 
@@ -140,7 +141,7 @@ def plot_universal_learning_curve(
     # 4. Plot
     standalone = ax is None
     if standalone:
-        fig, ax = plt.subplots(figsize=(8, 5))
+        _fig, ax = plt.subplots(figsize=(8, 5))
 
     ax.plot(abs_train_sizes, train_rmse, "o-", color="#1f77b4", label="Training Error (RMSE)")
     ax.plot(abs_train_sizes, val_rmse, "o-", color="#ff7f0e", label="Validation Error (RMSE)")

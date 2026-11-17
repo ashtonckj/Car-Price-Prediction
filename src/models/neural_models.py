@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
-#from pytorch_tabnet.tab_model import TabNetRegressor
+from pytorch_tabnet.tab_model import TabNetRegressor
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 

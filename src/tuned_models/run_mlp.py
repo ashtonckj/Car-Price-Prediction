@@ -75,6 +75,7 @@ def train_model(params, split):
 def fit_predict(split, params):
     (model, _), fit_time = timed(train_model, params, split)
     y_pred, predict_time = timed(predict, model, split.X_test)
+    y_pred = split.smear(predict(model, split.X_val), y_pred)  # log-price bias correction
     return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
 
 

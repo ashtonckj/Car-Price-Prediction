@@ -12,11 +12,10 @@ RAW_CSV = ROOT_DIR / "data" / "raw" / "cars_dataframe.csv"
 OUT_PATH = ROOT_DIR / "data" / "processed" / "cars_full.csv"
 
 # Price limits (MAD): anything outside is treated as a typo / placeholder
-MIN_PRICE = 3_000
-MAX_PRICE = 1_500_000
+MIN_PRICE = 5_000
+MAX_PRICE = 2_000_000
 PRICE_TOLERANCE = 1.5
 MIN_GROUP_SIZE = 5
-
 BRAND_CODES = {
     "111": "DFSK", "97": "MG", "75": "Great Wall", "77": "Tata", "73": "Abarth",
     "72": "Lada", "76": "Lifan", "112": "Leapmotor", "74": "Autres", "99": "Autres",
@@ -67,6 +66,30 @@ def drop_price_outliers(df: pd.DataFrame) -> pd.DataFrame:
     return df[(adjusted - typical).abs() <= PRICE_TOLERANCE]
 
 
+def is_placeholder_price(price: int) -> bool:
+    # 4+ copies of the same digit, e.g. 8888, 11111, 999999 (but not 9999 / 99999, which are real prices)
+    text = str(price)
+    return len(text) >= 4 and len(set(text)) == 1 and price not in (9_999, 99_999)
+
+
+def drop_price_outliers(df: pd.DataFrame) -> pd.DataFrame:
+    # Compare every car with similar cars: remove it if its price is far from the typical price of its
+    # Brand + Model, after taking out the general "older = cheaper" trend. Catches typos such as a
+    # 2021 Dacia Sandero at 1,550,000 or a 2011 Touareg at 3,000 that a fixed MIN/MAX cannot see.
+    log_price = np.log1p(df["Price"])
+    slope = np.polyfit(df["Year"], log_price, 1)[0]
+    adjusted = log_price - slope * df["Year"]
+
+    key = df["Brand"] + "|" + df["Model"]
+    model_median = adjusted.groupby(key).transform("median")
+    model_count = adjusted.groupby(key).transform("count")
+    brand_median = adjusted.groupby(df["Brand"]).transform("median")
+    brand_count = adjusted.groupby(df["Brand"]).transform("count")
+
+    typical = np.where(model_count >= MIN_GROUP_SIZE, model_median, np.where(brand_count >= MIN_GROUP_SIZE, brand_median, adjusted.median()))
+    return df[(adjusted - typical).abs() <= PRICE_TOLERANCE]
+
+
 def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Remove the one corrupted row (a mileage range sitting in the Fuel column)
     df = df[df["Fuel"].isin(["Diesel", "Petrol", "Hybrid", "Electrique", "LPG"])].copy()
@@ -86,6 +109,10 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     df["Price"] = df["Price"].astype(int)
     pattern = r"0{4,}|1{4,}|2{4,}|3{4,}|4{4,}|5{4,}|6{4,}|7{4,}|8{4,}|9{4,}"
     df = df[~df["Price"].astype(str).str.fullmatch(pattern)]
+
+    # Price: remove placeholder prices made of one repeated digit (11111, 222222, 999999, 1111111 ...).
+    # 9999 and 99999 are kept: they sit near the usual price of their model ("just under 10k / 100k" pricing)
+    df = df[~df["Price"].map(is_placeholder_price)].copy()
 
     # Year: "1980 ou plus ancien" -> 1980, and make it a number
     df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)

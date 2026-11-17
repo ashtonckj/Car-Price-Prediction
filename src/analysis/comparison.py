@@ -14,8 +14,8 @@ from src.shared.plots import plot_metric_bars, plot_stage_comparison
 from src.shared.stages import STAGES
 
 OUT_DIR = RESULTS_ROOT / "comparison"
-STAGE_METRICS = ["R2_log", "R2", "MAE", "MAPE"]  # compared across stages
-SHOWN_COLUMNS = ["Family", "Model", "R2_log", "CV_R2_log_mean", "CV_R2_log_std", "R2", "MAE", "RMSE", "MAPE", "Fit_time_s"]
+STAGE_METRICS = ["R2", "MAE", "MAPE"]  # compared across stages
+SHOWN_COLUMNS = ["Family", "Model", "R2", "CV_R2_mean", "CV_R2_std", "MAE", "RMSE", "MAPE", "Fit_time_s"]
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
         print(f"\n===== {STAGES[stage]['title']} ({stage}) =====")
         print(table[[c for c in SHOWN_COLUMNS if c in table]].to_string(index=False, float_format="{:,.4f}".format))
         table.to_csv(OUT_DIR / f"{stage}_table.csv", index=False)
-        plot_metric_bars(table, "R2_log", f"{STAGES[stage]['title']}: R2 of log price (test set)", OUT_DIR / f"{stage}_R2_log.png")
+        plot_metric_bars(table, "R2", f"{STAGES[stage]['title']}: R2 (test set)", OUT_DIR / f"{stage}_R2.png")
 
     # Stage vs stage
     if len(tables) < 2:
@@ -42,13 +42,13 @@ def main():
         everything["Model"] = everything["Family"] + ": " + everything["Model"]
         for metric in STAGE_METRICS:
             pivot = everything.pivot_table(index="Model", columns="Stage", values=metric)[list(tables)]
-            higher_is_better = metric in ("R2", "R2_log")
+            higher_is_better = metric == "R2"
             best_stage_score = pivot.max(axis=1) if higher_is_better else pivot.min(axis=1)  # b1_tuned only has a few models
             pivot = pivot.loc[best_stage_score.sort_values(ascending=not higher_is_better).index]
             pivot.to_csv(OUT_DIR / f"stages_{metric}.csv")
             plot_stage_comparison(pivot, metric, OUT_DIR / f"stages_{metric}.png")
-            if metric == "R2_log":
-                print("\n===== R2 of log price on the test set, by stage =====")
+            if metric == "R2":
+                print("\n===== R2 on the test set, by stage =====")
                 print(pivot.to_string(float_format="{:,.4f}".format))
 
     print(f"\nSaved tables and charts in {OUT_DIR}")

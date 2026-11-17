@@ -31,8 +31,8 @@ RANDOM_STATE = 42
 N_FOLDS = 5
 BRAND_MODEL = ["Brand", "Model"]
 
-
-Split = namedtuple("Split", ["X_train", "y_train", "X_val", "y_val", "X_test", "y_test", "inverse_transform_price"])
+Split = namedtuple("Split", ["X_train", "y_train", "X_val", "y_val", "X_test", "y_test", "inverse_transform_price", "smear"])
+# smear(y_val_pred, y_pred): log-target bias correction (Duan's smearing). Returns y_pred corrected.
 
 
 def read_processed(csv_path, create):
@@ -65,7 +65,7 @@ def fill_from_train(column, key_sets, fallback, train, *others):
 
 
 def load_data_minimal(fold=None):
-    """a1_baseline: one-hot encode every text column, nothing else. Raw Price target (MAD), no scaling."""
+    """a1_baseline: same rows and price scope as a2, then one-hot encode every text column, nothing else. Raw Price target (MAD), no scaling."""
     df = read_processed(minimal.OUT_PATH, minimal.main)
     X, y = df.drop(columns="Price"), df[["Price"]]
     X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
@@ -82,7 +82,10 @@ def load_data_minimal(fold=None):
     def inverse_transform_price(y_pred):  # target is already the price
         return np.asarray(y_pred).ravel()
 
-    return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price)
+    def smear(y_val_pred, y_pred):  # raw price target: nothing to correct
+        return np.asarray(y_pred).ravel()
+
+    return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price, smear)
 
 
 def load_data_full(fold=None):
@@ -91,11 +94,10 @@ def load_data_full(fold=None):
     X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
 
     # Drop price outliers: limits come from the training rows only (no leakage)
-    #low, high = y_train["Log Price"].quantile([0.01, 0.99])
-    #in_train, in_val = y_train["Log Price"].between(low, high), y_val["Log Price"].between(low, high)
-    #X_train, y_train, X_val, y_val = X_train[in_train].copy(), y_train[in_train], X_val[in_val].copy(), y_val[in_val]
-    #X_test = X_test.copy()
-    X_train, X_val, X_test = X_train.copy(), X_val.copy(), X_test.copy()
+    low, high = y_train["Log Price"].quantile([0.02, 0.98])
+    in_train, in_val, in_test = y_train["Log Price"].between(low, high), y_val["Log Price"].between(low, high), y_test["Log Price"].between(low, high)
+    X_train, y_train, X_val, y_val, X_test, y_test = X_train[in_train].copy(), y_train[in_train], X_val[in_val].copy(), y_val[in_val], X_test[in_test], y_test[in_test]
+    X_test = X_test.copy()
 
     fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test)
     fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)
@@ -126,7 +128,17 @@ def load_data_full(fold=None):
     def inverse_transform_price(y_scaled):  # scaled log price -> price in MAD
         return np.expm1(target_scaler.inverse_transform(np.asarray(y_scaled).reshape(-1, 1))).ravel()
 
-    return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price)
+    def to_log(y_scaled):
+        return target_scaler.inverse_transform(np.asarray(y_scaled).reshape(-1, 1)).ravel()
+
+    def smear(y_val_pred, y_pred):
+        """Duan's smearing. A model trained on log price predicts the typical (median-like) price, so turning its
+        prediction back into MAD underestimates the average price. Multiply every predicted price by
+        mean(exp(validation residual in log space)); the factor is learned on the validation rows, never on test."""
+        factor = np.mean(np.exp(to_log(y_val) - to_log(y_val_pred)))
+        return np.asarray(y_pred).ravel() + np.log(factor) / target_scaler.scale_[0]  # = price * factor, in scaled log space
+
+    return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price, smear)
 
 
 def compute_metrics(y_true, y_pred, inverse_transform_price):
@@ -138,8 +150,6 @@ def compute_metrics(y_true, y_pred, inverse_transform_price):
         "MAE": float(mean_absolute_error(true_price, pred_price)),
         "R2": float(r2_score(true_price, pred_price)),
         "MAPE": float(mean_absolute_percentage_error(true_price, pred_price) * 100),
-        # R2 of log(price) from the MAD prices, so it means the same in every stage (negative predictions clipped to 0)
-        "R2_log": float(r2_score(np.log1p(true_price), np.log1p(np.clip(pred_price, 0, None)))),
     }
 
 
@@ -151,5 +161,4 @@ def evaluate(model_name, y_true, y_pred, inverse_transform_price):
     print(f"MAE:  {metrics['MAE']:,.2f}")
     print(f"R2:   {metrics['R2']:.4f}")
     print(f"MAPE: {metrics['MAPE']:.2f}%")
-    print(f"R2 (log price): {metrics['R2_log']:.4f}")
     return metrics

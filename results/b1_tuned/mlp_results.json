@@ -2,36 +2,33 @@
   "stage": "b1_tuned",
   "stage_title": "B1 tuned (full preprocessing, missing values imputed)",
   "family": "Neural networks",
-  "n_features": 463,
-  "n_train": 43672,
-  "n_test": 12478,
+  "n_features": 435,
+  "n_train": 41265,
+  "n_test": 11831,
   "models": {
     "MLP": {
       "metrics": {
-        "RMSE": 223642.9795,
-        "MAE": 29223.8809,
-        "R2": 0.1911,
-        "MAPE": 21.2644,
-        "R2_log": 0.7962
+        "RMSE": 21650.0073,
+        "MAE": 13175.552,
+        "R2": 0.9299,
+        "MAPE": 11.9799
       },
       "cv": {
         "mean": {
-          "RMSE": 223179.4912,
-          "MAE": 30494.8738,
-          "R2": 0.1778,
-          "MAPE": 20.6201,
-          "R2_log": 0.7884
+          "RMSE": 23245.7495,
+          "MAE": 13970.0598,
+          "R2": 0.9199,
+          "MAPE": 12.3607
         },
         "std": {
-          "RMSE": 27308.994,
-          "MAE": 2746.9912,
-          "R2": 0.0332,
-          "MAPE": 0.7306,
-          "R2_log": 0.0153
+          "RMSE": 679.266,
+          "MAE": 177.7073,
+          "R2": 0.0054,
+          "MAPE": 0.1517
         }
       },
-      "fit_time_s": 10.91,
-      "predict_time_s": 0.02
+      "fit_time_s": 17.94,
+      "predict_time_s": 0.01
     }
   }
 }

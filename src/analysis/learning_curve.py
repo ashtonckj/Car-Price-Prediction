@@ -15,17 +15,17 @@ from sklearn.preprocessing import PolynomialFeatures
 ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
-SRC_DIR = ROOT_DIR / "src"
-if str(SRC_DIR) not in sys.path:
-    sys.path.append(str(SRC_DIR))
+
+import torch
+from torch import nn
+from torch.utils.data import DataLoader, TensorDataset
 
 import src.models.linear_models as lm
 from src.models.neural_models import predict as predict_torch
 from src.preprocessing import full
 from src.shared.core_utils import RANDOM_STATE, load_data_full
-import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader, TensorDataset
+
+OUT_DIR = ROOT_DIR / "results" / "overfitting"
 
 
 def plot_complexity_curve(
@@ -78,7 +78,7 @@ def plot_complexity_curve(
 
     standalone = ax is None
     if standalone:
-        fig, ax = plt.subplots(figsize=(8, 5))
+        _fig, ax = plt.subplots(figsize=(8, 5))
 
     x_ticks = [str(v) for v in param_values] if isinstance(param_values[0], tuple) else param_values
     ax.plot(x_ticks, train_rmse, "o-", color="#1f77b4", label="Training Error (RMSE)")
@@ -91,8 +91,7 @@ def plot_complexity_curve(
 
     # Mark optimal complexity (lowest validation RMSE)
     best_idx = int(np.argmin(val_rmse))
-    ax.axvline(x_ticks[best_idx], color="green", linestyle=":", alpha=0.8,
-               label=f"Best Val ({param_values[best_idx]}: {val_rmse[best_idx]:.3f})")
+    ax.axvline(x_ticks[best_idx], color="green", linestyle=":", alpha=0.8, label=f"Best Val ({param_values[best_idx]}: {val_rmse[best_idx]:.3f})")
 
     ax.set_title(f"Complexity Curve: {model_name}")
     ax.set_xlabel(xlabel)
@@ -177,5 +176,5 @@ if __name__ == "__main__":
         )
 
     plt.tight_layout()
-    plt.savefig("complexity_curves1.png", dpi=300, bbox_inches="tight")
+    plt.savefig(OUT_DIR / "complexity_curves1.png", dpi=300, bbox_inches="tight")
     plt.show()

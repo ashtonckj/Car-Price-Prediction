@@ -1,0 +1,37 @@
+{
+  "stage": "b1_tuned",
+  "stage_title": "B1 tuned (full preprocessing, missing values imputed)",
+  "family": "Tree-based models",
+  "n_features": 463,
+  "n_train": 43672,
+  "n_test": 12478,
+  "models": {
+    "Random Forest": {
+      "metrics": {
+        "RMSE": 226108.1773,
+        "MAE": 30924.2543,
+        "R2": 0.1732,
+        "MAPE": 22.2505,
+        "R2_log": 0.7863
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 224049.4568,
+          "MAE": 31652.2078,
+          "R2": 0.1716,
+          "MAPE": 21.629,
+          "R2_log": 0.7823
+        },
+        "std": {
+          "RMSE": 27729.6325,
+          "MAE": 2964.0862,
+          "R2": 0.0337,
+          "MAPE": 0.6088,
+          "R2_log": 0.0161
+        }
+      },
+      "fit_time_s": 4.0,
+      "predict_time_s": 0.1
+    }
+  }
+}

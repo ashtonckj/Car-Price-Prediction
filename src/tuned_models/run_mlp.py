@@ -16,7 +16,7 @@ from src.shared.experiment import cross_validate, save_results, timed
 from src.shared.stages import choose_stage, load_data
 
 BEST_PARAMS = {
-    "b1_tuned": {'n_layers': 2, 'units': 128, 'activation': 'gelu', 'dropout': 0.2, 'lr': 0.003, 'weight_decay': 0.0, 'batch_size': 256},
+    "b1_tuned": {'n_layers': 3, 'units': 128, 'activation': 'gelu', 'dropout': 0.2, 'lr': 0.003, 'weight_decay': 0.0001, 'batch_size': 256},
 }
 
 MAX_EPOCHS = 100

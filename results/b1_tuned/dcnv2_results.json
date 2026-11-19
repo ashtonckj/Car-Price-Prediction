@@ -1,0 +1,34 @@
+{
+  "stage": "b1_tuned",
+  "stage_title": "B1 tuned (full preprocessing, missing values imputed)",
+  "family": "Neural networks",
+  "n_features": 435,
+  "n_train": 41265,
+  "n_test": 11831,
+  "models": {
+    "DCN-V2": {
+      "metrics": {
+        "RMSE": 21646.9431,
+        "MAE": 12995.5679,
+        "R2": 0.9299,
+        "MAPE": 11.7373
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 22890.7219,
+          "MAE": 13425.9179,
+          "R2": 0.9223,
+          "MAPE": 12.0436
+        },
+        "std": {
+          "RMSE": 894.9744,
+          "MAE": 298.2858,
+          "R2": 0.0065,
+          "MAPE": 0.2368
+        }
+      },
+      "fit_time_s": 19.93,
+      "predict_time_s": 0.01
+    }
+  }
+}

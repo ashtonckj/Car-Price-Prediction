@@ -1,12 +1,12 @@
 {
-  "stage": "a2_preprocessed",
-  "stage_title": "A2 full preprocessing",
-  "family": "Random Forest (tuned)",
+  "stage": "b1_tuned",
+  "stage_title": "B1 tuned (full preprocessing, missing values imputed)",
+  "family": "Tree-based models",
   "n_features": 463,
   "n_train": 43672,
   "n_test": 12478,
   "models": {
-    "Random Forest (tuned)": {
+    "Random Forest": {
       "metrics": {
         "RMSE": 226108.1773,
         "MAE": 30924.2543,

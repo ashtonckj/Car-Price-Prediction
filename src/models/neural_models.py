@@ -1,4 +1,4 @@
-"""Neural networks: MLP, LSTM, TabNet. Run it and type a stage number. The 10% val set is used for early stopping."""
+"""Neural networks: MLP, DCN-V2, TabNet. Run it and type a stage number. The 10% val set is used for early stopping."""
 import sys
 from pathlib import Path
 
@@ -59,17 +59,43 @@ def train_torch(model, X_train, y_train, X_val, y_val, epochs=100, learning_rate
     return model
 
 
-class RNNRegressor(nn.Module):
-    """GRU or LSTM; each feature is treated as one time step."""
+class CrossLayer(nn.Module):
+    """DCN V2 cross layer: x_{l+1} = x0 * (W x_l + b) + x_l, with W factorised as U V^T (low-rank cross)."""
 
-    def __init__(self, rnn_class, hidden_size=64):
+    def __init__(self, dim, rank):
         super().__init__()
-        self.rnn = rnn_class(input_size=1, hidden_size=hidden_size, batch_first=True)
-        self.output_layer = nn.Linear(hidden_size, 1)
+        self.proj = nn.Sequential(nn.Linear(dim, rank, bias=False), nn.Linear(rank, dim))
+
+    def forward(self, x0, x):
+        return x0 * self.proj(x) + x
+
+
+class DCNV2(nn.Module):
+    """Deep & Cross Network V2 (Wang et al., 2021), STACKED structure with LOW-RANK cross layers:
+    x -> cross network (explicit feature crosses) -> deep network (128-64 MLP) -> linear output.
+
+    The same network as src/tuned_models/run_dcnv2.py (DCNV2Regressor with structure="stacked", low_rank=32), here with its
+    default settings. Stacked + low-rank was the best of the four DCN-V2 variants in the b1 tuning grid (lowest best,
+    median and mean validation RMSE), so the default and the tuned DCN-V2 are the same model with different settings.
+    """
+
+    def __init__(self, n_features, n_cross_layers=3, low_rank=32, deep_sizes=(128, 64), dropout=0.1):
+        super().__init__()
+        self.cross = nn.ModuleList([CrossLayer(n_features, low_rank) for _ in range(n_cross_layers)])
+
+        deep_layers, in_size = [], n_features
+        for size in deep_sizes:
+            deep_layers += [nn.Linear(in_size, size), nn.ReLU(), nn.Dropout(dropout)]
+            in_size = size
+        self.deep = nn.Sequential(*deep_layers)
+
+        self.head = nn.Linear(in_size, 1)
 
     def forward(self, features):
-        sequence_output, _ = self.rnn(features.unsqueeze(-1))
-        return self.output_layer(sequence_output[:, -1])
+        x = features
+        for layer in self.cross:
+            x = layer(features, x)
+        return self.head(self.deep(x))  # (batch, 1)
 
 
 # Models: each run_*(split) trains on split.X_train (early stopping on split.X_val) and predicts split.X_test
@@ -91,8 +117,8 @@ def run_mlp(split):
     return fit_and_predict(network, split)
 
 
-def run_lstm(split):
-    return fit_and_predict(RNNRegressor(nn.LSTM), split)
+def run_dcnv2(split):
+    return fit_and_predict(DCNV2(n_features=split.X_train.shape[1]), split)
 
 
 def run_tabnet(split):
@@ -113,7 +139,7 @@ def run_tabnet(split):
     return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
 
 
-MODELS = {"MLP": run_mlp, "LSTM": run_lstm, "TabNet": run_tabnet}
+MODELS = {"MLP": run_mlp, "DCN-V2": run_dcnv2, "TabNet": run_tabnet}
 
 
 def main():

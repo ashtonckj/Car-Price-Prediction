@@ -121,9 +121,9 @@ if __name__ == "__main__":
         return Pipeline([("poly", add_poly_terms), ("linreg", LinearRegression())])
 
     # 2. Tree Family: Sweep max_depth (shallow = underfit, deep = overfit)
-    depths = [2, 4, 6, 8, 12, 16, 22, 30, 45]
+    depths = [5, 10, 15, 20, 25, 30, 40, 50]  # None = fully grown trees
     build_rf = lambda d: RandomForestRegressor(
-        n_estimators=200, max_depth=d, min_samples_leaf=1, max_features=0.7, random_state=42, n_jobs=-1
+        max_depth=d, min_samples_leaf=1,random_state=42, n_jobs=-1
     )
 
     # 3. Distance Family: Sweep n_neighbors k (large k = smooth/underfit, small k = overfit)
@@ -177,5 +177,5 @@ if __name__ == "__main__":
         )
 
     plt.tight_layout()
-    plt.savefig("complexity_curves1.png", dpi=300, bbox_inches="tight")
+    plt.savefig("complexity_curves.png", dpi=300, bbox_inches="tight")
     plt.show()

@@ -1,0 +1,5 @@
+degree,interaction_only,fit_intercept,val_RMSE,val_MAE,val_R2,val_MAPE,time_s
+2,False,True,27486.2083,16070.1133,0.8854,13.9619,2.2
+2,False,False,27479.1022,16074.9268,0.8855,13.9701,2.1
+2,True,True,27124.1212,16239.3604,0.8884,14.2182,2.1
+2,True,False,27124.4751,16239.252,0.8884,14.218,2.1

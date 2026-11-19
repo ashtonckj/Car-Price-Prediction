@@ -59,17 +59,29 @@ def train_torch(model, X_train, y_train, X_val, y_val, epochs=100, learning_rate
     return model
 
 
-class DCNV2(nn.Module):
-    """Deep & Cross Network V2 (Wang et al., 2021), parallel structure, for numeric features.
+class CrossLayer(nn.Module):
+    """DCN V2 cross layer: x_{l+1} = x0 * (W x_l + b) + x_l, with W factorised as U V^T (low-rank cross)."""
 
-    Cross network: x_{l+1} = x_0 * (W_l x_l + b_l) + x_l  (explicit feature crosses)
-    Deep network:  a plain MLP on the same input
-    The outputs of both are concatenated and fed to a linear layer.
+    def __init__(self, dim, rank):
+        super().__init__()
+        self.proj = nn.Sequential(nn.Linear(dim, rank, bias=False), nn.Linear(rank, dim))
+
+    def forward(self, x0, x):
+        return x0 * self.proj(x) + x
+
+
+class DCNV2(nn.Module):
+    """Deep & Cross Network V2 (Wang et al., 2021), STACKED structure with LOW-RANK cross layers:
+    x -> cross network (explicit feature crosses) -> deep network (128-64 MLP) -> linear output.
+
+    The same network as src/tuned_models/run_dcnv2.py (DCNV2Regressor with structure="stacked", low_rank=32), here with its
+    default settings. Stacked + low-rank was the best of the four DCN-V2 variants in the b1 tuning grid (lowest best,
+    median and mean validation RMSE), so the default and the tuned DCN-V2 are the same model with different settings.
     """
 
-    def __init__(self, n_features, n_cross_layers=3, deep_sizes=(128, 64), dropout=0.1):
+    def __init__(self, n_features, n_cross_layers=3, low_rank=32, deep_sizes=(128, 64), dropout=0.1):
         super().__init__()
-        self.cross_layers = nn.ModuleList([nn.Linear(n_features, n_features) for _ in range(n_cross_layers)])
+        self.cross = nn.ModuleList([CrossLayer(n_features, low_rank) for _ in range(n_cross_layers)])
 
         deep_layers, in_size = [], n_features
         for size in deep_sizes:
@@ -77,13 +89,13 @@ class DCNV2(nn.Module):
             in_size = size
         self.deep = nn.Sequential(*deep_layers)
 
-        self.output_layer = nn.Linear(n_features + in_size, 1)
+        self.head = nn.Linear(in_size, 1)
 
     def forward(self, features):
-        x0, x = features, features
-        for layer in self.cross_layers:
-            x = x0 * layer(x) + x
-        return self.output_layer(torch.cat([x, self.deep(features)], dim=1))  # (batch, 1)
+        x = features
+        for layer in self.cross:
+            x = layer(features, x)
+        return self.head(self.deep(x))  # (batch, 1)
 
 
 # Models: each run_*(split) trains on split.X_train (early stopping on split.X_val) and predicts split.X_test

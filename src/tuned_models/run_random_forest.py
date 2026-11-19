@@ -13,7 +13,7 @@ from src.shared.experiment import cross_validate, save_results, timed
 from src.shared.stages import choose_stage, load_data
 
 BEST_PARAMS = {
-    "b1_tuned": {"n_estimators": 100, "min_samples_split": 10, "min_samples_leaf": 1, "max_features": "sqrt", "max_depth": 50, "bootstrap": False},
+    "b1_tuned": {"n_estimators": 300, "min_samples_split": 5, "min_samples_leaf": 1, "max_features": 1.0, "max_depth": 15, "bootstrap": True},
 }
 
 

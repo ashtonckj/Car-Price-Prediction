@@ -13,7 +13,8 @@ from src.shared.experiment import cross_validate, save_results, timed
 from src.shared.stages import choose_stage, load_data
 
 BEST_PARAMS = {
-    "b1_tuned": {"n_estimators": 100, "min_samples_split": 10, "min_samples_leaf": 1, "max_features": "sqrt", "max_depth": 50, "bootstrap": False},
+    #"b1_tuned": {"n_estimators": 300, "min_samples_split": 5, "min_samples_leaf": 1, "max_features": 1.0, "max_depth": 15, "bootstrap": True},
+    "b1_tuned": {"n_estimators": 500, "min_samples_split": 10, "min_samples_leaf": 1, "max_features": 1.0, "max_depth": 50, "bootstrap": True},
 }
 
 
@@ -40,7 +41,7 @@ def main():
     print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
     evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
 
-    save_results(stage, "random_forest", "Tree-based models", results, split, cv_results)
+    save_results(stage, "random_forest_50depth", "Tree-based models", results, split, cv_results)
 
 
 if __name__ == "__main__":

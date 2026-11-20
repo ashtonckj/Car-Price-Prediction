@@ -21,7 +21,7 @@ from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
 import src.models.linear_models as lm
-from src.models.neural_models import predict as predict_torch
+from src.models.neural_models import DCNV2, predict as predict_torch
 from src.preprocessing import full
 from src.shared.core_utils import RANDOM_STATE, load_data_full
 
@@ -49,7 +49,7 @@ def plot_complexity_curve(
         model = model_builder(val)
 
         if callable(model) and not hasattr(model, "fit"):
-            # PyTorch procedural model (e.g., run_mlp)
+            # PyTorch procedural model (e.g., build_dcnv2, run_dcnv2)
             res = model(split)
             trained_net = res["model"]
             train_pred = predict_torch(trained_net, split.X_train)
@@ -80,11 +80,12 @@ def plot_complexity_curve(
     if standalone:
         _fig, ax = plt.subplots(figsize=(8, 5))
 
-    x_ticks = [str(v) for v in param_values] if isinstance(param_values[0], tuple) else param_values
+    has_non_numeric = any(v is None or isinstance(v, (tuple, str)) for v in param_values)
+    x_ticks = [str(v) for v in param_values] if has_non_numeric else param_values
     ax.plot(x_ticks, train_rmse, "o-", color="#1f77b4", label="Training Error (RMSE)")
     ax.plot(x_ticks, val_rmse, "o-", color="#ff7f0e", label="Validation Error (RMSE)")
 
-    if log_x and not isinstance(param_values[0], tuple):
+    if log_x and not has_non_numeric:
         ax.set_xscale("log")
     if invert_x:
         ax.invert_xaxis()
@@ -104,6 +105,33 @@ def plot_complexity_curve(
         plt.show()
 
 
+def build_dcnv2(epochs):
+    def _train(s):
+        torch.manual_seed(RANDOM_STATE)
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        model = DCNV2(n_features=s.X_train.shape[1]).to(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+        loss_fn = nn.MSELoss()
+        loader = DataLoader(
+            TensorDataset(torch.tensor(s.X_train), torch.tensor(s.y_train)),
+            batch_size=256,
+            shuffle=True,
+        )
+        for _ in range(epochs):
+            model.train()
+            for X_batch, y_batch in loader:
+                X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+                optimizer.zero_grad()
+                loss_fn(model(X_batch), y_batch).backward()
+                optimizer.step()
+        return {"model": model}
+
+    return _train
+
+
+build_mlp = build_dcnv2  # backwards compatibility alias
+
+
 if __name__ == "__main__":
     split = load_data_full()
     lm.N_NUMERIC = pd.read_csv(full.OUT_PATH).drop(columns="Log Price").select_dtypes(include="number").shape[1]
@@ -120,7 +148,7 @@ if __name__ == "__main__":
         return Pipeline([("poly", add_poly_terms), ("linreg", LinearRegression())])
 
     # 2. Tree Family: Sweep max_depth (shallow = underfit, deep = overfit)
-    depths = [5, 10, 15, 20, 25, 30, 40, 50]  # None = fully grown trees
+    depths = [5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, None]  # None = fully grown trees
     build_rf = lambda d: RandomForestRegressor(
         max_depth=d, min_samples_leaf=1,random_state=42, n_jobs=-1
     )
@@ -165,7 +193,7 @@ if __name__ == "__main__":
         (build_poly, degrees, "Polynomial Regression", "Polynomial Degree (Low -> High Complexity)", False, False),
         (build_rf, depths, "Tree Family (Random Forest)", "Max Tree Depth (Low -> High Complexity)", False, False),
         (build_knn, k_values, "Distance Family (KNN)", "Number of Neighbors k (Inverted: Low -> High Complexity)", True, False),
-        (build_mlp, epochs_list, "Neural Network Family (MLP)", "Training Epochs (Low -> High Complexity)", False, False),
+        (build_dcnv2, epochs_list, "Neural Network Family (DCN-V2)", "Training Epochs (Low -> High Complexity)", False, False),
     ]
 
     fig, axes = plt.subplots(2, 2, figsize=(15, 10))

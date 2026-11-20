@@ -15,7 +15,7 @@ if str(ROOT_DIR) not in sys.path:
 from src.shared import complexity as cc
 from src.shared.core_utils import RANDOM_STATE
 from src.shared.stages import load_data
-from src.tuned_models import run_dcnv2, run_random_forest
+from src.tuned_models import run_dcnv2, run_knn, run_random_forest
 
 STAGE = "b1_tuned"
 
@@ -23,7 +23,6 @@ STAGE = "b1_tuned"
 # (or import them from their src/tuned_models/run_*.py), e.g. POLY_TUNED = {"degree": 2, "fit_intercept": True},
 # KNN_TUNED = {"n_neighbors": 10, "weights": "distance", "p": 1}. While a dict is empty that panel uses the default settings.
 POLY_TUNED = {}  # "degree" is swept; the other keys go to LinearRegression
-KNN_TUNED = {}   # "n_neighbors" is swept; the other keys go to KNeighborsRegressor
 
 
 def without(params, key):
@@ -38,6 +37,7 @@ def main():
     split = load_data(STAGE)
     n_numeric = cc.n_numeric_columns(STAGE)
     rf_params = run_random_forest.BEST_PARAMS[STAGE]
+    knn_params = run_knn.BEST_PARAMS[STAGE]
     dcn_params = run_dcnv2.BEST_PARAMS[STAGE]
 
     print(f"\nPolynomial Regression (degree; {label(POLY_TUNED)})")
@@ -45,8 +45,8 @@ def main():
     print("\nRandom Forest (max_depth; other settings from run_random_forest.BEST_PARAMS)")
     forest = cc.sweep(split, lambda d: RandomForestRegressor(max_depth=d, **without(rf_params, "max_depth"),
                                                              random_state=RANDOM_STATE, n_jobs=-1), cc.RF_DEPTHS)
-    print(f"\nKNN (number of neighbours; {label(KNN_TUNED)})")
-    knn = cc.sweep(split, lambda k: KNeighborsRegressor(n_neighbors=k, **without(KNN_TUNED, "n_neighbors"), n_jobs=-1), cc.KNN_K)
+    print(f"\nKNN (number of neighbours; {label(knn_params)})")
+    knn = cc.sweep(split, lambda k: KNeighborsRegressor(n_neighbors=k, **without(knn_params, "n_neighbors"), n_jobs=-1), cc.KNN_K)
 
     print("\nDCN-V2 (epochs; other settings from run_dcnv2.BEST_PARAMS)")
     torch.manual_seed(RANDOM_STATE)
@@ -61,8 +61,8 @@ def main():
          "Polynomial degree (simple -> complex)", True, POLY_TUNED.get("degree")),
         ("random_forest_max_depth", forest, "Tree family: Random Forest (tuned)",
          "Maximum tree depth (simple -> complex)", True, rf_params["max_depth"]),
-        ("knn_k", knn, f"Distance family: KNN ({label(KNN_TUNED)})",
-         "Number of neighbours k (simple -> complex)", True, KNN_TUNED.get("n_neighbors")),
+        ("knn_k", knn, f"Distance family: KNN ({label(knn_params)})",
+         "Number of neighbours k (simple -> complex)", True, knn_params.get("n_neighbors")),
         ("dcnv2_epochs", dcn, "Neural family: DCN-V2 (tuned)",
          "Training epochs (simple -> complex)", False, None),  # the tuned run stops early; its stop is near the green line
     ], f"Model complexity curves, tuned settings ({STAGE}): training vs validation error")

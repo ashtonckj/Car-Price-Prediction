@@ -80,7 +80,7 @@ def main():
     print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
     evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
 
-    save_results(stage, "knn", "Distance-based", results, split, cv_results)
+    save_results(stage, "knn", "Distance-based models", results, split, cv_results)
 
 
 if __name__ == "__main__":

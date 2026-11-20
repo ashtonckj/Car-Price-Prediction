@@ -1,7 +1,7 @@
 {
   "stage": "b1_tuned",
   "stage_title": "B1 tuned (full preprocessing, missing values imputed)",
-  "family": "Distance-based",
+  "family": "Distance-based models",
   "n_features": 435,
   "n_train": 41265,
   "n_test": 11831,
@@ -27,8 +27,8 @@
           "MAPE": 0.1229
         }
       },
-      "fit_time_s": 7.15,
-      "predict_time_s": 14.5
+      "fit_time_s": 9.23,
+      "predict_time_s": 18.37
     }
   }
 }

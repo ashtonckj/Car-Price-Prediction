@@ -123,7 +123,7 @@ def fit_predict(split, params):
 def main():
     stage = choose_stage("B")
     if stage not in BEST_PARAMS:
-        sys.exit(f"Add the best parameters for {stage} to BEST_PARAMS at the top of this file (see results/tuning/dcnv2_{stage}.csv).")
+        sys.exit(f"Add the best parameters for {stage} to BEST_PARAMS at the top of this file (see results/{stage}/dcnv2_tuning.csv).")
     params = BEST_PARAMS[stage]
     print(f"Device: {DEVICE} | parameters: {params}")
     split = load_data(stage)

@@ -1,19 +1,19 @@
-"""Helpers for the tuning scripts: the grid-search loop and the results CSV in results/tuning/.
+"""Helpers for the tuning scripts: the grid-search loop and the results CSV in results/<stage>/<model>_tuning.csv
+(next to that model's <model>_results.json and <model>_pred_vs_actual.png).
 Combinations are judged by RMSE on the price in MAD: the lowest RMSE is the best."""
 import pandas as pd
 from sklearn.model_selection import ParameterGrid
 
 from src.shared.core_utils import RESULTS_ROOT, compute_metrics
-from src.shared.experiment import METRICS, rounded, timed
-
-TUNING_DIR = RESULTS_ROOT / "tuning"
+from src.shared.experiment import rounded, timed
 
 
 def save_tuning_csv(rows, model, stage, score_column, lower_is_better=True):
-    """Write results/tuning/<model>_<stage>.csv, one row per combination, worst score first (the best is the LAST row)."""
+    """Write results/<stage>/<model>_tuning.csv, one row per combination, worst score first (the best is the LAST row)."""
     table = pd.DataFrame(rows).sort_values(score_column, ascending=not lower_is_better, na_position="first", kind="stable").reset_index(drop=True)
-    TUNING_DIR.mkdir(parents=True, exist_ok=True)
-    path = TUNING_DIR / f"{model}_{stage}.csv"
+    OUT_DIR = RESULTS_ROOT / stage
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    path = OUT_DIR / f"{model}_tuning.csv"
     table.to_csv(path, index=False)
     return table, path
 

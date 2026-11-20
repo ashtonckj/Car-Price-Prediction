@@ -59,8 +59,7 @@ def fit_predict(split, name, params, n_numeric):
 def main():
     stage = choose_stage("B")
     if stage not in BEST_PARAMS:
-        sys.exit(f"Add the best parameters for {stage} to BEST_PARAMS at the top of this file "
-                 f"(see results/tuning/<ridge|huber|polynomial>_{stage}.csv).")
+        sys.exit(f"Add the best parameters for {stage} to BEST_PARAMS at the top of this file (see results/{stage}/<ridge|huber|polynomial>_tuning.csv).")
     split = load_data(stage)
     n_numeric = n_numeric_columns()
 

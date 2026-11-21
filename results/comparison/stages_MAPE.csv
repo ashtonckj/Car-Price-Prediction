@@ -5,8 +5,8 @@ Tree-based models: Random Forest,16.601,12.4201,13.224599999999999
 Neural networks: TabNet,30.5649,13.1376,
 Linear models: Polynomial Regression,28.4807,14.0297,14.3374
 Distance-based models: KNN,26.5138,15.898,14.8359
-Linear models: Huber,22.0025,14.9753,
-Linear models: Ridge,28.4564,15.0126,
+Linear models: Huber,22.0025,14.9753,15.0061
+Linear models: Ridge,28.4564,15.0126,14.9988
 Tree-based models: Decision Tree,20.5874,16.4539,
 Distance-based models: Kernel Regression,28.4837,17.3653,
 Tree-based models: Gradient Boosting,38.7048,17.4324,

@@ -6,6 +6,54 @@
   "n_train": 41265,
   "n_test": 11831,
   "models": {
+    "Ridge": {
+      "metrics": {
+        "RMSE": 28553.3677,
+        "MAE": 16863.2349,
+        "R2": 0.878,
+        "MAPE": 14.9988
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 29504.3863,
+          "MAE": 17347.2363,
+          "R2": 0.871,
+          "MAPE": 15.3412
+        },
+        "std": {
+          "RMSE": 765.8373,
+          "MAE": 364.8076,
+          "R2": 0.0058,
+          "MAPE": 0.251
+        }
+      },
+      "fit_time_s": 1.24,
+      "predict_time_s": 0.01
+    },
+    "Huber": {
+      "metrics": {
+        "RMSE": 28173.9654,
+        "MAE": 16776.9129,
+        "R2": 0.8812,
+        "MAPE": 15.0061
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 29334.2429,
+          "MAE": 17251.0456,
+          "R2": 0.8725,
+          "MAPE": 15.3036
+        },
+        "std": {
+          "RMSE": 734.4381,
+          "MAE": 338.2266,
+          "R2": 0.0057,
+          "MAPE": 0.2186
+        }
+      },
+      "fit_time_s": 17.46,
+      "predict_time_s": 0.02
+    },
     "Polynomial Regression": {
       "metrics": {
         "RMSE": 26829.0611,
@@ -27,8 +75,8 @@
           "MAPE": 0.2461
         }
       },
-      "fit_time_s": 0.96,
-      "predict_time_s": 0.06
+      "fit_time_s": 0.93,
+      "predict_time_s": 0.04
     }
   }
 }

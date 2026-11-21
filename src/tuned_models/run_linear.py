@@ -20,8 +20,8 @@ from src.shared.stages import choose_stage, load_data
 
 BEST_PARAMS = {
     "b1_tuned": {
-        # "Ridge": {'alpha': 0.5623413251903491, 'fit_intercept': True, 'solver': 'sparse_cg', 'tol': 0.001},
-        # "Huber": {'epsilon': 2.5, 'alpha': 1e-05, 'max_iter': 100},
+        "Ridge": {'alpha': 0.5623413251903491, 'fit_intercept': True, 'solver': 'sparse_cg', 'tol': 0.001},
+        "Huber": {'epsilon': 2.5, 'alpha': 1e-05, 'max_iter': 100},
         "Polynomial Regression": {'degree': 2, 'interaction_only': True, 'fit_intercept': False},
     },
 }
@@ -38,7 +38,6 @@ def build_model(name, params, n_numeric):
     if name == "Huber":
         return HuberRegressor(**params)
     if name == "Polynomial Regression":
-        # Pure polynomial regression: polynomial terms on the numeric columns only, ordinary least squares (no penalty)
         add_poly_terms = ColumnTransformer(
             [("numeric", PolynomialFeatures(degree=params["degree"], interaction_only=params["interaction_only"], include_bias=False),
               lambda X: list(range(X.shape[1] - n_numeric, X.shape[1])))],

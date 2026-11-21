@@ -5,8 +5,8 @@ Tree-based models: Random Forest,0.8455,0.9207,0.9127000000000001
 Neural networks: TabNet,0.8192,0.91,
 Linear models: Polynomial Regression,0.7804,0.8939,0.8923
 Distance-based models: KNN,0.7675,0.8717,0.8889
-Linear models: Huber,0.7203,0.8788,
-Linear models: Ridge,0.7818,0.8773,
+Linear models: Huber,0.7203,0.8788,0.8812
+Linear models: Ridge,0.7818,0.8773,0.878
 Tree-based models: Decision Tree,0.7237,0.8633,
 Tree-based models: Gradient Boosting,0.7251,0.8584,
 Distance-based models: Kernel Regression,0.7634,0.8486,

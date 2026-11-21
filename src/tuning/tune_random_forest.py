@@ -14,8 +14,7 @@ from src.shared.tuning import best_params, grid_search, validation_scores
 
 # 2 x 1 x 3 x 5 x 3 x 5 = 450 combinations
 PARAM_GRID = {
-    "bootstrap": [True, False],
-    "max_depth": [15],
+    "max_depth": [10, 20, 30, 40, 50, None],
     "max_features": [1.0, "log2", "sqrt"],
     "min_samples_leaf": [1, 2, 4, 5],
     "min_samples_split": [2, 5, 10],

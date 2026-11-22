@@ -1,0 +1,32 @@
+{
+  "stage": "b1_tuned",
+  "stage_title": "B1 tuned (full preprocessing, missing values imputed)",
+  "family": "Ensemble",
+  "n_features": 435,
+  "n_train": 41265,
+  "n_test": 11831,
+  "models": {
+    "Stacking (Ridge)": {
+      "metrics": {
+        "RMSE": 20816.2259,
+        "MAE": 12639.1225,
+        "R2": 0.9352,
+        "MAPE": 11.4051
+      },
+      "cv": null,
+      "fit_time_s": 0.0,
+      "predict_time_s": 0.0
+    },
+    "Blending (Optimal)": {
+      "metrics": {
+        "RMSE": 20922.9276,
+        "MAE": 12657.7476,
+        "R2": 0.9345,
+        "MAPE": 11.4405
+      },
+      "cv": null,
+      "fit_time_s": 0.0,
+      "predict_time_s": 0.0
+    }
+  }
+}

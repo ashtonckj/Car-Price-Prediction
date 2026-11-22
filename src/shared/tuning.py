@@ -24,20 +24,81 @@ def validation_scores(split, y_val_pred):
     return {f"val_{name}": value for name, value in rounded(metrics).items()}
 
 
+def _clean_param_value(v):
+    if pd.isna(v) or v in (None, "None"):
+        return None
+    if isinstance(v, str):
+        v = v.strip()
+        if v.isdigit():
+            return int(v)
+        try:
+            return float(v)
+        except ValueError:
+            return v
+    return v
+
+
 def best_params(table, param_names):
     """The parameters of the last (best) row, as plain Python values (ints stay ints) ready to paste into BEST_PARAMS."""
-    return table[param_names].iloc[[-1]].to_dict("records")[0]
+    raw = table[param_names].iloc[[-1]].to_dict("records")[0]
+    return {k: _clean_param_value(v) for k, v in raw.items()}
+
+
+def _normalize_param_value(val):
+    if pd.isna(val) or val in (None, "None", ""):
+        return None
+    val_str = str(val).strip()
+    try:
+        return round(float(val_str), 8)
+    except (ValueError, TypeError):
+        return val_str
+
+
+def _param_key(param_dict, param_names):
+    return tuple((name, _normalize_param_value(param_dict.get(name))) for name in sorted(param_names))
 
 
 def grid_search(model, stage, param_grid, evaluate, score_column="val_RMSE", lower_is_better=True):
     """Try every combination in param_grid. evaluate(params) returns a dict of scores that includes score_column.
-    The CSV is rewritten after each combination, so stopping early still keeps the results so far."""
+    The CSV is rewritten after each combination, so stopping early still keeps the results so far.
+    If an existing CSV exists, completed combinations are preserved and only remaining combinations are run."""
     combinations = list(ParameterGrid(param_grid))
-    print(f"Grid: {len(combinations)} combinations")
+    param_names = list(param_grid.keys())
+    out_dir = RESULTS_ROOT / stage
+    path = out_dir / f"{model}_tuning.csv"
+
     rows = []
-    for number, params in enumerate(combinations, start=1):
+    completed_keys = set()
+    if path.exists():
+        try:
+            existing_df = pd.read_csv(path)
+            if all(col in existing_df.columns for col in param_names) and score_column in existing_df.columns:
+                rows = existing_df.to_dict("records")
+                for r in rows:
+                    completed_keys.add(_param_key(r, param_names))
+        except Exception as e:
+            print(f"Warning: could not read existing {path}: {e}")
+
+    remaining = [p for p in combinations if _param_key(p, param_names) not in completed_keys]
+
+    print(f"Grid: {len(combinations)} total combinations")
+    if completed_keys:
+        print(f"Resuming: {len(completed_keys)} already completed, {len(remaining)} remaining.")
+
+    if not remaining and rows:
+        table, path = save_tuning_csv(rows, model, stage, score_column, lower_is_better)
+        return table, path
+
+    table = None
+    if rows:
+        table = pd.DataFrame(rows).sort_values(score_column, ascending=not lower_is_better, na_position="first", kind="stable").reset_index(drop=True)
+
+    for idx, params in enumerate(remaining, start=1):
+        total_done = len(completed_keys) + idx
         scores, seconds = timed(evaluate, params)
         rows.append({**{name: params[name] for name in param_grid}, **scores, "time_s": round(seconds, 1)})
         table, path = save_tuning_csv(rows, model, stage, score_column, lower_is_better)
-        print(f"[{number}/{len(combinations)}] {score_column} {scores[score_column]:,.2f} ({seconds:.0f}s) | best so far {table[score_column].iloc[-1]:,.2f} | {params}")
+        best_score = table[score_column].iloc[-1]
+        print(f"[{total_done}/{len(combinations)}] {score_column} {scores[score_column]:,.2f} ({seconds:.0f}s) | best so far {best_score:,.2f} | {params}")
+
     return table, path

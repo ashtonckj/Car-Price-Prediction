@@ -22,6 +22,11 @@ STAGE = "a2_preprocessed"
 DCN_LR = 1e-3
 DCN_BATCH_SIZE = 256
 
+# Tree depth range for the validation zoom.
+# Exclude early underfitting (depths 10, 20) to zoom into the plateau/minimum region.
+# Examples: (30, 70), (30, None), or a list like ["30", "40", "50", "60", "70"]
+RF_ZOOM_RANGE = (40, 100)
+
 
 def poly_curve(split):
     n_numeric = cc.n_numeric_columns(STAGE)
@@ -45,7 +50,7 @@ def dcn_curve(split):
 
 CURVES = {
     "polynomial_degree": cc.Curve("Polynomial Regression (degree)", "Linear family: Polynomial Regression (default)", "Polynomial degree (simple -> complex)", True, None, poly_curve),
-    "random_forest_max_depth": cc.Curve("Random Forest (max_depth)", "Tree family: Random Forest (default)", "Maximum tree depth (simple -> complex)", True, None, forest_curve),
+    "random_forest_max_depth": cc.Curve("Random Forest (max_depth)", "Tree family: Random Forest (default)", "Maximum tree depth (simple -> complex)", True, None, forest_curve, RF_ZOOM_RANGE),
     "knn_k": cc.Curve("KNN (number of neighbours)", "Distance family: KNN (default)", "Number of neighbours k (simple -> complex)", True, None, knn_curve),
     "dcnv2_epochs": cc.Curve("DCN-V2 (epochs, slow)", "Neural family: DCN-V2 (default)", "Training epochs (simple -> complex)", False, None, dcn_curve),
 }

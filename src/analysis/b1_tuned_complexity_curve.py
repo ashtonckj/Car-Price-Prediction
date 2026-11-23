@@ -16,6 +16,8 @@ from src.tuned_models import run_distance, run_linear, run_neural, run_tree
 
 STAGE = "b1_tuned"
 
+RF_ZOOM_RANGE = (40, 100)
+
 POLY_PARAMS = run_linear.BEST_PARAMS[STAGE]["Polynomial Regression"]
 RF_PARAMS = run_tree.BEST_PARAMS[STAGE]["Random Forest"]
 KNN_PARAMS = run_distance.BEST_PARAMS[STAGE]["KNN"]
@@ -46,7 +48,7 @@ def dcn_curve(split):
 
 CURVES = {
     "polynomial_degree": cc.Curve("Polynomial Regression (degree)", "Linear family: Polynomial Regression (tuned)", "Polynomial degree (simple -> complex)", True, POLY_PARAMS["degree"], poly_curve),
-    "random_forest_max_depth": cc.Curve("Random Forest (max_depth, slow)", "Tree family: Random Forest (tuned)", "Maximum tree depth (simple -> complex)", True, RF_PARAMS["max_depth"], forest_curve),
+    "random_forest_max_depth": cc.Curve("Random Forest (max_depth, slow)", "Tree family: Random Forest (tuned)", "Maximum tree depth (simple -> complex)", True, RF_PARAMS["max_depth"], forest_curve, RF_ZOOM_RANGE),
     "knn_k": cc.Curve("KNN (number of neighbours)", "Distance family: KNN (tuned)", "Number of neighbours k (simple -> complex)", True, KNN_PARAMS["n_neighbors"], knn_curve),
     "dcnv2_epochs": cc.Curve("DCN-V2 (epochs, slow)", "Neural family: DCN-V2 (tuned)", "Training epochs (simple -> complex)", False, None, dcn_curve),
 }

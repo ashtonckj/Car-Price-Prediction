@@ -6,8 +6,19 @@ from src.shared.core_utils import RESULTS_ROOT, compute_metrics
 from src.shared.experiment import rounded, timed
 
 
-def save_tuning_csv(rows, csv_name, stage, score_column, param_names, lower_is_better=True):
+def save_tuning_csv(rows, csv_name, stage, score_column, param_names=None, lower_is_better=True):
     """Write results/<stage>/<csv_name>.csv, one row per combination, worst score first (the best is the LAST row)."""
+    if isinstance(param_names, bool):
+        lower_is_better = param_names
+        param_names = None
+
+    if param_names is None:
+        score_keys = {"val_RMSE", "val_MAE", "val_R2", "val_MAPE", "time_s"}
+        if rows:
+            param_names = [k for k in rows[0].keys() if k not in score_keys and not k.startswith("val_")]
+        else:
+            param_names = []
+
     params = pd.DataFrame([{name: row[name] for name in param_names} for row in rows], dtype=object)
     scores = pd.DataFrame([{k: v for k, v in row.items() if k not in param_names} for row in rows])
     table = pd.concat([params, scores], axis=1)

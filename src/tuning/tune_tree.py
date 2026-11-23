@@ -24,8 +24,8 @@ PARAM_GRIDS = {
     }),
     # 6 x 3 x 4 x 3 x 3 = 648 combinations
     "Random Forest": ("tree_tuning_random_forest", {
-        "max_depth": [10, 20, 30, 40, 50, None],
-        "max_features": [1.0, "log2", "sqrt"],
+        "max_depth": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None],
+        "max_features": [1.0, "sqrt"],
         "min_samples_leaf": [1, 2, 4, 5],
         "min_samples_split": [2, 5, 10],
         "n_estimators": [100, 300, 500],

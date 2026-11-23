@@ -24,7 +24,7 @@ from src.shared.experiment import save_results
 from src.shared.stages import choose_stage, load_data
 from src.tuned_models.run_neural import BEST_PARAMS, predict, train_dcnv2, train_mlp
 
-MODEL_NAMES = ["MLP", "DCN_V2"]
+MODEL_NAMES = ["MLP", "DCN-V2"]
 FoldSplit = namedtuple("FoldSplit", ["X_train", "y_train", "X_val", "y_val"])
 
 
@@ -44,7 +44,7 @@ def main():
     test_preds = np.zeros((len(X_te), n_models))
 
     mlp_params = BEST_PARAMS[stage]["MLP"]
-    dcnv2_params = BEST_PARAMS[stage]["DCN-v2"]
+    dcnv2_params = BEST_PARAMS[stage]["DCN-V2"]
 
     for fold_idx, (tr_idx, oof_idx) in enumerate(kf.split(X_tr)):
         print(f"\n--- Fold {fold_idx + 1}/{kf.n_splits} ---")

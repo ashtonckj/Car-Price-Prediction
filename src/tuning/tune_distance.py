@@ -19,6 +19,18 @@ PARAM_GRIDS = {
         "weights": ["uniform", "distance", "inv_sq"],   # inv_sq = 1 / distance^2
         "metric": ["manhattan", "minkowski_1.5", "euclidean", "minkowski_3", "cosine"],
     }),
+     # 12 x 3 x 2 = 72 combinations
+    "Radius Neighbours": ("distance_tuning_radius", {
+        "radius_factor": [0.4, 0.5, 0.6, 0.75, 0.9, 1.0, 1.15, 1.3, 1.5, 1.75, 2.0, 2.5],
+        "weights": ["uniform", "distance", "inv_sq"],
+        "metric": ["manhattan", "euclidean"],
+    }),
+    # 4 x 11 x 2 = 88 combinations
+    "Kernel Regression": ("distance_tuning_kernel", {
+        "kernel": ["gaussian", "laplacian", "epanechnikov", "triangular"],
+        "bandwidth_factor": [0.2, 0.3, 0.4, 0.5, 0.6, 0.75, 0.9, 1.0, 1.25, 1.5, 2.0],
+        "metric": ["manhattan", "euclidean"],
+    }),
 }
 
 

@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
+from pytorch_tabnet.tab_model import TabNetRegressor
 from torch import nn
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
@@ -98,6 +99,8 @@ class DCNV2Regressor(nn.Module):
 # ---------- shared prediction and training ----------
 
 def predict(model, X, batch_size=2048):
+    if isinstance(model, TabNetRegressor):  # TabNet has its own predict (returns (n, 1) like the torch networks)
+        return model.predict(X)
     model.eval()
     X = torch.as_tensor(X, device=DEVICE)
     with torch.no_grad():
@@ -169,12 +172,32 @@ def train_dcnv2(params, split):
     return model, best_loss
 
 
+def train_tabnet(params, split):
+    """Train with early stopping on split.X_val (same MAX_EPOCHS and PATIENCE as the other networks).
+    n_a is set equal to n_d. Returns (model with the best weights, val MSE)."""
+    model = TabNetRegressor(
+        n_d=params["n_d"], n_a=params["n_d"], n_steps=params["n_steps"], gamma=params["gamma"],
+        lambda_sparse=params["lambda_sparse"], optimizer_params={"lr": params["lr"]},
+        seed=RANDOM_STATE, verbose=0,
+    )
+    model.fit(
+        split.X_train, split.y_train,
+        eval_set=[(split.X_val, split.y_val)], eval_metric=["rmse"],
+        max_epochs=MAX_EPOCHS, patience=PATIENCE,
+        batch_size=params["batch_size"], virtual_batch_size=params["virtual_batch_size"],
+    )
+    val_loss = float(np.mean((model.predict(split.X_val).reshape(-1) - split.y_val.reshape(-1)) ** 2))
+    return model, val_loss
+
+
 def train_model(name, params, split):
     """Returns (trained model, best val MSE) for the named network."""
     if name == "MLP":
         return train_mlp(params, split)
     if name == "DCN-V2":
         return train_dcnv2(params, split)
+    if name == "TabNet":
+        return train_tabnet(params, split)
     raise ValueError(f"Unknown model: {name}")
 
 

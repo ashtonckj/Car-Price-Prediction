@@ -35,6 +35,16 @@ PARAM_GRIDS = {
         "weight_decay": [1e-5],
         "batch_size": [256],
     }),
+    # 3 x 2 x 2 x 2 x 2 x 1 x 1 = 48 combinations.
+    "TabNet": ("neural_tuning_tabnet", {
+        "n_d": [8, 16, 32],                 # width of the decision step (and of the attention step)
+        "n_steps": [3, 5],                  # number of decision steps
+        "gamma": [1.0, 1.5],                # how much a feature may be reused across steps (1.0 = once)
+        "lambda_sparse": [1e-4, 1e-3],      # sparsity regularisation of the feature masks
+        "lr": [1e-2, 2e-2],
+        "batch_size": [1024],
+        "virtual_batch_size": [128],
+    }),
 }
 
 

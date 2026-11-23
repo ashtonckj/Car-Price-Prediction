@@ -1,0 +1,82 @@
+{
+  "stage": "b1_tuned",
+  "stage_title": "B1 tuned (full preprocessing, missing values imputed)",
+  "family": "Tree-based models",
+  "n_features": 435,
+  "n_train": 41265,
+  "n_test": 11831,
+  "models": {
+    "Decision Tree": {
+      "metrics": {
+        "RMSE": 26219.708,
+        "MAE": 15705.2048,
+        "R2": 0.8971,
+        "MAPE": 14.1663
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 27604.356,
+          "MAE": 16431.6616,
+          "R2": 0.8871,
+          "MAPE": 14.6791
+        },
+        "std": {
+          "RMSE": 606.0918,
+          "MAE": 251.5877,
+          "R2": 0.0047,
+          "MAPE": 0.2355
+        }
+      },
+      "fit_time_s": 1.22,
+      "predict_time_s": 0.01
+    },
+    "Random Forest": {
+      "metrics": {
+        "RMSE": 22631.1081,
+        "MAE": 13506.0003,
+        "R2": 0.9234,
+        "MAPE": 12.2054
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 23957.1195,
+          "MAE": 14078.2471,
+          "R2": 0.9149,
+          "MAPE": 12.5429
+        },
+        "std": {
+          "RMSE": 555.2723,
+          "MAE": 256.069,
+          "R2": 0.004,
+          "MAPE": 0.2851
+        }
+      },
+      "fit_time_s": 162.05,
+      "predict_time_s": 0.46
+    },
+    "Gradient Boosting": {
+      "metrics": {
+        "RMSE": 21775.9536,
+        "MAE": 13304.7879,
+        "R2": 0.929,
+        "MAPE": 11.947
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 22778.988,
+          "MAE": 13690.8448,
+          "R2": 0.9231,
+          "MAPE": 12.1568
+        },
+        "std": {
+          "RMSE": 662.364,
+          "MAE": 274.0721,
+          "R2": 0.0047,
+          "MAPE": 0.22
+        }
+      },
+      "fit_time_s": 1043.41,
+      "predict_time_s": 0.39
+    }
+  }
+}

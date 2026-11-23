@@ -6,13 +6,19 @@ from src.shared.core_utils import RESULTS_ROOT, compute_metrics
 from src.shared.experiment import rounded, timed
 
 
-def save_tuning_csv(rows, csv_name, stage, score_column, lower_is_better=True):
+def save_tuning_csv(rows, csv_name, stage, score_column, param_names, lower_is_better=True):
     """Write results/<stage>/<csv_name>.csv, one row per combination, worst score first (the best is the LAST row)."""
-    table = pd.DataFrame(rows).sort_values(score_column, ascending=not lower_is_better, na_position="first", kind="stable").reset_index(drop=True)
+    params = pd.DataFrame([{name: row[name] for name in param_names} for row in rows], dtype=object)
+    scores = pd.DataFrame([{k: v for k, v in row.items() if k not in param_names} for row in rows])
+    table = pd.concat([params, scores], axis=1)
+    table = table.sort_values(score_column, ascending=not lower_is_better, na_position="first", kind="stable").reset_index(drop=True)
+
     out_dir = RESULTS_ROOT / stage
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{csv_name}.csv"
-    table.to_csv(path, index=False)
+    to_write = table.copy()
+    to_write[param_names] = table[param_names].where(table[param_names].notna(), "None")
+    to_write.to_csv(path, index=False)
     return table, path
 
 
@@ -36,7 +42,7 @@ def grid_search(csv_name, stage, param_grid, evaluate, score_column="val_RMSE", 
     for number, params in enumerate(combinations, start=1):
         scores, seconds = timed(evaluate, params)
         rows.append({**{name: params[name] for name in param_grid}, **scores, "time_s": round(seconds, 1)})
-        table, path = save_tuning_csv(rows, csv_name, stage, score_column, lower_is_better)
+        table, path = save_tuning_csv(rows, csv_name, stage, score_column, list(param_grid), lower_is_better)
         print(f"[{number}/{len(combinations)}] {score_column} {scores[score_column]:,.2f} ({seconds:.0f}s) | best so far {table[score_column].iloc[-1]:,.2f} | {params}")
     return table, path
 

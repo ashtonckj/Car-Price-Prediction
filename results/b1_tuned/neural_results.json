@@ -6,6 +6,30 @@
   "n_train": 41265,
   "n_test": 11831,
   "models": {
+    "MLP": {
+      "metrics": {
+        "RMSE": 21650.0073,
+        "MAE": 13175.552,
+        "R2": 0.9299,
+        "MAPE": 11.9799
+      },
+      "cv": {
+        "mean": {
+          "RMSE": 23245.7495,
+          "MAE": 13970.0598,
+          "R2": 0.9199,
+          "MAPE": 12.3607
+        },
+        "std": {
+          "RMSE": 679.266,
+          "MAE": 177.7073,
+          "R2": 0.0054,
+          "MAPE": 0.1517
+        }
+      },
+      "fit_time_s": 15.69,
+      "predict_time_s": 0.01
+    },
     "DCN-V2": {
       "metrics": {
         "RMSE": 21646.9431,
@@ -27,8 +51,8 @@
           "MAPE": 0.2368
         }
       },
-      "fit_time_s": 19.93,
-      "predict_time_s": 0.01
+      "fit_time_s": 51.48,
+      "predict_time_s": 0.04
     }
   }
 }

@@ -1,17 +1,16 @@
 """Ensemble methods: Level-1 Ridge stacking meta-learner and constrained optimal weighted blend.
 
-Uses the five tuned base models from Part B (Polynomial Regression, Random Forest, Gradient Boosting, KNN, DCN-V2).
+Uses four tuned base models from Part B (Polynomial Regression, Gradient Boosting, KNN, DCN-V2).
 Out-of-fold predictions on the 70% training set form the meta-features; validation predictions are fold-averaged.
 Finally evaluates on both validation and the 20% test set, and saves results following the project standard.
 Run it and type a stage number.
 """
-from collections import namedtuple
 import sys
+from collections import namedtuple
 from pathlib import Path
 
 import numpy as np
 from scipy.optimize import minimize
-from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import RidgeCV
 from sklearn.metrics import root_mean_squared_error
 from sklearn.model_selection import KFold
@@ -24,39 +23,26 @@ from src.shared.core_utils import RANDOM_STATE, evaluate
 from src.shared.experiment import save_results
 from src.shared.stages import choose_stage, load_data
 
-# Import tuned model builders / trainers
-from src.tuned_models.run_linear import (
-    BEST_PARAMS as LINEAR_BEST,
-    build_model as build_linear_model,
-    n_numeric_columns,
-)
-from src.tuned_models.run_random_forest import BEST_PARAMS as RF_BEST
-from src.tuned_models.run_gradient_boosting import BEST_PARAMS as GB_BEST
-from src.tuned_models.run_knn import BEST_PARAMS as KNN_BEST, build_model as build_knn_model
-from src.tuned_models.run_dcnv2 import (
-    BEST_PARAMS as DCNV2_BEST,
-    train_model as train_dcnv2,
-    predict as predict_dcnv2,
-)
+# Tuned model builders / trainers (each family file has its own BEST_PARAMS, keyed by stage and then model name)
+from src.tuned_models import run_distance, run_linear, run_neural, run_tree
 
-MODEL_NAMES = ["Polynomial_Regression", "Gradient_Boosting", "KNN", "DCN_V2"]
+MODEL_NAMES = ["Polynomial Regression", "Gradient Boosting", "KNN", "DCN-V2"]  # the names used in the BEST_PARAMS
 FoldSplit = namedtuple("FoldSplit", ["X_train", "y_train", "X_val", "y_val"])
 
 
 def _build_sklearn_models(stage, n_numeric):
-    """Return a list of (name, unfitted sklearn model) for the 4 sklearn base learners."""
-    poly_params = LINEAR_BEST[stage]["Polynomial Regression"]
+    """Return a list of (name, unfitted sklearn model) for the 3 sklearn base learners."""
     return [
-        ("Polynomial_Regression", build_linear_model("Polynomial Regression", poly_params, n_numeric)),
-        ("Gradient_Boosting", GradientBoostingRegressor(**GB_BEST[stage], random_state=RANDOM_STATE)),
-        ("KNN", build_knn_model(KNN_BEST[stage])),
+        ("Polynomial Regression", run_linear.build_model("Polynomial Regression", run_linear.BEST_PARAMS[stage]["Polynomial Regression"], n_numeric)),
+        ("Gradient Boosting", run_tree.build_model("Gradient Boosting", run_tree.BEST_PARAMS[stage]["Gradient Boosting"])),
+        ("KNN", run_distance.build_model("KNN", run_distance.BEST_PARAMS[stage]["KNN"])),
     ]
 
 
 def main():
     stage = choose_stage("B")
     split = load_data(stage)
-    n_numeric = n_numeric_columns()
+    n_numeric = run_linear.n_numeric_columns()
 
     X_tr, y_tr = split.X_train, split.y_train.ravel()
     X_va, y_va = split.X_val, split.y_val.ravel()
@@ -69,7 +55,7 @@ def main():
     val_preds = np.zeros((len(X_va), n_models))
     test_preds = np.zeros((len(X_te), n_models))
 
-    dcnv2_params = DCNV2_BEST[stage]
+    dcnv2_params = run_neural.BEST_PARAMS[stage]["DCN-V2"]
 
     for fold_idx, (tr_idx, oof_idx) in enumerate(kf.split(X_tr)):
         print(f"\n--- Fold {fold_idx + 1}/{kf.n_splits} ---")
@@ -92,10 +78,10 @@ def main():
             X_f_va,
             y_f_va.reshape(-1, 1).astype("float32"),
         )
-        dcnv2_model, _ = train_dcnv2(dcnv2_params, fold_split)
-        oof_train[oof_idx, dcn_col] = np.asarray(predict_dcnv2(dcnv2_model, X_f_va)).ravel()
-        val_preds[:, dcn_col] += np.asarray(predict_dcnv2(dcnv2_model, X_va)).ravel() / kf.n_splits
-        test_preds[:, dcn_col] += np.asarray(predict_dcnv2(dcnv2_model, X_te)).ravel() / kf.n_splits
+        dcnv2_model, _ = run_neural.train_dcnv2(dcnv2_params, fold_split)
+        oof_train[oof_idx, dcn_col] = np.asarray(run_neural.predict(dcnv2_model, X_f_va)).ravel()
+        val_preds[:, dcn_col] += np.asarray(run_neural.predict(dcnv2_model, X_va)).ravel() / kf.n_splits
+        test_preds[:, dcn_col] += np.asarray(run_neural.predict(dcnv2_model, X_te)).ravel() / kf.n_splits
 
     # --- Method A: Level-1 Ridge Stacking Meta-Learner ---
     meta_ridge = RidgeCV(alphas=np.logspace(-2, 3, 50))

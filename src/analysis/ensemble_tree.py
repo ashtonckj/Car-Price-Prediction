@@ -10,7 +10,6 @@ from pathlib import Path
 
 import numpy as np
 from scipy.optimize import minimize
-from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import RidgeCV
 from sklearn.metrics import root_mean_squared_error
 from sklearn.model_selection import KFold
@@ -22,19 +21,14 @@ if str(ROOT_DIR) not in sys.path:
 from src.shared.core_utils import RANDOM_STATE, evaluate
 from src.shared.experiment import save_results
 from src.shared.stages import choose_stage, load_data
+from src.tuned_models.run_tree import BEST_PARAMS, build_model
 
-from src.tuned_models.run_random_forest import BEST_PARAMS as RF_BEST
-from src.tuned_models.run_gradient_boosting import BEST_PARAMS as GB_BEST
-
-MODEL_NAMES = ["Random_Forest", "Gradient_Boosting"]
+MODEL_NAMES = ["Random Forest", "Gradient Boosting"]  # the names used in run_tree.BEST_PARAMS
 
 
 def _build_sklearn_models(stage):
-    """Return a list of (name, unfitted sklearn model) for the tree-based base learners."""
-    return [
-        ("Random_Forest", RandomForestRegressor(**RF_BEST[stage], random_state=RANDOM_STATE, n_jobs=-1)),
-        ("Gradient_Boosting", GradientBoostingRegressor(**GB_BEST[stage], random_state=RANDOM_STATE)),
-    ]
+    """Return a list of (name, unfitted sklearn model) for the tree-based base learners, built with their tuned parameters."""
+    return [(name, build_model(name, BEST_PARAMS[stage][name])) for name in MODEL_NAMES]
 
 
 def main():

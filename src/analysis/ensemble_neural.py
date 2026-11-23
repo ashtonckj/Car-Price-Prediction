@@ -5,8 +5,8 @@ Out-of-fold predictions on the 70% training set form the meta-features; validati
 Finally evaluates on both validation and the 20% test set, and saves results following the project standard.
 Run it and type a stage number.
 """
-from collections import namedtuple
 import sys
+from collections import namedtuple
 from pathlib import Path
 
 import numpy as np
@@ -22,17 +22,7 @@ if str(ROOT_DIR) not in sys.path:
 from src.shared.core_utils import RANDOM_STATE, evaluate
 from src.shared.experiment import save_results
 from src.shared.stages import choose_stage, load_data
-
-from src.tuned_models.run_mlp import (
-    BEST_PARAMS as MLP_BEST,
-    train_model as train_mlp,
-    predict as predict_mlp,
-)
-from src.tuned_models.run_dcnv2 import (
-    BEST_PARAMS as DCNV2_BEST,
-    train_model as train_dcnv2,
-    predict as predict_dcnv2,
-)
+from src.tuned_models.run_neural import BEST_PARAMS, predict, train_dcnv2, train_mlp
 
 MODEL_NAMES = ["MLP", "DCN_V2"]
 FoldSplit = namedtuple("FoldSplit", ["X_train", "y_train", "X_val", "y_val"])
@@ -53,8 +43,8 @@ def main():
     val_preds = np.zeros((len(X_va), n_models))
     test_preds = np.zeros((len(X_te), n_models))
 
-    mlp_params = MLP_BEST[stage]
-    dcnv2_params = DCNV2_BEST[stage]
+    mlp_params = BEST_PARAMS[stage]["MLP"]
+    dcnv2_params = BEST_PARAMS[stage]["DCN-v2"]
 
     for fold_idx, (tr_idx, oof_idx) in enumerate(kf.split(X_tr)):
         print(f"\n--- Fold {fold_idx + 1}/{kf.n_splits} ---")
@@ -70,15 +60,15 @@ def main():
 
         # 1. Fit MLP on fold training split (index 0)
         mlp_model, _ = train_mlp(mlp_params, fold_split)
-        oof_train[oof_idx, 0] = np.asarray(predict_mlp(mlp_model, X_f_va)).ravel()
-        val_preds[:, 0] += np.asarray(predict_mlp(mlp_model, X_va)).ravel() / kf.n_splits
-        test_preds[:, 0] += np.asarray(predict_mlp(mlp_model, X_te)).ravel() / kf.n_splits
+        oof_train[oof_idx, 0] = np.asarray(predict(mlp_model, X_f_va)).ravel()
+        val_preds[:, 0] += np.asarray(predict(mlp_model, X_va)).ravel() / kf.n_splits
+        test_preds[:, 0] += np.asarray(predict(mlp_model, X_te)).ravel() / kf.n_splits
 
         # 2. Fit DCN-V2 on fold training split (index 1)
         dcnv2_model, _ = train_dcnv2(dcnv2_params, fold_split)
-        oof_train[oof_idx, 1] = np.asarray(predict_dcnv2(dcnv2_model, X_f_va)).ravel()
-        val_preds[:, 1] += np.asarray(predict_dcnv2(dcnv2_model, X_va)).ravel() / kf.n_splits
-        test_preds[:, 1] += np.asarray(predict_dcnv2(dcnv2_model, X_te)).ravel() / kf.n_splits
+        oof_train[oof_idx, 1] = np.asarray(predict(dcnv2_model, X_f_va)).ravel()
+        val_preds[:, 1] += np.asarray(predict(dcnv2_model, X_va)).ravel() / kf.n_splits
+        test_preds[:, 1] += np.asarray(predict(dcnv2_model, X_te)).ravel() / kf.n_splits
 
     # --- Method A: Level-1 Ridge Stacking Meta-Learner ---
     meta_ridge = RidgeCV(alphas=np.logspace(-2, 3, 50))

@@ -17,6 +17,7 @@ from src.shared.experiment import (
     save_results,
     timed,
 )
+from src.shared.saved_models import save_model
 from src.shared.stages import choose_stage, load_data
 
 BEST_PARAMS = {
@@ -57,6 +58,7 @@ def main():
         print(f"\n===== {name} (tuned) | parameters: {params} =====")
         cv_results[name] = cross_validate(stage, lambda fold: fit_predict(fold, name, params))
         results[name] = fit_predict(split, name, params)
+        save_model(stage, "tree", name, results[name]["model"], split)
         print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
         evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
 

@@ -21,6 +21,7 @@ from src.shared.experiment import (
     save_results,
     timed,
 )
+from src.shared.saved_models import save_model
 from src.shared.stages import choose_stage, load_data
 
 BEST_PARAMS = {
@@ -45,7 +46,7 @@ def build_model(name, params, n_numeric):
     if name == "Polynomial Regression":
         add_poly_terms = ColumnTransformer(
             [("numeric", PolynomialFeatures(degree=params["degree"], interaction_only=params["interaction_only"], include_bias=False),
-              lambda X: list(range(X.shape[1] - n_numeric, X.shape[1])))],
+              list(range(-n_numeric, 0)))],  # the last n_numeric columns (a lambda here could not be saved)
             remainder="passthrough",
         )
         return Pipeline([("poly", add_poly_terms), ("linreg", LinearRegression(fit_intercept=params["fit_intercept"]))])
@@ -72,6 +73,7 @@ def main():
         print(f"\n===== {name} (tuned) | parameters: {params} =====")
         cv_results[name] = cross_validate(stage, lambda fold: fit_predict(fold, name, params, n_numeric))
         results[name] = fit_predict(split, name, params, n_numeric)
+        save_model(stage, "linear", name, results[name]["model"], split)
         print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
         evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
 

@@ -23,7 +23,7 @@ N_NUMERIC = 0  # set in main(): number of numeric columns (always the last ones 
 def polynomial_regression():
     add_poly_terms = ColumnTransformer(
         [("numeric", PolynomialFeatures(),
-          lambda X: list(range(X.shape[1] - N_NUMERIC, X.shape[1])))],
+          list(range(-N_NUMERIC, 0)))],  # the last N_NUMERIC columns (a lambda here could not be saved)
         remainder="passthrough",
     )
     return Pipeline([("poly", add_poly_terms), ("linreg", LinearRegression())])

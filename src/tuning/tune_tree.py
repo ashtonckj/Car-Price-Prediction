@@ -30,7 +30,7 @@ PARAM_GRIDS = {
         "min_samples_split": [2, 5, 10],
         "n_estimators": [100, 300, 500],
     }),
-    # 3 x 3 x 2 x 2 x 2 x 3 x 3 = 324 combinations
+    # 3 x 3 x 2 x 2 x 2 x 3 x 3 = 648 combinations
     "Gradient Boosting": ("tree_tuning_gradient_boosting", {
         "learning_rate": [0.01, 0.05, 0.1],
         "max_depth": [3, 5, 8],

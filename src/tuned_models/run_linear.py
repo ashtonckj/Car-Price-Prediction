@@ -1,5 +1,4 @@
-"""Tuned linear models (Part B): trains Ridge, Huber and Polynomial Regression with BEST_PARAMS and reports 5-fold CV
-and test results."""
+"""Tuned linear models (Part B): trains Ridge, Huber, and Polynomial Regression with BEST_PARAMS and reports 5-fold CV and test results."""
 import sys
 from pathlib import Path
 
@@ -15,7 +14,13 @@ if str(ROOT_DIR) not in sys.path:
 
 from src.preprocessing import full
 from src.shared.core_utils import RANDOM_STATE, evaluate
-from src.shared.experiment import cross_validate, save_results, timed
+from src.shared.experiment import (
+    choose_models,
+    cross_validate,
+    get_best_params,
+    save_results,
+    timed,
+)
 from src.shared.stages import choose_stage, load_data
 
 BEST_PARAMS = {
@@ -57,20 +62,20 @@ def fit_predict(split, name, params, n_numeric):
 
 def main():
     stage = choose_stage("B")
-    if stage not in BEST_PARAMS:
-        sys.exit(f"Add the best parameters for {stage} to BEST_PARAMS at the top of this file (see results/{stage}/<ridge|huber|polynomial>_tuning.csv).")
+    names = choose_models(BEST_PARAMS[stage], "run")
+    chosen = get_best_params(BEST_PARAMS, stage, names, "linear")
     split = load_data(stage)
     n_numeric = n_numeric_columns()
 
     results, cv_results = {}, {}
-    for name, params in BEST_PARAMS[stage].items():
+    for name, params in chosen.items():
         print(f"\n===== {name} (tuned) | parameters: {params} =====")
         cv_results[name] = cross_validate(stage, lambda fold: fit_predict(fold, name, params, n_numeric))
         results[name] = fit_predict(split, name, params, n_numeric)
         print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
         evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
 
-    save_results(stage, "linear", "Linear models", results, split, cv_results)
+    save_results(stage, "linear", "Linear models", results, split, cv_results, order=BEST_PARAMS[stage])
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
-"""The stages the scripts can run. Part A = default parameters (src/models), Part B = tuning (src/tuning, src/tuned_models).
+"""The stages the scripts can run. Part A = default parameters (src/models), Part B = tuning (src/tuning, src/tuned_models),
+ensemble = Part B step 2 (src/ensemble: the tuned models of a Part B stage combined).
 To add a stage: write its load_data_* in core_utils.py and add a line to STAGES."""
 import sys
 
@@ -8,6 +9,9 @@ STAGES = {
     "a1_baseline": {"part": "A", "title": "A1 baseline (minimal preprocessing)", "load": load_data_minimal},
     "a2_preprocessed": {"part": "A", "title": "A2 full preprocessing", "load": load_data_full},
     "b1_tuned": {"part": "B", "title": "B1 tuned (full preprocessing, missing values imputed)", "load": load_data_full},
+    # Same data as b1_tuned; the ensemble scripts take their base models' BEST_PARAMS from b1_tuned and save here.
+    # Its own part, so choose_stage("B") (tuning / tuned-model menus) does not offer it.
+    "b2_ensemble": {"part": "ensemble", "title": "B2 ensemble (tuned b1 models combined)", "load": load_data_full},
 }
 
 

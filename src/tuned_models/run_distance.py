@@ -19,7 +19,7 @@ from src.shared.experiment import (
 )
 from src.shared.stages import choose_stage, load_data
 
-# Copy the best row of results/<stage>/distance_knn_tuning.csv here after running tune_distance.py
+# Copy the best row of results/<stage>/distance_tuning_knn.csv here after running tune_distance.py
 BEST_PARAMS = {
     "b1_tuned": {
         "KNN": {'n_neighbors': 9, 'weights': 'inv_sq', 'metric': 'manhattan'},

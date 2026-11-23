@@ -74,7 +74,7 @@ class DCNV2(nn.Module):
     """Deep & Cross Network V2 (Wang et al., 2021), STACKED structure with LOW-RANK cross layers:
     x -> cross network (explicit feature crosses) -> deep network (128-64 MLP) -> linear output.
 
-    The same network as src/tuned_models/run_dcnv2.py (DCNV2Regressor with structure="stacked", low_rank=32), here with its
+    The same network as src/tuned_models/run_neural.py (DCNV2Regressor with structure="stacked", low_rank=32), here with its
     default settings. Stacked + low-rank was the best of the four DCN-V2 variants in the b1 tuning grid (lowest best,
     median and mean validation RMSE), so the default and the tuned DCN-V2 are the same model with different settings.
     """

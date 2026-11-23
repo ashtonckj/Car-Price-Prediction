@@ -24,9 +24,6 @@ DCN_PARAMS = run_neural.BEST_PARAMS[STAGE]["DCN-V2"]
 
 def poly_curve(split):
     n_numeric = cc.n_numeric_columns(STAGE)
-    if POLY_PARAMS is None:
-        return cc.sweep(split, lambda d: cc.polynomial(d, n_numeric), cc.POLY_DEGREES)
-    # run_linear.build_model is used as is; update this line if Ji Ting changes its signature
     return cc.sweep(split, lambda d: run_linear.build_model("Polynomial Regression", {**POLY_PARAMS, "degree": d}, n_numeric), cc.POLY_DEGREES)
 
 

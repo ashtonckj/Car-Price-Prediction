@@ -1,4 +1,6 @@
-"""Compares every saved model across stages (no retraining). Run it after the model files; output goes to results/comparison/."""
+"""Compares every saved model across stages (no retraining). Run it after the model files; output goes to results/comparison/.
+Only the Part A and Part B single-model stages (a1, a2, b1) are compared: b2_ensemble combines models instead of being a
+new setting for the same models, so it has no row to line up with."""
 import sys
 from pathlib import Path
 
@@ -15,6 +17,7 @@ from src.shared.stages import STAGES
 
 OUT_DIR = RESULTS_ROOT / "comparison"
 STAGE_METRICS = ["R2", "MAE", "MAPE"]  # compared across stages
+COMPARED_STAGES = [stage for stage, info in STAGES.items() if info["part"] in ("A", "B")]  # a1, a2, b1 (not b2_ensemble)
 SHOWN_COLUMNS = ["Family", "Model", "R2", "CV_R2_mean", "CV_R2_std", "MAE", "RMSE", "MAPE", "Fit_time_s"]
 
 
@@ -22,7 +25,7 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     pd.set_option("display.width", 200)
 
-    tables = {stage: load_stage_results(stage) for stage in STAGES}
+    tables = {stage: load_stage_results(stage) for stage in COMPARED_STAGES}
     tables = {stage: t for stage, t in tables.items() if not t.empty}
     if not tables:
         sys.exit(f"No results found in {RESULTS_ROOT}/<stage>/. Run the model files first.")

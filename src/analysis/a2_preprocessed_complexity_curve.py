@@ -15,7 +15,6 @@ if str(ROOT_DIR) not in sys.path:
 from src.models.neural_models import DCNV2, predict
 from src.shared import complexity as cc
 from src.shared.core_utils import RANDOM_STATE
-from src.shared.stages import load_data
 
 STAGE = "a2_preprocessed"
 
@@ -24,29 +23,36 @@ DCN_LR = 1e-3
 DCN_BATCH_SIZE = 256
 
 
-def main():
-    split = load_data(STAGE)
+def poly_curve(split):
     n_numeric = cc.n_numeric_columns(STAGE)
+    return cc.sweep(split, lambda d: cc.polynomial(d, n_numeric), cc.POLY_DEGREES)
 
-    print("\nPolynomial Regression (degree)")
-    poly = cc.sweep(split, lambda d: cc.polynomial(d, n_numeric), cc.POLY_DEGREES)
-    print("\nRandom Forest (max_depth; everything else default)")
-    forest = cc.sweep(split, lambda d: RandomForestRegressor(max_depth=d, random_state=RANDOM_STATE, n_jobs=-1), cc.RF_DEPTHS)
-    print("\nKNN (number of neighbours; everything else default)")
-    knn = cc.sweep(split, lambda k: KNeighborsRegressor(n_neighbors=k, n_jobs=-1), cc.KNN_K)
 
-    print("\nDCN-V2 (epochs; everything else default)")
+def forest_curve(split):
+    return cc.sweep(split, lambda d: RandomForestRegressor(max_depth=d, random_state=RANDOM_STATE, n_jobs=-1), cc.RF_DEPTHS)
+
+
+def knn_curve(split):
+    return cc.sweep(split, lambda k: KNeighborsRegressor(n_neighbors=k, n_jobs=-1), cc.KNN_K)
+
+
+def dcn_curve(split):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(RANDOM_STATE)
     model = DCNV2(n_features=split.X_train.shape[1]).to(device)  # 3 low-rank cross layers, 128-64 deep, dropout 0.1
-    dcn = cc.epoch_curve(split, model, torch.optim.Adam(model.parameters(), lr=DCN_LR), DCN_BATCH_SIZE, predict)
+    return cc.epoch_curve(split, model, torch.optim.Adam(model.parameters(), lr=DCN_LR), DCN_BATCH_SIZE, predict)
 
-    cc.save(STAGE, [
-        ("polynomial_degree", poly, "Linear family: Polynomial Regression (default)", "Polynomial degree (simple -> complex)", True, None),
-        ("random_forest_max_depth", forest, "Tree family: Random Forest (default)", "Maximum tree depth (simple -> complex)", True, None),
-        ("knn_k", knn, "Distance family: KNN (default)", "Number of neighbours k (simple -> complex)", True, None),
-        ("dcnv2_epochs", dcn, "Neural family: DCN-V2 (default)", "Training epochs (simple -> complex)", False, None),
-    ], f"Model complexity curves, default settings ({STAGE}): training vs validation error")
+
+CURVES = {
+    "polynomial_degree": cc.Curve("Polynomial Regression (degree)", "Linear family: Polynomial Regression (default)", "Polynomial degree (simple -> complex)", True, None, poly_curve),
+    "random_forest_max_depth": cc.Curve("Random Forest (max_depth)", "Tree family: Random Forest (default)", "Maximum tree depth (simple -> complex)", True, None, forest_curve),
+    "knn_k": cc.Curve("KNN (number of neighbours)", "Distance family: KNN (default)", "Number of neighbours k (simple -> complex)", True, None, knn_curve),
+    "dcnv2_epochs": cc.Curve("DCN-V2 (epochs, slow)", "Neural family: DCN-V2 (default)", "Training epochs (simple -> complex)", False, None, dcn_curve),
+}
+
+
+def main():
+    cc.run(STAGE, CURVES, f"Model complexity curves, default settings ({STAGE}): training vs validation error")
 
 
 if __name__ == "__main__":

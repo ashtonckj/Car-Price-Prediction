@@ -27,7 +27,7 @@
           "MAPE": 0.2355
         }
       },
-      "fit_time_s": 1.22,
+      "fit_time_s": 1.13,
       "predict_time_s": 0.01
     },
     "Random Forest": {
@@ -51,8 +51,8 @@
           "MAPE": 0.2851
         }
       },
-      "fit_time_s": 162.05,
-      "predict_time_s": 0.46
+      "fit_time_s": 122.84,
+      "predict_time_s": 0.3
     },
     "Gradient Boosting": {
       "metrics": {
@@ -75,8 +75,8 @@
           "MAPE": 0.22
         }
       },
-      "fit_time_s": 1043.41,
-      "predict_time_s": 0.39
+      "fit_time_s": 493.06,
+      "predict_time_s": 0.35
     }
   }
 }

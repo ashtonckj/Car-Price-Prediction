@@ -27,8 +27,8 @@
           "MAPE": 0.1517
         }
       },
-      "fit_time_s": 15.69,
-      "predict_time_s": 0.01
+      "fit_time_s": 34.88,
+      "predict_time_s": 0.02
     },
     "DCN-V2": {
       "metrics": {
@@ -51,8 +51,8 @@
           "MAPE": 0.2368
         }
       },
-      "fit_time_s": 51.48,
-      "predict_time_s": 0.04
+      "fit_time_s": 20.51,
+      "predict_time_s": 0.02
     },
     "TabNet": {
       "metrics": {
@@ -75,8 +75,8 @@
           "MAPE": 0.6883
         }
       },
-      "fit_time_s": 170.03,
-      "predict_time_s": 0.45
+      "fit_time_s": 167.55,
+      "predict_time_s": 0.43
     }
   }
 }

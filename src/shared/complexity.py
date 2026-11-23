@@ -34,6 +34,7 @@ from sklearn.preprocessing import PolynomialFeatures
 
 from src.preprocessing import full, minimal
 from src.shared.core_utils import RANDOM_STATE, RESULTS_ROOT
+from src.shared.experiment import choose_models
 from src.shared.plots import THOUSANDS
 from src.shared.stages import load_data
 
@@ -116,18 +117,11 @@ def epoch_curve(split, model, optimizer, batch_size, predict, flat_target=False,
 # ---------- menu, CSV and figure ----------
 
 def choose_curves(curves):
-    """Ask which curves to (re)compute; returns a list of keys of `curves`."""
+    """Ask which curves to (re)compute, with the same menu as the model scripts (numbers separated by commas, Enter = all).
+    The others keep their saved rows in complexity_curve.csv. Returns a list of keys of `curves`."""
     keys = list(curves)
-    print("Which curves do you want to (re)compute? The others keep their saved rows in complexity_curve.csv.")
-    for number, key in enumerate(keys, start=1):
-        print(f"  {number} = {curves[key].name}")
-    print(f"  {len(keys) + 1} = all {len(keys)}")
-    answer = input('Type one or more numbers separated by spaces (e.g. "1 3") and press Enter: ').split()
-    if not answer or not all(a.isdigit() and 1 <= int(a) <= len(keys) + 1 for a in answer):
-        sys.exit(f"'{' '.join(answer)}' is not an option.")
-    if str(len(keys) + 1) in answer:
-        return keys
-    return [keys[int(a) - 1] for a in dict.fromkeys(answer)]  # keep the order typed, drop repeats
+    names = choose_models([curves[key].name for key in keys], "(re)compute")
+    return [key for key in keys if curves[key].name in names]
 
 
 def _clean_value(value):

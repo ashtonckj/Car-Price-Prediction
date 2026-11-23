@@ -90,7 +90,7 @@ def grid_search(csv_name, stage, param_grid, evaluate, score_column="val_RMSE", 
         print(f"Resuming: {len(completed_keys)} already completed, {len(remaining)} remaining.")
 
     if not remaining and rows:
-        table, path = save_tuning_csv(rows, csv_name, stage, score_column, lower_is_better)
+        table, path = save_tuning_csv(rows, csv_name, stage, score_column, param_names, lower_is_better)
         return table, path
 
     table = None
@@ -101,7 +101,7 @@ def grid_search(csv_name, stage, param_grid, evaluate, score_column="val_RMSE", 
         total_done = len(completed_keys) + idx
         scores, seconds = timed(evaluate, params)
         rows.append({**{name: params[name] for name in param_grid}, **scores, "time_s": round(seconds, 1)})
-        table, path = save_tuning_csv(rows, csv_name, stage, score_column, lower_is_better)
+        table, path = save_tuning_csv(rows, csv_name, stage, score_column, param_names, lower_is_better)
         best_score = table[score_column].iloc[-1]
         print(f"[{total_done}/{len(combinations)}] {score_column} {scores[score_column]:,.2f} ({seconds:.0f}s) | best so far {best_score:,.2f} | {params}")
 

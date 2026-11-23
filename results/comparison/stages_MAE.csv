@@ -1,13 +1,15 @@
 Model,a1_baseline,a2_preprocessed,b1_tuned
+Ensemble: Stacking (Ridge),,,12766.739275
+Ensemble: Blending (Optimal),,,12778.898575
 Neural networks: DCN-V2,16533.0273,13318.1924,12995.5679
 Neural networks: MLP,17421.1895,13547.9668,13175.552
-Tree-based models: Random Forest,19369.601,13713.8282,14795.88105
-Neural networks: TabNet,30240.1113,14577.4242,
-Linear models: Polynomial Regression,28164.5352,15850.8005,16098.6441
+Tree-based models: Gradient Boosting,35335.6982,19935.4365,13304.7879
+Tree-based models: Random Forest,19369.601,13713.8282,13506.0003
+Neural networks: TabNet,30240.1113,14577.4242,13756.408
+Tree-based models: Decision Tree,24537.9465,17948.8116,15705.2048
+Linear models: Polynomial Regression,28164.5352,15850.8005,16098.6329
 Distance-based models: KNN,27167.5195,17647.7458,16333.2638
-Linear models: Huber,25671.1172,16700.1029,16776.9129
-Linear models: Ridge,28133.6973,16905.6966,16863.2349
-Tree-based models: Decision Tree,24537.9465,17948.8116,
+Linear models: Huber,25671.1172,16700.1029,16776.9718
+Linear models: Ridge,28133.6973,16905.6966,16866.1188
 Distance-based models: Kernel Regression,27358.4564,19773.9862,
-Tree-based models: Gradient Boosting,35335.6982,19935.4365,
 Distance-based models: Radius Neighbours,72543.8047,24656.2215,

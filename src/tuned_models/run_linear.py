@@ -62,7 +62,7 @@ def fit_predict(split, name, params, n_numeric):
 
 def main():
     stage = choose_stage("B")
-    names = choose_models(BEST_PARAMS[stage], "run")
+    names = choose_models(list(BEST_PARAMS[stage]), "run")
     chosen = get_best_params(BEST_PARAMS, stage, names, "linear")
     split = load_data(stage)
     n_numeric = n_numeric_columns()

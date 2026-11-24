@@ -1,32 +1,32 @@
 {
-  "stage": "b1_tuned",
-  "stage_title": "B1 tuned (full preprocessing, missing values imputed)",
-  "family": "Ensemble",
+  "stage": "b2_ensemble",
+  "stage_title": "B2 ensemble (tuned b1 models combined)",
+  "family": "Ensemble (MLP + DCN-V2)",
   "n_features": 435,
   "n_train": 41265,
   "n_test": 11831,
   "models": {
     "Stacking (Ridge)": {
       "metrics": {
-        "RMSE": 21379.5345,
-        "MAE": 12869.1444,
-        "R2": 0.9316,
-        "MAPE": 11.6385
+        "RMSE": 21549.366,
+        "MAE": 12960.3615,
+        "R2": 0.9305,
+        "MAPE": 11.7218
       },
       "cv": null,
-      "fit_time_s": 0.0,
-      "predict_time_s": 0.0
+      "fit_time_s": 214.15,
+      "predict_time_s": 0.27
     },
     "Blending (Optimal)": {
       "metrics": {
-        "RMSE": 21426.0736,
-        "MAE": 12876.0842,
-        "R2": 0.9313,
-        "MAPE": 11.6622
+        "RMSE": 21560.5992,
+        "MAE": 12957.2129,
+        "R2": 0.9304,
+        "MAPE": 11.7286
       },
       "cv": null,
-      "fit_time_s": 0.0,
-      "predict_time_s": 0.0
+      "fit_time_s": 214.15,
+      "predict_time_s": 0.27
     }
   }
 }

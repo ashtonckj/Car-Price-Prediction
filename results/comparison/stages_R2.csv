@@ -1,15 +1,3 @@
-Model,a1_baseline,a2_preprocessed,b1_tuned
-Ensemble: Stacking (Ridge),,,0.9336
-Ensemble: Blending (Optimal),,,0.933125
-Neural networks: DCN-V2,0.9085,0.9244,0.9299
-Neural networks: MLP,0.8916,0.921,0.9299
-Tree-based models: Gradient Boosting,0.7251,0.8584,0.929
-Tree-based models: Random Forest,0.8455,0.9207,0.9234
-Neural networks: TabNet,0.8192,0.91,0.9219
-Tree-based models: Decision Tree,0.7237,0.8633,0.8971
-Linear models: Polynomial Regression,0.7804,0.8939,0.8923
-Distance-based models: KNN,0.7675,0.8717,0.8889
-Linear models: Huber,0.7203,0.8788,0.8812
-Linear models: Ridge,0.7818,0.8773,0.8779
-Distance-based models: Kernel Regression,0.7634,0.8486,
-Distance-based models: Radius Neighbours,0.0029,0.727,
+version https://git-lfs.github.com/spec/v1
+oid sha256:09df3c3e997a321bb8b39aa773e564a8c2999eba374950453e43146529889265
+size 651

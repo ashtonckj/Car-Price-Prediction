@@ -79,6 +79,14 @@ def load_stage_complexity(stage):
     return df
 
 
+def label_point(ax, x, y, color, above=True):
+    """Dot on the curve at the kept epoch with its RMSE written next to it (validation above, training below)."""
+    ax.plot(x, y, "o", color=color, markersize=8, markeredgecolor="black", markeredgewidth=0.8, zorder=6)
+    ax.annotate(f"{y:,.0f}", (x, y), xytext=(0, 11 if above else -11), textcoords="offset points",
+                ha="center", va="bottom" if above else "top", fontsize=9, fontweight="bold", color=color, zorder=7,
+                bbox={"boxstyle": "round,pad=0.2", "fc": "white", "ec": color, "lw": 1, "alpha": 0.95})
+
+
 def plot_comparison_panels(df_a2, df_b1):
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     fig, axes = plt.subplots(2, 2, figsize=(16, 11))
@@ -169,22 +177,31 @@ def plot_comparison_panels(df_a2, df_b1):
                     print(f"Warning: could not draw RF inset zoom: {e}")
 
         else:
-            # Numeric axis (epochs)
+            # Numeric axis (epochs): each curve ends where early stopping would have stopped that training run
             if not a2_sub.empty:
-                x_a2 = [float(v) for v in a2_sub["value"]]
-                ax.plot(x_a2, a2_sub["train_RMSE"], "--", color="#6baed6", linewidth=1.5, label="Default Train (a2)")
-                ax.plot(x_a2, a2_sub["val_RMSE"], "--", color="#fd8d3c", linewidth=2.0, label="Default Val (a2)")
-                best_a2 = int(a2_sub["val_RMSE"].idxmin())
-                ax.axvline(x_a2[best_a2], color="#ff3c23", linestyle=":", alpha=0.8,
-                           label=f"Best Default: ep {x_a2[best_a2]:.0f} ({a2_sub['val_RMSE'][best_a2]:,.0f})")
+                kept, stop = cc.early_stop_epochs(a2_sub)
+                a2_run = a2_sub.iloc[:stop]
+                x_a2 = [float(v) for v in a2_run["value"]]
+                ax.plot(x_a2, a2_run["train_RMSE"], "--", color="#6baed6", linewidth=1.5, label="Default Train (a2)")
+                ax.plot(x_a2, a2_run["val_RMSE"], "--", color="#fd8d3c", linewidth=2.0, label="Default Val (a2)")
+                ax.plot([x_a2[-1]] * 2, [a2_run["train_RMSE"].iloc[-1], a2_run["val_RMSE"].iloc[-1]], "x",
+                        color="#ff3c23", markersize=9, markeredgewidth=2.2, label=f"Default stopped: ep {stop}")
+                ax.axvline(kept, color="#ff3c23", linestyle=":", alpha=0.8, label=f"Best Default: ep {kept}")
+                label_point(ax, kept, a2_sub["val_RMSE"][kept - 1], "#fd8d3c", above=True)
+                label_point(ax, kept, a2_sub["train_RMSE"][kept - 1], "#6baed6", above=False)
 
             if not b1_sub.empty:
-                x_b1 = [float(v) for v in b1_sub["value"]]
-                ax.plot(x_b1, b1_sub["train_RMSE"], "-", color="#08519c", linewidth=2.0, label="Tuned Train (b1)")
-                ax.plot(x_b1, b1_sub["val_RMSE"], "-", color="#d94701", linewidth=2.5, label="Tuned Val (b1)")
-                best_b1 = int(b1_sub["val_RMSE"].idxmin())
-                ax.axvline(x_b1[best_b1], color="#2ca02c", linestyle="-.", alpha=0.9,
-                           label=f"Best Tuned: ep {x_b1[best_b1]:.0f} ({b1_sub['val_RMSE'][best_b1]:,.0f})")
+                kept, stop = cc.early_stop_epochs(b1_sub)
+                b1_run = b1_sub.iloc[:stop]
+                x_b1 = [float(v) for v in b1_run["value"]]
+                ax.plot(x_b1, b1_run["train_RMSE"], "-", color="#08519c", linewidth=2.0, label="Tuned Train (b1)")
+                ax.plot(x_b1, b1_run["val_RMSE"], "-", color="#d94701", linewidth=2.5, label="Tuned Val (b1)")
+                ax.plot([x_b1[-1]] * 2, [b1_run["train_RMSE"].iloc[-1], b1_run["val_RMSE"].iloc[-1]], "x",
+                        color="#2ca02c", markersize=9, markeredgewidth=2.2, label=f"Tuned stopped: ep {stop}")
+                ax.axvline(kept, color="#2ca02c", linestyle="-.", alpha=0.9, label=f"Best Tuned: ep {kept}")
+                label_point(ax, kept, b1_sub["val_RMSE"][kept - 1], "#d94701", above=True)
+                label_point(ax, kept, b1_sub["train_RMSE"][kept - 1], "#08519c", above=False)
+            ax.set_xlim(0, None)
 
         ax.set_title(f"{meta['family']}: {meta['model']} - Complexity Comparison", fontsize=11, fontweight="bold")
         ax.set_xlabel(meta["xlabel"], fontsize=9)

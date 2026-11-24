@@ -5,6 +5,8 @@ training rows and scored (RMSE of the price in MAD) on those rows and on the val
 
 Reading a panel: both errors high and close -> underfitting; training error keeps falling while validation error stops
 falling or rises -> overfitting. Green dotted line = lowest validation error; grey dashed line (b1) = value picked by tuning.
+DCN-V2 (epochs) uses early stopping like the real training: the curve ends where training stops (red x) and the green
+line is the epoch whose weights are kept.
 
 Output: results/<stage>/complexity_curve.png and complexity_curve.csv (train_RMSE, val_RMSE, gap = val - train in MAD;
 *_target columns are the RMSE on the model's own target scale).
@@ -41,6 +43,7 @@ POLY_DEGREES = [1, 2, 3, 4]
 RF_DEPTHS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None]  # None = fully grown; 50 = current tuned value
 KNN_K = [100, 75, 50, 30, 20, 15, 10, 9, 7, 5, 3, 1]  # 9 = current tuned value
 MAX_EPOCHS = 100
+PATIENCE = 10  # early stopping patience of the real training (run_neural.PATIENCE, train_torch(patience=10))
 
 # One curve of a stage script.
 #   name:        shown in the menu, e.g. "Random Forest (max_depth)"
@@ -89,15 +92,31 @@ def sweep(split, make_model, values):
     return pd.DataFrame(rows)
 
 
-def epoch_curve(split, model, optimizer, batch_size, predict, flat_target=False, clip_grad=None, max_epochs=MAX_EPOCHS):
-    """PyTorch models: train once without early stopping and score after every epoch.
+def early_stop_epochs(table, patience=PATIENCE):
+    """Replay early stopping on an epoch curve, the same rule as the real training: stop once the validation loss on the
+    model's target scale (val_RMSE_target) has not improved for `patience` epochs, keep the weights of the best epoch.
+    Returns (epoch whose weights are kept, epoch where training stops). Works on a full 100-epoch table too."""
+    best, kept, bad = float("inf"), 1, 0
+    for epoch, loss in enumerate(table["val_RMSE_target"].astype(float), start=1):
+        if loss < best:
+            best, kept, bad = loss, epoch, 0
+        else:
+            bad += 1
+            if bad >= patience:
+                return kept, epoch
+    return kept, len(table)
+
+
+def epoch_curve(split, model, optimizer, batch_size, predict, flat_target=False, clip_grad=None, max_epochs=MAX_EPOCHS, patience=PATIENCE):
+    """PyTorch models: train once with early stopping and score after every epoch. Training stops once the validation
+    loss (target scale) has not improved for `patience` epochs, like the real training; patience=None trains all max_epochs.
     flat_target: model outputs shape (n,) instead of (n, 1). clip_grad: max gradient norm."""
     device = next(model.parameters()).device
     torch.manual_seed(RANDOM_STATE)
     X_train = torch.as_tensor(split.X_train, device=device)
     y_train = torch.as_tensor(split.y_train.ravel() if flat_target else split.y_train, device=device)
 
-    rows = []
+    rows, best_loss, kept = [], float("inf"), 0
     for epoch in range(1, max_epochs + 1):
         model.train()
         order = torch.randperm(len(X_train), device=device)
@@ -111,6 +130,12 @@ def epoch_curve(split, model, optimizer, batch_size, predict, flat_target=False,
         rows.append(scores(split, epoch, predict(model, split.X_train), predict(model, split.X_val)))
         if epoch % 10 == 0:
             print(f"  epoch {epoch}: train {rows[-1]['train_RMSE']:,.0f} | val {rows[-1]['val_RMSE']:,.0f}")
+        if patience:
+            if rows[-1]["val_RMSE_target"] < best_loss:
+                best_loss, kept = rows[-1]["val_RMSE_target"], epoch
+            elif epoch - kept >= patience:
+                print(f"  early stopping at epoch {epoch} (keeps epoch {kept})")
+                break
     return pd.DataFrame(rows)
 
 
@@ -231,13 +256,30 @@ def filter_zoom_table(table, zoom_range=None):
 
 def plot_panel(ax, table, title, xlabel, categorical=True, tuned_value=None, zoom_range=None):
     table = table.reset_index(drop=True)
+    if not categorical and "val_RMSE_target" in table:
+        # epoch curve: draw it only up to where early stopping ends training; mark the epoch whose weights are kept
+        kept, stop = early_stop_epochs(table)
+        table = table.iloc[:stop]
     x = list(table["value"]) if categorical else [float(v) for v in table["value"]]
     style = "o-" if categorical else "-"
     ax.plot(x, table["train_RMSE"], style, color="#2a78d6", label="Training rows")
     ax.plot(x, table["val_RMSE"], style, color="#eda100", label="Validation rows")
-    best = int(table["val_RMSE"].idxmin())
-    ax.axvline(x[best], color="#2ca02c", linestyle=":",
-               label=f"Lowest validation error: {table['value'][best]} ({table['val_RMSE'][best]:,.0f} MAD)")
+    if not categorical and "val_RMSE_target" in table:
+        best = kept - 1
+        ax.plot([x[-1]] * 2, [table["train_RMSE"].iloc[-1], table["val_RMSE"].iloc[-1]], "x", color="#d62728",
+                markersize=9, markeredgewidth=2.2, label=f"Early stopping ends training: epoch {stop}")
+        ax.axvline(x[best], color="#2ca02c", linestyle=":", label=f"Kept weights (lowest validation loss): epoch {kept}")
+        for column, color, above in (("val_RMSE", "#eda100", True), ("train_RMSE", "#2a78d6", False)):
+            y = table[column][best]
+            ax.plot(x[best], y, "o", color=color, markersize=8, markeredgecolor="black", markeredgewidth=0.8, zorder=6)
+            ax.annotate(f"{y:,.0f}", (x[best], y), xytext=(0, 11 if above else -11), textcoords="offset points",
+                        ha="center", va="bottom" if above else "top", fontsize=9, fontweight="bold", color=color,
+                        zorder=7, bbox={"boxstyle": "round,pad=0.2", "fc": "white", "ec": color, "lw": 1, "alpha": 0.95})
+        ax.set_xlim(0, None)
+    else:
+        best = int(table["val_RMSE"].idxmin())
+        ax.axvline(x[best], color="#2ca02c", linestyle=":",
+                   label=f"Lowest validation error: {table['value'][best]} ({table['val_RMSE'][best]:,.0f} MAD)")
     if tuned_value is not None:
         if categorical and _clean_value(tuned_value) not in x:
             print(f"  (tuned value {tuned_value} is not in the swept values {x}: add it to the list in complexity.py to see it marked)")

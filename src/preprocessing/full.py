@@ -73,6 +73,49 @@ def is_placeholder_price(price: int) -> bool:
     return len(text) >= 4 and len(set(text)) == 1 and price not in (9_999, 99_999)
 
 
+FEATURE_COLUMNS = ["Brand", "Model", "Fuel", "Year", "Condition", "Gearbox", "Number of Doors", "Equipment Amount",
+                   "Mileage", "Mileage Above 500000", "Fiscal Power (CV)", "Fiscal Power Above 41"]
+CONDITION_ORDER = {"For Parts": 0, "Damaged": 1, "Fair": 2, "Good": 3, "Very Good": 4, "Excellent": 5, "New": 6}
+
+
+def clean_names_and_year(df: pd.DataFrame) -> pd.DataFrame:
+    """Brand / Model text cleaning and Year as a number. Used for the training rows and for new (real-world) listings."""
+    df = df.copy()
+    df["Brand"] = df["Brand"].map(clean_brand)
+    df["Model"] = [clean_model(b, m) for b, m in zip(df["Brand"], df["Model"])]
+    # Year: "1980 ou plus ancien" -> 1980, and make it a number
+    df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
+    return df
+
+
+def encode_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Raw columns -> the model's feature columns (FEATURE_COLUMNS). Row-by-row only, nothing learned from the data,
+    so the same function turns a new listing into features. Rows are not removed here (Condition may come out NaN)."""
+    df = df.copy()
+    # Mileage: range text -> number (middle of the range) plus a flag column for the open-ended "Plus de 500 000" bucket
+    df["Mileage Above 500000"] = (df["Mileage"] == "Plus de 500 000").astype(int)
+    df["Mileage"] = df["Mileage"].map(mileage_midpoint)
+
+    # Condition: ordinal encoding (unknown / missing -> NaN)
+    df["Condition"] = df["Condition"].map(CONDITION_ORDER)
+
+    # Gearbox: Manual = 0, Automatic = 1
+    df["Gearbox"] = df["Gearbox"].map({"Manual": 0, "Automatic": 1})
+
+    # Fiscal Power: "8 CV" -> 8 ; "Plus de 41 CV" -> 41 plus a flag column (missing values stay NaN)
+    df["Fiscal Power Above 41"] = (df["Fiscal Power"] == "Plus de 41 CV").astype(int)
+    df["Fiscal Power (CV)"] = df["Fiscal Power"].str.extract(r"(\d+)")[0].astype(float)
+
+    # Fuel: keep as text
+    df["Fuel"] = df["Fuel"].replace({"Electrique": "Electric"})
+
+    # Equipment -> Equipment Amount (number of items in the list)
+    df["Equipment Amount"] = df["Equipment"].map(lambda x: len(ast.literal_eval(x)))
+
+    # Number of Doors: missing values stay NaN. Every other raw column (First Owner, Origin, Location, Sector) is dropped.
+    return df[FEATURE_COLUMNS]
+
+
 def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # Remove the one corrupted row (a mileage range sitting in the Fuel column)
     df = df[df["Fuel"].isin(["Diesel", "Petrol", "Hybrid", "Electrique", "LPG"])].copy()
@@ -82,8 +125,6 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
     # Brand / Model: no missing values allowed, then clean the text (numeric brand codes, case, R19 -> 19 ...)
     df = df.dropna(subset=["Brand", "Model"]).copy()
-    df["Brand"] = df["Brand"].map(clean_brand)
-    df["Model"] = [clean_model(b, m) for b, m in zip(df["Brand"], df["Model"])]
 
     # Price: remove impossible values (e.g. 1, 24, 180 or 1,600,000,000)
     df = df[df["Price"].between(MIN_PRICE, MAX_PRICE)].copy()
@@ -95,47 +136,19 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     # 9999 and 99999 are kept: they sit near the usual price of their model ("just under 10k / 100k" pricing)
     df = df[~df["Price"].map(is_placeholder_price)].copy()
 
-    # Year: "1980 ou plus ancien" -> 1980, and make it a number
-    df["Year"] = df["Year"].astype(str).str.extract(r"(\d{4})")[0].astype(int)
+    # Brand / Model text and Year (shared with new listings)
+    df = clean_names_and_year(df)
 
     # Price: remove prices that are far away from similar cars
     df = drop_price_outliers(df)
 
-    # Mileage: range text -> number (middle of the range) plus a flag column for the open-ended "Plus de 500 000" bucket
-    df["Mileage Above 500000"] = (df["Mileage"] == "Plus de 500 000").astype(int)
-    df["Mileage"] = df["Mileage"].map(mileage_midpoint)
-
-    # Condition: ordinal encoding (rows with missing values are removed)
-    CONDITION_ORDER = {"For Parts": 0, "Damaged": 1, "Fair": 2, "Good": 3, "Very Good": 4, "Excellent": 5, "New": 6}
-    df["Condition"] = df["Condition"].map(CONDITION_ORDER)
+    # Raw columns -> feature columns (shared with new listings); rows with a missing Condition are removed
+    price = df["Price"]
+    df = encode_columns(df)
     df = df.dropna(subset=["Condition"])
 
-    # Gearbox: Manual = 0, Automatic = 1
-    df["Gearbox"] = df["Gearbox"].map({"Manual": 0, "Automatic": 1})
-
-    # Fiscal Power: "8 CV" -> 8 ; "Plus de 41 CV" -> 41 plus a flag column (missing values stay NaN)
-    df["Fiscal Power Above 41"] = (df["Fiscal Power"] == "Plus de 41 CV").astype(int)
-    df["Fiscal Power (CV)"] = df["Fiscal Power"].str.extract(r"(\d+)")[0].astype(float)
-    df = df.drop(columns=["Fiscal Power"])
-
-    # Fuel: keep as text
-    df["Fuel"] = df["Fuel"].replace({"Electrique": "Electric"})
-
-    # Equipment -> Equipment Amount (number of items in the list)
-    df["Equipment Amount"] = df["Equipment"].map(lambda x: len(ast.literal_eval(x)))
-    df = df.drop(columns=["Equipment"])
-
-    # Number of Doors: missing values stay NaN
-
-    # Drop columns that are not needed
-    df = df.drop(columns=["First Owner", "Origin", "Location", "Sector"])
-
     # Price -> log1p (the target column; use np.expm1 to get back to MAD)
-    df["Log Price"] = np.log1p(df.pop("Price"))
-
-    # Column order: categorical text columns, numeric columns, target
-    df = df[["Brand", "Model", "Fuel", "Year", "Condition", "Gearbox", "Number of Doors", "Equipment Amount",
-             "Mileage", "Mileage Above 500000", "Fiscal Power (CV)", "Fiscal Power Above 41", "Log Price"]]
+    df["Log Price"] = np.log1p(price.loc[df.index])
 
     df = df.drop_duplicates()
     return df

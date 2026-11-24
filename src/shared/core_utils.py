@@ -33,9 +33,14 @@ RESULTS_ROOT = ROOT_DIR / "results"
 RANDOM_STATE = 42
 N_FOLDS = 5
 BRAND_MODEL = ["Brand", "Model"]
+PRICE_QUANTILES = (0.02, 0.98)  # a2/b1 price range (about 20k-480k MAD), learned from the training rows in load_data_full
 
-Split = namedtuple("Split", ["X_train", "y_train", "X_val", "y_val", "X_test", "y_test", "inverse_transform_price", "smear"])
+Split = namedtuple("Split", ["X_train", "y_train", "X_val", "y_val", "X_test", "y_test", "inverse_transform_price", "smear", "feature_names",
+                             "preprocessing"], defaults=(None,))
 # smear(y_val_pred, y_pred): log-target bias correction (Duan's smearing). Returns y_pred corrected.
+# feature_names: one name per column of X, e.g. "Brand_Toyota", "Year" (used by the SHAP script).
+# preprocessing: everything learned from the training rows that a NEW listing needs (encoders, scalers, imputation
+#   tables, price limits); saved next to each model by src/shared/saved_models.py.
 
 
 def read_processed(csv_path, create):
@@ -57,18 +62,34 @@ def split_rows(X, y, fold=None):
     return X_train, y_train, X_val, y_val, X_test, y_test
 
 
+def feature_names(preprocessor):
+    """Column names after a fitted ColumnTransformer, without the transformer prefix ("numeric__Year" -> "Year")."""
+    return [name.split("__", 1)[-1] for name in preprocessor.get_feature_names_out()]
+
+
 def fill_from_train(column, key_sets, fallback, train, *others):
-    """Fill NaNs in `column` with the most common value of the same group, learned from train only."""
+    """Fill NaNs in `column` with the most common value of the same group, learned from train only.
+    Returns what was learned, so the same fill can be applied to new rows later with apply_fill()."""
     tables = [train.dropna(subset=[column]).groupby(keys)[column].agg(lambda s: s.mode().iloc[0]) for keys in key_sets]
     fallback = train[column].median() if fallback is None else fallback
+    learned = {"column": column, "key_sets": key_sets, "tables": tables, "fallback": fallback}
     for df in (train, *others):
-        for keys, table in zip(key_sets, tables):
-            df[column] = df[column].fillna(pd.Series(table.reindex(pd.MultiIndex.from_frame(df[keys])).to_numpy(), index=df.index))
-        df[column] = df[column].fillna(fallback)
+        apply_fill(learned, df)
+    return learned
+
+
+def apply_fill(learned, df):
+    """Fill one DataFrame in place with a fill learned by fill_from_train."""
+    column = learned["column"]
+    for keys, table in zip(learned["key_sets"], learned["tables"]):
+        df[column] = df[column].fillna(pd.Series(table.reindex(pd.MultiIndex.from_frame(df[keys])).to_numpy(), index=df.index))
+    df[column] = df[column].fillna(learned["fallback"])
 
 
 def load_data_minimal(fold=None):
-    """a1_baseline: same rows and price scope as a2, then one-hot encode every text column, nothing else. Raw Price target (MAD), no scaling."""
+    """a1_baseline: one-hot encode every text column, nothing else. Raw Price target (MAD), no scaling.
+    Same rows as a2 before the split (minimal.py repeats full.py's row rules), but no PRICE_QUANTILES range after the split:
+    removing the cheapest and most expensive cars is part of the full preprocessing, so the a1 test set keeps them."""
     df = read_processed(minimal.OUT_PATH, minimal.main)
     X, y = df.drop(columns="Price"), df[["Price"]]
     X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
@@ -88,22 +109,26 @@ def load_data_minimal(fold=None):
     def smear(y_val_pred, y_pred):  # raw price target: nothing to correct
         return np.asarray(y_pred).ravel()
 
-    return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price, smear)
+    preprocessing = {"loader": "minimal", "preprocessor": preprocessor}
+    return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price, smear, feature_names(preprocessor), preprocessing)
 
 
 def load_data_full(fold=None):
+    """a2_preprocessed / b1_tuned: price range, group-mode imputation, one-hot Brand/Model/Fuel, scaled numbers, scaled Log Price target."""
     df = read_processed(full.OUT_PATH, full.main)
     X, y = df.drop(columns="Log Price"), df[["Log Price"]]
     X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
 
-    # Drop price outliers: limits come from the training rows only (no leakage)
-    low, high = y_train["Log Price"].quantile([0.02, 0.98])
-    in_train, in_val, in_test = y_train["Log Price"].between(low, high), y_val["Log Price"].between(low, high), y_test["Log Price"].between(low, high)
-    X_train, y_train, X_val, y_val, X_test, y_test = X_train[in_train].copy(), y_train[in_train], X_val[in_val].copy(), y_val[in_val], X_test[in_test], y_test[in_test]
-    X_test = X_test.copy()
+    # Price range: keep prices between the PRICE_QUANTILES of the TRAINING rows, in train, val and test alike
+    # (the limits are learned from the training rows only, then applied to every set)
+    low, high = y_train["Log Price"].quantile(list(PRICE_QUANTILES))
+    keep = [y_part["Log Price"].between(low, high) for y_part in (y_train, y_val, y_test)]
+    X_train, X_val, X_test = (X_part[k].copy() for X_part, k in zip((X_train, X_val, X_test), keep))
+    y_train, y_val, y_test = (y_part[k] for y_part, k in zip((y_train, y_val, y_test), keep))
 
-    fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test)
-    fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)
+    condition_mode = X_train["Condition"].mode().iloc[0]  # only used for new listings with no condition (training rows always have one)
+    fills = [fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test),
+             fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)]
 
     numeric = [c for c in X_train.columns if c not in BRAND_MODEL + ["Fuel"]]
     preprocessor = ColumnTransformer([
@@ -130,7 +155,9 @@ def load_data_full(fold=None):
         factor = np.mean(np.exp(to_log(y_val) - to_log(y_val_pred)))
         return np.asarray(y_pred).ravel() + np.log(factor) / target_scaler.scale_[0]  # = price * factor, in scaled log space
 
-    return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price, smear)
+    preprocessing = {"loader": "full", "fills": fills, "condition_mode": condition_mode, "preprocessor": preprocessor,
+                     "target_scaler": target_scaler, "log_price_range": (float(low), float(high))}
+    return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price, smear, feature_names(preprocessor), preprocessing)
 
 
 def compute_metrics(y_true, y_pred, inverse_transform_price):

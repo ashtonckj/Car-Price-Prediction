@@ -11,7 +11,6 @@ Output: results/<stage>/complexity_curve.png and complexity_curve.csv (train_RMS
 """
 import math
 import sys
-import time
 from collections import namedtuple
 from pathlib import Path
 
@@ -219,9 +218,7 @@ def filter_zoom_table(table, zoom_range=None):
                 num = float(c)
                 if low is not None and low_clean != "None" and num < float(low_clean):
                     return False
-                if high is not None and high_clean != "None" and num > float(high_clean):
-                    return False
-                return True
+                return not (high is not None and high_clean != "None" and num > float(high_clean))
             except ValueError:
                 return True
 
@@ -272,7 +269,7 @@ def plot_panel(ax, table, title, xlabel, categorical=True, tuned_value=None, zoo
             ax_ins.set_ylim(zoom_table["val_RMSE"].min() - y_margin, zoom_table["val_RMSE"].max() + y_margin)
             
             if len(zoom_table) < len(table):
-                ax_ins.set_title(f"Val Zoom", fontsize=7.5, pad=3)
+                ax_ins.set_title("Val Zoom", fontsize=7.5, pad=3)
             else:
                 ax_ins.set_title("Validation Zoom (MAD)", fontsize=8, pad=3)
             ax_ins.tick_params(labelsize=7)

@@ -4,7 +4,6 @@ Outputs:
   - results/comparison/complexity_comparison.csv (side-by-side comparison table with differences & improvements)
   - results/comparison/complexity_comparison.png (4-panel comparison plot with Random Forest inset zoom)
 """
-import math
 import sys
 from pathlib import Path
 
@@ -19,9 +18,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from src.shared import complexity as cc
 from src.shared.core_utils import RESULTS_ROOT
 from src.shared.plots import THOUSANDS
-from src.shared import complexity as cc
 
 OUT_DIR = RESULTS_ROOT / "comparison"
 

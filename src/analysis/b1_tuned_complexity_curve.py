@@ -44,7 +44,7 @@ def dcn_curve(split):
                                      p["deep_layers"], p["units"], p["dropout"]).to(run_neural.DEVICE)
     optimizer = torch.optim.AdamW(model.parameters(), lr=p["lr"], weight_decay=p["weight_decay"])
     return cc.epoch_curve(split, model, optimizer, p["batch_size"], run_neural.predict, flat_target=True, clip_grad=1.0,
-                          max_epochs=run_neural.MAX_EPOCHS)
+                          max_epochs=run_neural.MAX_EPOCHS, patience=run_neural.PATIENCE)
 
 CURVES = {
     "polynomial_degree": cc.Curve("Polynomial Regression (degree)", "Linear family: Polynomial Regression (tuned)", "Polynomial degree (simple -> complex)", True, POLY_PARAMS["degree"], poly_curve),

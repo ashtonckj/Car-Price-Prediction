@@ -26,7 +26,7 @@ from src.shared.stages import choose_stage, load_data
 BEST_PARAMS = {
     "b1_tuned": {
         "MLP": {'n_layers': 3, 'units': 128, 'activation': 'gelu', 'dropout': 0.2, 'lr': 0.003, 'weight_decay': 0.0001, 'batch_size': 256},
-        "DCN-V2": {'n_cross_layers': 1, 'low_rank': 32, 'structure': 'stacked', 'deep_layers': 3, 'units': 128, 'dropout': 0.2, 'lr': 0.0003, 'weight_decay': 1e-05, 'batch_size': 256},
+        "DCN-V2": {'n_cross_layers': 1, 'low_rank': 32, 'structure': 'stacked', 'deep_layers': 2, 'units': 128, 'dropout': 0.1, 'lr': 0.0003, 'weight_decay': 1e-05, 'batch_size': 256},
         "TabNet": {'n_d': 32, 'n_steps': 3, 'gamma': 1.5, 'lambda_sparse': 0.0001, 'lr': 0.02, 'batch_size': 1024, 'virtual_batch_size': 128},
     },
 }

@@ -21,6 +21,7 @@ STAGE = "a2_preprocessed"
 # DCN-V2 training defaults, copied from train_torch() in neural_models.py
 DCN_LR = 1e-3
 DCN_BATCH_SIZE = 256
+DCN_PATIENCE = 10  # early stopping, as in train_torch(patience=10)
 
 # Tree depth range for the validation zoom.
 # Exclude early underfitting (depths 10, 20) to zoom into the plateau/minimum region.
@@ -45,7 +46,7 @@ def dcn_curve(split):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(RANDOM_STATE)
     model = DCNV2(n_features=split.X_train.shape[1]).to(device)  # 3 low-rank cross layers, 128-64 deep, dropout 0.1
-    return cc.epoch_curve(split, model, torch.optim.Adam(model.parameters(), lr=DCN_LR), DCN_BATCH_SIZE, predict)
+    return cc.epoch_curve(split, model, torch.optim.Adam(model.parameters(), lr=DCN_LR), DCN_BATCH_SIZE, predict, patience=DCN_PATIENCE)
 
 
 CURVES = {

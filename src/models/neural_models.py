@@ -60,28 +60,29 @@ def train_torch(model, X_train, y_train, X_val, y_val, epochs=100, learning_rate
 
 
 class CrossLayer(nn.Module):
-    """DCN V2 cross layer: x_{l+1} = x0 * (W x_l + b) + x_l, with W factorised as U V^T (low-rank cross)."""
+    """DCN V2 cross layer: x_{l+1} = x0 * (W x_l + b) + x_l, with a full-rank d x d matrix W."""
 
-    def __init__(self, dim, rank):
+    def __init__(self, dim):
         super().__init__()
-        self.proj = nn.Sequential(nn.Linear(dim, rank, bias=False), nn.Linear(rank, dim))
+        self.proj = nn.Linear(dim, dim)
 
     def forward(self, x0, x):
         return x0 * self.proj(x) + x
 
 
 class DCNV2(nn.Module):
-    """Deep & Cross Network V2 (Wang et al., 2021), STACKED structure with LOW-RANK cross layers:
-    x -> cross network (explicit feature crosses) -> deep network (128-64 MLP) -> linear output.
+    """Deep & Cross Network V2 (Wang et al., 2021), PARALLEL structure with FULL-RANK cross layers (the plain DCN-V2):
+    x -> [cross network (explicit feature crosses) | deep network (128-64 MLP)] -> concat -> linear output.
 
-    The same network as src/tuned_models/run_neural.py (DCNV2Regressor with structure="stacked", low_rank=32), here with its
-    default settings. Stacked + low-rank was the best of the four DCN-V2 variants in the b1 tuning grid (lowest best,
-    median and mean validation RMSE), so the default and the tuned DCN-V2 are the same model with different settings.
+    The same network as src/tuned_models/run_neural.py (DCNV2Regressor with structure="parallel", low_rank=0), here with
+    its default settings. Structure and low rank are left at the plain DCN-V2 on purpose: they are searched by the b1
+    tuning grid (which picked stacked + low-rank 32), and choosing them here from those results would leak tuning into
+    the untuned a2 baseline.
     """
 
-    def __init__(self, n_features, n_cross_layers=3, low_rank=32, deep_sizes=(128, 64), dropout=0.1):
+    def __init__(self, n_features, n_cross_layers=3, deep_sizes=(128, 64), dropout=0.1):
         super().__init__()
-        self.cross = nn.ModuleList([CrossLayer(n_features, low_rank) for _ in range(n_cross_layers)])
+        self.cross = nn.ModuleList([CrossLayer(n_features) for _ in range(n_cross_layers)])
 
         deep_layers, in_size = [], n_features
         for size in deep_sizes:
@@ -89,13 +90,13 @@ class DCNV2(nn.Module):
             in_size = size
         self.deep = nn.Sequential(*deep_layers)
 
-        self.head = nn.Linear(in_size, 1)
+        self.head = nn.Linear(n_features + in_size, 1)
 
     def forward(self, features):
         x = features
         for layer in self.cross:
             x = layer(features, x)
-        return self.head(self.deep(x))  # (batch, 1)
+        return self.head(torch.cat([x, self.deep(features)], dim=1))  # (batch, 1)
 
 
 # Models: each run_*(split) trains on split.X_train (early stopping on split.X_val) and predicts split.X_test
@@ -106,15 +107,19 @@ def fit_and_predict(network, split):
     return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
 
 
-def run_mlp(split):
-    network = nn.Sequential(
-        nn.Linear(split.X_train.shape[1], 128),
+def build_mlp(n_features):
+    """The default MLP: 128-64 ReLU, no dropout. Also used by the a2 complexity curve."""
+    return nn.Sequential(
+        nn.Linear(n_features, 128),
         nn.ReLU(),
         nn.Linear(128, 64),
         nn.ReLU(),
         nn.Linear(64, 1),
     )
-    return fit_and_predict(network, split)
+
+
+def run_mlp(split):
+    return fit_and_predict(build_mlp(split.X_train.shape[1]), split)
 
 
 def run_dcnv2(split):

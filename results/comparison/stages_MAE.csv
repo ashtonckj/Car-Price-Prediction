@@ -2,7 +2,7 @@ Model,a1_baseline,a2_preprocessed,b1_tuned
 Neural networks: DCN-V2,16533.0273,13442.5561,13090.9601
 Neural networks: MLP,17421.1895,13547.9668,13175.552
 Tree-based models: Gradient Boosting,35335.6982,19935.4365,13304.7879
-Tree-based models: Random Forest,19369.601,13713.8282,13506.0003
+Tree-based models: Random Forest,19369.601,13713.8282,13661.9777
 Neural networks: TabNet,30240.1113,14577.4242,13756.408
 Tree-based models: Decision Tree,24537.9465,17948.8116,15705.2048
 Linear models: Polynomial Regression,28164.5352,15850.8005,16098.6329

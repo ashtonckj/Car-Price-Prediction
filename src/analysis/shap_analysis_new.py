@@ -1,5 +1,5 @@
 """
-SHAP analysis for specific models (Decision Tree, Random Forest, Gradient Boosting, KNN, PyTorch MLP).
+SHAP analysis for specific models (Decision Tree, Random Forest, Gradient Boosting, KNN, PyTorch MLP, DCN-V2).
 
 Run this script and it will:
   1. Ask which Part A stage (a1_baseline / a2_preprocessed)
@@ -7,7 +7,7 @@ Run this script and it will:
   3. Train the model on the final split
   4. Compute SHAP values on the test set using the appropriate explainer:
        - TreeExplainer for tree models (Decision Tree, Random Forest, Gradient Boosting)
-       - Explainer with background dataset for KNN and PyTorch MLP (from neural_models.py)
+       - Explainer with background dataset for KNN, PyTorch MLP, and DCN-V2 (from neural_models.py)
   5. Save to  results/<stage>/shap/<model_key>/
         <model_key>_shap_bar.png
         <model_key>_shap_beeswarm.png
@@ -43,13 +43,13 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.models.neural_models import train_torch
+from src.models.neural_models import DCNV2, train_torch
 from src.shared.core_utils import RANDOM_STATE
 from src.shared.stages import STAGES, choose_stage, load_data
 
 
 # ---------------------------------------------------------------------------
-# Model registry
+# Model registryx
 # ---------------------------------------------------------------------------
 def make_mlp(n_features: int) -> nn.Module:
     """PyTorch MLP architecture matching src/models/neural_models.py."""
@@ -60,6 +60,11 @@ def make_mlp(n_features: int) -> nn.Module:
         nn.ReLU(),
         nn.Linear(64, 1),
     )
+
+
+def make_dcn(n_features: int) -> nn.Module:
+    """Deep & Cross Network V2 architecture matching src/models/neural_models.py."""
+    return DCNV2(n_features=n_features)
 
 
 MODELS = {
@@ -83,9 +88,14 @@ MODELS = {
         "title": "Multi-Layer Perceptron (PyTorch)",
         "make": make_mlp,
     },
+    "dcn_v2": {
+        "title": "Deep & Cross Network V2 (PyTorch)",
+        "make": make_dcn,
+    },
 }
 
 TREE_MODELS = {"decision_tree", "random_forest", "gradient_boosting"}
+PYTORCH_MODELS = {"mlp", "dcn_v2"}
 
 
 def choose_model() -> str:
@@ -115,9 +125,9 @@ def run_shap(stage_key: str, model_key: str) -> None:
     print(f"      Features: {len(feature_names)} | Train: {len(X_train)} | Val: {len(X_val)} | Test: {len(X_test)}")
 
     print(f"\n[2/4] Training  {model_cfg['title']} ...")
-    if model_key == "mlp":
-        # PyTorch MLP from src/models/neural_models.py
-        model = make_mlp(n_features=X_train.shape[1])
+    if model_key in PYTORCH_MODELS:
+        # PyTorch models (MLP, DCN-V2) from src/models/neural_models.py
+        model = model_cfg["make"](n_features=X_train.shape[1])
         model = train_torch(
             model,
             X_train,
@@ -157,7 +167,7 @@ def run_shap(stage_key: str, model_key: str) -> None:
 
     # Subsample test set for fast SHAP calculation
     # Tree models: 500 samples (~1-2 min)
-    # Non-tree models (MLP, KNN with 300+ features): 50-100 samples
+    # Non-tree models (MLP, DCN-V2, KNN with 300+ features): 50-100 samples
     '''(100 samples) is recommended because with 300+ features, using 500 background samples 
     will cause the explanation to evaluate 5 times more forward passes, making it noticeably 
     slower with virtually no difference in the resulting plots or rankings.'''
@@ -174,8 +184,22 @@ def run_shap(stage_key: str, model_key: str) -> None:
 
     print("\n[3/4] Computing SHAP values ...")
     if model_key in TREE_MODELS:
-        explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
-        shap_values = explainer(X_test_sample)
+        '''explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
+        shap_values = explainer(X_test_sample)'''
+        # A1 has a high-dimensional one-hot matrix and unrestricted trees.
+        # Use an explicit training background for stable interventional SHAP.
+        background = shap.sample(
+            X_train_df,
+            100, 
+            random_state=RANDOM_STATE,
+        )
+        explainer = shap.TreeExplainer(
+            model,
+            data=background,
+            feature_perturbation="tree_path_dependent",
+            model_output="raw",
+        )
+        shap_values = explainer(X_test_sample, check_additivity=True)
     else:
         print("Creating background summary dataset from training set (100 samples)...")
         background = shap.sample(X_train_df, 100, random_state=RANDOM_STATE)

@@ -43,7 +43,7 @@ CURVE_METADATA = {
         "xlabel": "Maximum tree depth (simple -> complex)",
         "categorical": True,
         "order": ["10", "20", "30", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95", "100", "None"],
-        "zoom_values": ["30", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95", "100", "None"],
+        "zoom_values": ["40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95", "100", "None"],
         "default_tuned": None,
         "tuned_value": 50,
     },
@@ -158,7 +158,7 @@ def plot_comparison_panels(df_a2, df_b1):
                     # Highlight best tuned in zoom
                     z_best_b1 = int(b1_sub["val_RMSE"].idxmin())
                     if b1_sub["value"][z_best_b1] in zx:
-                        ax_ins.axvline(b1_sub["value"][z_best_b1], color="#2ca02c", linestyle=":", alpha=0.8)
+                        ax_ins.axvline(b1_sub["value"][z_best_b1], color="#2ca02c", linestyle="--", alpha=0.8)
 
                     Z_best_a2 = int(a2_sub["val_RMSE"].idxmin())
                     if a2_sub["value"][Z_best_a2] in zx:
@@ -173,7 +173,7 @@ def plot_comparison_panels(df_a2, df_b1):
                     ax_ins.tick_params(labelsize=6.5)
                     ax_ins.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:,.0f}"))
                     ax_ins.grid(True, linestyle=":", alpha=0.6)
-                    ax_ins.legend(fontsize=7.5, loc="upper right")
+                    ax_ins.legend(fontsize=7.5, loc="center right")
                 except Exception as e:
                     print(f"Warning: could not draw RF inset zoom: {e}")
 
@@ -258,7 +258,6 @@ def generate_complexity_comparison():
     fig_path = plot_comparison_panels(df_a2, df_b1)
 
     print("\nSaved complexity comparison outputs:")
-    print(f"  - CSV (side-by-side): {OUT_DIR / 'complexity_comparison.csv'}")
     print(f"  - Plot (all models):  {fig_path}")
 
 

@@ -5,7 +5,11 @@ from pathlib import Path
 
 import numpy as np
 from sklearn.metrics import pairwise_distances
-from sklearn.neighbors import KNeighborsRegressor, NearestNeighbors, RadiusNeighborsRegressor
+from sklearn.neighbors import (
+    KNeighborsRegressor,
+    NearestNeighbors,
+    RadiusNeighborsRegressor,
+)
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:

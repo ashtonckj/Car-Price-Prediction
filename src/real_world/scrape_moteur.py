@@ -77,7 +77,7 @@ def mileage_range(km):
 def parse_listing(page, url):
     """One detail page -> one row (dict), or a string saying which needed value is missing (e.g. no price: 'Appeler pour le prix')."""
     fields = {}
-    for label, value in re.findall(r'<span class="font-weight-bold">\s*([^<]+?)\s*</span>\s*</td>\s*<td>(.*?)</td>', page, flags=re.S):
+    for label, value in re.findall(r'<span class="font-weight-bold">\s*([^<]+?)\s*</span>\s*</td>\s*<td>(.*?)</td>', page, flags=re.DOTALL):
         fields[label.rstrip(":").strip().lower()] = text(value)
 
     price = re.search(r'ad-hero-price-col">\s*([\d][\d,.\s]*)\s*MAD', page)
@@ -95,7 +95,7 @@ def parse_listing(page, url):
     equipment = []
     if len(options) == 2:
         section = options[1].split("</h4>", 1)[0]  # stop at the next section title
-        equipment = [text(item) for item in re.findall(r'fa-check[^>]*></i>(.*?)</div>', section, flags=re.S)]
+        equipment = [text(item) for item in re.findall(r'fa-check[^>]*></i>(.*?)</div>', section, flags=re.DOTALL)]
         equipment = [item for item in equipment if item and item.lower() not in NOT_EQUIPMENT]
 
     fiscal = re.sub(r"\D", "", fields.get("puissance fiscale", ""))

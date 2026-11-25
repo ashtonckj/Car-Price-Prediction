@@ -15,7 +15,7 @@ def save_tuning_csv(rows, csv_name, stage, score_column, param_names=None, lower
     if param_names is None:
         score_keys = {"val_RMSE", "val_MAE", "val_R2", "val_MAPE", "time_s"}
         if rows:
-            param_names = [k for k in rows[0].keys() if k not in score_keys and not k.startswith("val_")]
+            param_names = [k for k in rows[0] if k not in score_keys and not k.startswith("val_")]
         else:
             param_names = []
 

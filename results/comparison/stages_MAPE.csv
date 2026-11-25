@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0b8e214194c73279644b0ed5a61df081ccef33c2fbbca03477f9af8b434cf8a1
-size 699
+Model,a1_baseline,a2_preprocessed,b1_tuned
+Neural networks: DCN-V2,14.4923,12.0281,11.8846
+Tree-based models: Gradient Boosting,38.7048,17.4324,11.947
+Neural networks: MLP,15.5758,12.207,11.9799
+Tree-based models: Random Forest,16.601,12.4201,12.2054
+Neural networks: TabNet,30.5649,13.1376,12.3918
+Linear models: Polynomial Regression,28.4807,14.0297,14.3374
+Tree-based models: Decision Tree,20.5874,16.4539,14.1663
+Distance-based models: Kernel Regression,28.4837,17.3653,14.746
+Distance-based models: KNN,26.5138,15.898,14.8359
+Linear models: Huber,22.0025,14.9753,15.0061
+Linear models: Ridge,28.4564,15.0126,14.9979
+Distance-based models: Radius Neighbours,97.5099,25.3377,15.9104

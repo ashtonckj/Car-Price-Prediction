@@ -23,7 +23,7 @@ from src.shared.stages import choose_stage, load_data
 BEST_PARAMS = {
     "b1_tuned": {
         "Decision Tree": {'max_depth': None, 'min_samples_split': 40, 'min_samples_leaf': 2, 'max_features': None, 'criterion': 'squared_error', 'ccp_alpha': 0.0},
-        "Random Forest": {"n_estimators": 500, "min_samples_split": 10, "min_samples_leaf": 1, "max_features": 1.0, "max_depth": 50, "bootstrap": True},
+        "Random Forest": {"n_estimators": 500, "min_samples_split": 2, "min_samples_leaf": 1, "max_features": 1.0, "max_depth": 50, "bootstrap": True},
         "Gradient Boosting": {'learning_rate': 0.1, 'max_depth': 8, 'max_features': 1.0, 'min_samples_leaf': 1, 'min_samples_split': 10, 'n_estimators': 500, 'subsample': 0.7},
     },
 }

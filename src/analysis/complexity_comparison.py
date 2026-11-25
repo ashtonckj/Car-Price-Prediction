@@ -176,7 +176,39 @@ def plot_comparison_panels(df_a2, df_b1):
                     ax_ins.legend(fontsize=7.5, loc="center right")
                 except Exception as e:
                     print(f"Warning: could not draw RF inset zoom: {e}")
+            # Inset zoom for Random Forest to inspect the plateau train comparison
+            if curve_key == "random_forest_max_depth" and not a2_sub.empty and not b1_sub.empty:
+                try:
+                    zoom_targets = meta.get("zoom_values", ["40", "50", "60", "70", "80", "90", "100", "None"])
+                    zx = [v for v in x_vals if v in zoom_targets]
+                    za2_train = [a2_map[v]["train_RMSE"] if v in a2_map else np.nan for v in zx]
+                    zb1_train = [b1_map[v]["train_RMSE"] if v in b1_map else np.nan for v in zx]
 
+                    ax_ins_train = ax.inset_axes([0.67, 0.2, 0.32, 0.3])
+                    ax_ins_train.plot(zx, za2_train, "o--", color="#6baed6", linewidth=1.8, markersize=4, label="Default Train")
+                    ax_ins_train.plot(zx, zb1_train, "s-", color="#08519c", linewidth=2.0, markersize=5, label="Tuned Train")
+
+                    # Highlight best tuned in zoom
+                    z_best_b1 = int(b1_sub["val_RMSE"].idxmin())
+                    if b1_sub["value"][z_best_b1] in zx:
+                        ax_ins_train.axvline(b1_sub["value"][z_best_b1], color="#2ca02c", linestyle="--", alpha=0.8)
+
+                    z_best_a2 = int(a2_sub["val_RMSE"].idxmin())
+                    if a2_sub["value"][z_best_a2] in zx:
+                        ax_ins_train.axvline(a2_sub["value"][z_best_a2], color="#fe3731", linestyle=":", alpha=0.8)
+
+                    valid_vals = [v for v in za2_train + zb1_train if not np.isnan(v)]
+                    if valid_vals:
+                        v_min, v_max = min(valid_vals), max(valid_vals)
+                        v_span = v_max - v_min
+                        ax_ins_train.set_ylim(v_min - max(v_span * 0.25, 30), v_max + max(v_span * 0.25, 30))
+
+                    ax_ins_train.tick_params(labelsize=6.5)
+                    ax_ins_train.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:,.0f}"))
+                    ax_ins_train.grid(True, linestyle=":", alpha=0.6)
+                    ax_ins_train.legend(fontsize=7.5, loc="center right")
+                except Exception as e:
+                    print(f"Warning: could not draw RF train inset zoom: {e}")
         else:
             # Numeric axis (epochs): each curve ends where early stopping would have stopped that training run
             if not a2_sub.empty:
@@ -237,7 +269,7 @@ def plot_comparison_panels(df_a2, df_b1):
             loc = "upper right"
             bbox = None
 
-        ax.legend(fontsize=8, loc=loc, bbox_to_anchor=bbox, framealpha=0.85)
+        ax.legend(fontsize=8, loc=loc, bbox_to_anchor=bbox, framealpha=0.8)
 
     fig.suptitle("Model Complexity Curves Comparison: Default (a2_preprocessed) vs Tuned (b1_tuned)", fontsize=13, fontweight="bold", y=0.98)
     fig.tight_layout(rect=(0, 0, 1, 0.96))

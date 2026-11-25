@@ -196,7 +196,7 @@ def run_shap(stage_key: str, model_key: str) -> None:
         explainer = shap.TreeExplainer(
             model,
             data=background,
-            feature_perturbation="tree_path_dependent",
+            feature_perturbation="interventional",
             model_output="raw",
         )
         shap_values = explainer(X_test_sample, check_additivity=True)

@@ -31,7 +31,7 @@ CURVE_METADATA = {
         "parameter": "degree",
         "xlabel": "Polynomial degree (simple -> complex)",
         "categorical": True,
-        "order": ["1", "2", "3", "4"],
+        "order": ["2", "3", "4", "5", "6", "7", "8"],
         "zoom_values": ["2", "3", "4"],
         "default_tuned": None,
         "tuned_value": 2,
@@ -209,7 +209,9 @@ def plot_comparison_panels(df_a2, df_b1):
         ax.set_ylabel("RMSE (MAD)", fontsize=9)
         ax.yaxis.set_major_formatter(THOUSANDS)
         ax.grid(True, linestyle="--", alpha=0.5)
-        if curve_key == "polynomial_degree":  # big chart = whole curve in billions; small chart = zoom on degrees 2-4
+        poly_vals = [v for v in a2_val + b1_val if not np.isnan(v)] if curve_key == "polynomial_degree" else []
+        has_spike = bool(poly_vals) and max(poly_vals) > 10 * np.median(poly_vals)  # blow-up(s) far above the typical point
+        if has_spike:  # big chart = whole curve in billions; small chart = zoom on degrees 2-4
             ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v / 1e9:,.0f} bn"))
             zx = [v for v in x_vals if v in meta["zoom_values"]]
             ax_ins = ax.inset_axes([0.06, 0.1, 0.38, 0.42])

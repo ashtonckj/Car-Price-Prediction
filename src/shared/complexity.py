@@ -39,7 +39,7 @@ from src.shared.core_utils import RANDOM_STATE, RESULTS_ROOT
 from src.shared.plots import THOUSANDS
 from src.shared.stages import load_data
 
-POLY_DEGREES = [1, 2, 3, 4]
+POLY_DEGREES = [2, 3, 4, 5, 6, 7, 8]
 RF_DEPTHS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None]  # None = fully grown; 50 = current tuned value
 KNN_K = [100, 75, 50, 30, 20, 15, 10, 9, 7, 5, 3, 1]  # 9 = current tuned value
 MAX_EPOCHS = 100

@@ -32,6 +32,7 @@ CURVE_METADATA = {
         "xlabel": "Polynomial degree (simple -> complex)",
         "categorical": True,
         "order": ["1", "2", "3", "4"],
+        "zoom_values": ["2", "3", "4"],
         "default_tuned": None,
         "tuned_value": 2,
     },
@@ -191,6 +192,19 @@ def plot_comparison_panels(df_a2, df_b1):
         ax.set_ylabel("RMSE (MAD)", fontsize=9)
         ax.yaxis.set_major_formatter(THOUSANDS)
         ax.grid(True, linestyle="--", alpha=0.5)
+        if curve_key == "polynomial_degree":  # big chart = whole curve in billions; small chart = zoom on degrees 2-4
+            ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v / 1e9:,.0f} bn"))
+            zx = [v for v in x_vals if v in meta["zoom_values"]]
+            ax_ins = ax.inset_axes([0.06, 0.1, 0.38, 0.42])
+            for data_map, col, style, color in [(a2_map, "train_RMSE", "o--", "#6baed6"), (a2_map, "val_RMSE", "o--", "#fd8d3c"),
+                                                (b1_map, "train_RMSE", "s-", "#08519c"), (b1_map, "val_RMSE", "s-", "#d94701")]:
+                ax_ins.plot(zx, [data_map[v][col] if v in data_map else np.nan for v in zx], style, color=color, markersize=4)
+            ax_ins.axvline(best_a2_val, color="#ff3c23", linestyle=":", alpha=0.8)
+            ax_ins.axvline(best_b1_val, color="#2ca02c", linestyle="-.", alpha=0.9)
+            ax_ins.set_title(f"Zoom: degree {zx[0]} to {zx[-1]} (MAD)", fontsize=8, pad=3)
+            ax_ins.tick_params(labelsize=7)
+            ax_ins.yaxis.set_major_formatter(THOUSANDS)
+            ax_ins.grid(True, linestyle=":", alpha=0.6)
         if curve_key == "random_forest_max_depth":
             loc = "lower left"
             bbox = (0.0, 0.0)

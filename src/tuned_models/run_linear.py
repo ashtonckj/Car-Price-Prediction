@@ -28,7 +28,7 @@ BEST_PARAMS = {
     "b1_tuned": {
         "Ridge": {'alpha': 0.5623413251903491, 'fit_intercept': True, 'solver': 'sparse_cg', 'tol': 0.001},
         "Huber": {'epsilon': 2.5, 'alpha': 1e-05, 'max_iter': 100},
-        "Polynomial Regression": {'degree': 2, 'interaction_only': True, 'fit_intercept': False},
+        "Polynomial Regression": {'degree': 2, 'interaction_only': True, 'fit_intercept': True},
     },
 }
 

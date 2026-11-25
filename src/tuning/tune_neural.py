@@ -23,14 +23,14 @@ PARAM_GRIDS = {
         "weight_decay": [0.0, 1e-4],
         "batch_size": [256],
     }),
-    # 4 x 2 x 2 x 3 x 2 x 3 x 2 x 1 x 1 = 576 combinations
+    # 4 x 2 x 2 x 3 x 2 x 2 x 2 x 1 x 1 = 384 combinations
     "DCN-V2": ("neural_tuning_dcnv2", {
         "n_cross_layers": [1, 2, 3, 4],
         "low_rank": [0, 32],                    # 0 = full-rank cross matrix, otherwise low-rank (U V^T)
         "structure": ["stacked", "parallel"],
         "deep_layers": [1, 2, 3],
         "units": [128, 256],
-        "dropout": [0.0, 0.1, 0.2],
+        "dropout": [0.0, 0.2],
         "lr": [1e-3, 3e-3],
         "weight_decay": [1e-5],
         "batch_size": [256],

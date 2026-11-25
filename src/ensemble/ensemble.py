@@ -1,6 +1,6 @@
 """Ensemble methods: Level-1 Ridge stacking meta-learner and constrained optimal weighted blend.
 
-Uses four tuned base models from Part B (Polynomial Regression, Gradient Boosting, KNN, DCN-V2).
+Uses four tuned base models from Part B (Polynomial Regression, Gradient Boosting, Kernel Regression, MLP).
 Out-of-fold predictions on the 70% training set form the meta-features; validation predictions are fold-averaged.
 Finally evaluates on both validation and the 20% test set, and saves to results/b2_ensemble/.
 The base models use their tuned BEST_PARAMS of BASE_STAGE (b1_tuned); no stage menu.
@@ -29,16 +29,16 @@ from src.tuned_models import run_distance, run_linear, run_neural, run_tree
 
 STAGE = "b2_ensemble"     # results go to results/b2_ensemble/
 BASE_STAGE = "b1_tuned"   # tuned parameters of the base models
-MODEL_NAMES = ["Polynomial Regression", "Gradient Boosting", "KNN", "DCN-V2"]  # the names used in the BEST_PARAMS
+MODEL_NAMES = ["Polynomial Regression", "Gradient Boosting", "Kernel Regression", "MLP"]  # the names used in the BEST_PARAMS
 FoldSplit = namedtuple("FoldSplit", ["X_train", "y_train", "X_val", "y_val"])
 
 
 def _build_sklearn_models(stage, n_numeric):
-    """Return a list of (name, unfitted sklearn model) for the 3 sklearn base learners."""
+    """Return a list of (name, unfitted model) for the 3 non-neural base learners (all expose fit / predict)."""
     return [
         ("Polynomial Regression", run_linear.build_model("Polynomial Regression", run_linear.BEST_PARAMS[stage]["Polynomial Regression"], n_numeric)),
         ("Gradient Boosting", run_tree.build_model("Gradient Boosting", run_tree.BEST_PARAMS[stage]["Gradient Boosting"])),
-        ("KNN", run_distance.build_model("KNN", run_distance.BEST_PARAMS[stage]["KNN"])),
+        ("Kernel Regression", run_distance.build_model("Kernel Regression", run_distance.BEST_PARAMS[stage]["Kernel Regression"])),
     ]
 
 
@@ -58,7 +58,7 @@ def main():
     val_preds = np.zeros((len(X_va), n_models))
     test_preds = np.zeros((len(X_te), n_models))
 
-    dcnv2_params = run_neural.BEST_PARAMS[stage]["DCN-V2"]
+    mlp_params = run_neural.BEST_PARAMS[stage]["MLP"]
 
     t_start = time.perf_counter()
     base_predict_time = 0.0  # time the base models spend predicting the test set
@@ -68,7 +68,7 @@ def main():
         X_f_tr, y_f_tr = X_tr[tr_idx], y_tr[tr_idx]
         X_f_va = X_tr[oof_idx]
 
-        # 1. Fit tuned sklearn models on fold training split
+        # 1. Fit tuned non-neural models on fold training split
         sklearn_models = _build_sklearn_models(stage, n_numeric)
         for i, (name, model) in enumerate(sklearn_models):
             model.fit(X_f_tr, y_f_tr)
@@ -78,20 +78,20 @@ def main():
             base_predict_time += seconds
             test_preds[:, i] += test_pred.ravel() / kf.n_splits
 
-        # 2. Fit DCN-V2 on fold training split (always the last column)
-        dcn_col = len(sklearn_models)
+        # 2. Fit MLP on fold training split (always the last column)
+        mlp_col = len(sklearn_models)
         fold_split = FoldSplit(
             X_f_tr,
-            y_f_tr.reshape(-1, 1).astype("float32"),
+            y_f_tr.reshape(-1, 1).astype("float32"),  # train_mlp expects a (n, 1) target
             X_va,  # early stopping on the 10% validation rows, not on the out-of-fold rows: those predictions become
             split.y_val,  # the meta-features, so stopping on them would make the networks look better than they are
         )
-        dcnv2_model, _ = run_neural.train_dcnv2(dcnv2_params, fold_split)
-        oof_train[oof_idx, dcn_col] = np.asarray(run_neural.predict(dcnv2_model, X_f_va)).ravel()
-        val_preds[:, dcn_col] += np.asarray(run_neural.predict(dcnv2_model, X_va)).ravel() / kf.n_splits
-        test_pred, seconds = timed(run_neural.predict, dcnv2_model, X_te)
+        mlp_model, _ = run_neural.train_mlp(mlp_params, fold_split)
+        oof_train[oof_idx, mlp_col] = np.asarray(run_neural.predict(mlp_model, X_f_va)).ravel()
+        val_preds[:, mlp_col] += np.asarray(run_neural.predict(mlp_model, X_va)).ravel() / kf.n_splits
+        test_pred, seconds = timed(run_neural.predict, mlp_model, X_te)
         base_predict_time += seconds
-        test_preds[:, dcn_col] += np.asarray(test_pred).ravel() / kf.n_splits
+        test_preds[:, mlp_col] += np.asarray(test_pred).ravel() / kf.n_splits
 
     # --- Method A: Level-1 Ridge Stacking Meta-Learner ---
     meta_ridge = RidgeCV(alphas=np.logspace(-2, 3, 50))
@@ -142,7 +142,7 @@ def main():
         "Blending (Optimal)": {"y_pred": blend_test_pred_smeared, "fit_time": fit_time, "predict_time": base_predict_time + blend_predict_time},
     }
     # No CV for the ensembles: it would mean 5 x 5 fits per base model. The JSON has "cv": null.
-    save_results(STAGE, "PR_GB_KNN_DCN", "Ensemble (Polynomial + GB + KNN + DCN-V2)", results, split)
+    save_results(STAGE, "PR_GB_KR_MLP", "Ensemble (Polynomial + GB + Kernel Regression + MLP)", results, split)
 
 
 if __name__ == "__main__":

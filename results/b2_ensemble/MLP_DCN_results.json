@@ -8,25 +8,25 @@
   "models": {
     "Stacking (Ridge)": {
       "metrics": {
-        "RMSE": 21549.366,
-        "MAE": 12960.3615,
-        "R2": 0.9305,
-        "MAPE": 11.7218
+        "RMSE": 21455.074,
+        "MAE": 12942.3666,
+        "R2": 0.9311,
+        "MAPE": 11.7162
       },
       "cv": null,
-      "fit_time_s": 214.15,
-      "predict_time_s": 0.27
+      "fit_time_s": 122.65,
+      "predict_time_s": 0.2
     },
     "Blending (Optimal)": {
       "metrics": {
-        "RMSE": 21560.5992,
-        "MAE": 12957.2129,
-        "R2": 0.9304,
-        "MAPE": 11.7286
+        "RMSE": 21467.6971,
+        "MAE": 12940.3726,
+        "R2": 0.931,
+        "MAPE": 11.7222
       },
       "cv": null,
-      "fit_time_s": 214.15,
-      "predict_time_s": 0.27
+      "fit_time_s": 122.65,
+      "predict_time_s": 0.2
     }
   }
 }

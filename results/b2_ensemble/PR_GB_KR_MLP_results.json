@@ -1,0 +1,32 @@
+{
+  "stage": "b2_ensemble",
+  "stage_title": "B2 ensemble (tuned b1 models combined)",
+  "family": "Ensemble (Polynomial + GB + Kernel Regression + MLP)",
+  "n_features": 435,
+  "n_train": 41265,
+  "n_test": 11831,
+  "models": {
+    "Stacking (Ridge)": {
+      "metrics": {
+        "RMSE": 20939.7066,
+        "MAE": 12764.8408,
+        "R2": 0.9344,
+        "MAPE": 11.4959
+      },
+      "cv": null,
+      "fit_time_s": 3979.57,
+      "predict_time_s": 429.27
+    },
+    "Blending (Optimal)": {
+      "metrics": {
+        "RMSE": 20997.2148,
+        "MAE": 12764.2287,
+        "R2": 0.934,
+        "MAPE": 11.5114
+      },
+      "cv": null,
+      "fit_time_s": 3979.57,
+      "predict_time_s": 429.27
+    }
+  }
+}

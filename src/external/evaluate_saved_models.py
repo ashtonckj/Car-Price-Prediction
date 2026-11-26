@@ -1,27 +1,11 @@
-"""Part B step 3: test the SAVED models (trained on cars_full.csv) on new, real-world listings: data/processed/cars_europe.csv.
+"""Part B step 3: test the saved models on new, real-world listings (data/processed/cars_europe.csv).
 
-Nothing is retrained. Each model is loaded from saved_models/<stage>/<family>_<model>.joblib together with the preprocessing
-it learned from the Moroccan training rows, and predicts the European listings (src/preprocessing/external_europe.py:
-mobile.de / AutoScout24 cars of the car models the saved models were trained on, priced inside their training price range,
-same columns as cars_full.csv, prices in MAD). This answers "does the model work on new data, and what kind of mistakes
-does it make?".
+Nothing is retrained: each model in saved_models/ predicts with the preprocessing it learned from cars_full.csv.
+a1_baseline is skipped (its minimal preprocessing has other columns).
 
-A menu lists every saved model that reads cars_full.csv columns (a2_preprocessed, b1_tuned, ...; not a1_baseline, whose
-minimal preprocessing has other columns). Type numbers separated by commas, or press Enter for all.
-
-Output (results/b3_external/), like the family files of the other stages: one set per stage and family, and rerunning
-some models of a family keeps the others' saved results (the graphs are redrawn from the saved files).
-  <stage>_<family>_results.csv           one row per model: R2 / MAPE / MAE / RMSE on the European listings, and the model's
-                                         own test metrics on cars_full.csv for comparison
-  <stage>_<family>_pred_vs_actual.png    actual vs predicted price, one panel per model of the family
-  <stage>_<family>_predictions.npz       the saved predictions that graph is drawn from
-  <stage>_<model>_errors.csv             per model: the error per group of cars (age, fuel, fiscal power, brand):
-                                         Cars, MAE, MAPE and Bias % = median of (predicted - actual) / actual
-                                         (negative = the model predicts too low for that group, positive = too high)
-  <stage>_<family>_errors.png            the error tables of the family as bars: bias (top) and MAPE (bottom) per group
-
-Read the results with the differences in mind: another country's market (used cars lose value faster in Germany), no
-Condition / Doors (filled with the training values), Fiscal Power filled from the Moroccan data of the same car model.
+Output in results/b3_external/, per stage and family: <stage>_<family>_results.csv, _pred_vs_actual.png, _errors.png,
+_predictions.npz, plus <stage>_<model>_errors.csv (error per group of cars; Bias % < 0 = predicted too low).
+Rerunning some models of a family keeps the others' saved results.
 """
 import sys
 from pathlib import Path

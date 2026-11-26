@@ -1,15 +1,8 @@
-"""Shared code for the model complexity curves (a2_preprocessed_complexity_curve.py and b1_tuned_complexity_curve.py).
+"""Shared code for the complexity curves (a2_preprocessed_complexity_curve.py, b1_tuned_complexity_curve.py).
 
-One setting that controls model complexity is swept from simple to complex. At each value the model is trained on the
-training rows and scored (RMSE of the price in MAD) on those rows and on the validation rows. The test rows are never used.
-
-Reading a panel: both errors high and close -> underfitting; training error keeps falling while validation error stops
-falling or rises -> overfitting. Green dotted line = lowest validation error; grey dashed line (b1) = value picked by tuning.
-DCN-V2 (epochs) uses early stopping like the real training: the curve ends where training stops (red x) and the green
-line is the epoch whose weights are kept.
-
-Output: results/<stage>/complexity_curve.png and complexity_curve.csv (train_RMSE, val_RMSE, gap = val - train in MAD;
-*_target columns are the RMSE on the model's own target scale).
+One complexity setting is swept from simple to complex; at each value the model is scored (RMSE in MAD) on the training
+and validation rows, never the test rows. Both errors high -> underfitting; validation error rising while training error
+falls -> overfitting. Output: results/<stage>/complexity_curve.png and .csv.
 """
 import math
 import sys

@@ -1,21 +1,10 @@
-"""Save each trained model WITH everything needed to use it on new listings (used by src/external/evaluate_saved_models.py).
+"""Save each trained model with everything needed to use it on new listings (used by src/external/evaluate_saved_models.py).
 
-One file per model: saved_models/<stage>/<family>_<model>.joblib, e.g. saved_models/b1_tuned/tree_random_forest.joblib.
-The file is a dict ("bundle"):
-    model          the fitted model (PyTorch networks and TabNet are moved to the CPU first, so the file loads on any computer)
-    kind           "sklearn" | "torch" | "tabnet": how to call it (see predict_scaled)
-    preprocessing  what the data loader learned from the training rows: imputation tables, one-hot encoders + scaler
-                   (ColumnTransformer), target scaler, price range (see core_utils.load_data_full)
-    smear_shift    Duan's smearing for THIS model, as a shift in scaled log-price space (0 for a1, which predicts the price)
-    + stage, family, model_name, feature_names, test metrics and library versions, for reference.
+One file per model, saved_models/<stage>/<family>_<model>.joblib (stored with Git LFS), holding a dict with the model
+(moved to the CPU), its kind, the preprocessing learned from the training rows, its smearing shift, and reference info.
 
-The files are large (a 500-tree Random Forest is hundreds of MB), so they are stored with Git LFS; rerunning a family
-rebuilds them.
-
-Important for custom classes / functions (DCN-V2, KernelRegressor, the KNN inverse_square weights): pickle stores WHERE a
-class lives. A script started with the Run button is the module "__main__", and a file saved from there could only be
-loaded by that same script. So the family scripts that define such things re-import themselves under their package name
-before running main() (see the bottom of run_neural.py and run_distance.py).
+Pickle stores where a class lives, so scripts that define custom classes (run_neural.py, run_distance.py) re-import
+themselves under their package name before running main(); otherwise only that script could load its files.
 """
 import copy
 import re

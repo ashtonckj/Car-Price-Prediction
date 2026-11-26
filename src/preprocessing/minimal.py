@@ -1,16 +1,7 @@
-"""
-Minimal preprocessing (Part A, step 1): data/raw/cars_dataframe.csv -> data/processed/cars_minimal.csv
+"""Minimal preprocessing (Part A, a1_baseline): data/raw/cars_dataframe.csv -> data/processed/cars_minimal.csv
 
-The baseline uses the SAME ROWS as the full preprocessing (the rows full.py keeps, in the same order), so both
-stages are trained and tested on the same cars and the comparison only measures what the column preprocessing adds.
-The rows are chosen by full.preprocess itself; its cleaned values are thrown away.
-
-For the columns it deliberately does as little as possible:
-  - Numeric feature missing -> 0 (a constant: nothing is learned from the data, so it is not imputation)
-  - Text feature missing    -> the text "missing" (its own one-hot category, so no row is lost)
-  - Every raw column is kept and stays as it is (no car-name cleaning, no mileage conversion, no feature selection);
-    text columns are one-hot encoded later in src/shared/core_utils.py
-  - Price stays in MAD (no log transform), and no q2-q98 price range is applied after the split (unlike a2)
+Same rows as full.py (so a1 and a2 are scored on the same cars), but the columns are left almost raw:
+missing numbers -> 0, missing text -> "missing", text one-hot encoded later in core_utils, price kept in MAD.
 """
 import sys
 from pathlib import Path

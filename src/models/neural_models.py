@@ -63,14 +63,9 @@ class CrossLayer(nn.Module):
 
 
 class DCNV2(nn.Module):
-    """Deep & Cross Network V2 (Wang et al., 2021), PARALLEL structure with FULL-RANK cross layers (the plain DCN-V2):
-    x -> [cross network (explicit feature crosses) | deep network (128-64 MLP)] -> concat -> linear output.
-
-    The same network as src/tuned_models/run_neural.py (DCNV2Regressor with structure="parallel", low_rank=0), here with
-    its default settings. Structure and low rank are left at the plain DCN-V2 on purpose: they are searched by the b1
-    tuning grid (which picked stacked + low-rank 32), and choosing them here from those results would leak tuning into
-    the untuned a2 baseline.
-    """
+    """Deep & Cross Network V2 (Wang et al., 2021), the plain version: parallel structure, full-rank cross layers.
+    x -> [cross network | deep 128-64 network] -> concat -> linear output.
+    Structure and rank are only changed by the b1 tuning; choosing them here would leak tuning into the a2 baseline."""
 
     def __init__(self, n_features, n_cross_layers=3, deep_sizes=(128, 64), dropout=0.1):
         super().__init__()

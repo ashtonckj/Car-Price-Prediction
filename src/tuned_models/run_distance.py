@@ -113,8 +113,6 @@ def kernel_weights(D, h, kernel):
         return np.clip(1.0 - u ** 2, 0.0, None)
     if kernel == "triangular":
         return np.clip(1.0 - u, 0.0, None)
-    if kernel == "tricube":
-        return np.clip(1.0 - u ** 3, 0.0, None) ** 3
     raise ValueError(f"Unknown kernel: {kernel}")
 
 
@@ -123,7 +121,7 @@ class KernelRegressor:
     bandwidth_k = 0 : fixed bandwidth = bandwidth_factor x typical spacing between training points.
     bandwidth_k > 0 : adaptive bandwidth = bandwidth_factor x distance from the query to its bandwidth_k-th nearest
                       training car (narrow in crowded regions, wide in sparse ones).
-    Compact kernels (epanechnikov / triangular / tricube) fall back to the nearest neighbour when no point is inside the bandwidth."""
+    Compact kernels (epanechnikov / triangular) fall back to the nearest neighbour when no point is inside the bandwidth."""
 
     def __init__(self, params):
         self.params = params

@@ -1,26 +1,9 @@
-"""
-SHAP analysis for specific models (Decision Tree, Random Forest, Gradient Boosting, KNN, PyTorch MLP, DCN-V2).
+"""SHAP feature importance for one Part A model (Decision Tree, Random Forest, Gradient Boosting, KNN, MLP, DCN-V2).
 
-Run this script and it will:
-  1. Ask which Part A stage (a1_baseline / a2_preprocessed)
-  2. Ask which model
-  3. Train the model on the final split
-  4. Compute SHAP values on the test set using the appropriate explainer:
-       - TreeExplainer for tree models (Decision Tree, Random Forest, Gradient Boosting)
-       - Explainer with background dataset for KNN, PyTorch MLP, and DCN-V2 (from neural_models.py)
-  5. Save to  results/<stage>/shap/<model_key>/
-        <model_key>_shap_bar.png
-        <model_key>_shap_beeswarm.png
-        <model_key>_shap_importance.csv
-        <model_key>_shap_values.joblib
-        <model_key>_model.joblib
-
-The data comes from the same loaders as the model scripts (src/shared/stages.py -> core_utils.load_data_*), so SHAP
-always sees exactly the rows, price scope and features the models were scored on. Feature names come from the loader
-(e.g. "Brand_Toyota", "Fuel_Diesel").
-
-No smearing here: SHAP explains the model output (scaled log price for a2), and smearing only adds the same constant to
-every prediction, which would move the base value but not change any SHAP value or the feature ranking.
+Asks for a stage and a model, trains it on the final split (same loaders as the model scripts) and explains a sample of
+the test rows: TreeExplainer for trees, a permutation explainer for the others.
+Output: results/<stage>/shap/<model>/ (bar and beeswarm plots, importance CSV, SHAP values, model).
+No smearing: it only shifts every prediction by the same amount, so the SHAP values do not change.
 """
 import sys
 from pathlib import Path
@@ -88,9 +71,6 @@ def choose_model() -> str:
     return keys[int(choice) - 1]
 
 
-# ---------------------------------------------------------------------------
-# SHAP computation + saving
-# ---------------------------------------------------------------------------
 def run_shap(stage_key: str, model_key: str) -> None:
     stage = STAGES[stage_key]
     model_cfg = MODELS[model_key]
@@ -207,9 +187,6 @@ def run_shap(stage_key: str, model_key: str) -> None:
     print(importance_df.head(5).to_string())
 
 
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
 def main():
     stage_key = choose_stage("A")
     model_key = choose_model()

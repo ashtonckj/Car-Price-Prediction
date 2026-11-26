@@ -1,41 +1,12 @@
-"""External dataset 2 (Part B step 3): data/external/european_used_cars_100k.csv -> data/processed/cars_europe.csv
+"""European listings (Part B step 3): data/external/european_used_cars_100k.csv -> data/processed/cars_europe.csv
 
-Purpose: new, unseen data for the models SAVED from cars_full.csv (src/external/evaluate_saved_models.py). Nothing is
-retrained: the file has the SAME columns and encodings as data/processed/cars_full.csv.
+New, unseen data for the saved models (src/external/evaluate_saved_models.py), in the same columns as cars_full.csv.
+Source: KTHESAT, "European Used Cars 100k Sample", Hugging Face, CC BY-NC 4.0 (mobile.de / AutoScout24, prices in euros).
 
-Source: KTHESAT, "European Used Cars 100k Sample", Hugging Face, licence CC BY-NC 4.0 (sharing allowed with credit, not for
-commercial use). 100,000 listings from mobile.de and AutoScout24 (mostly Germany), prices in euros.
-Download: https://huggingface.co/datasets/KTHESAT/european-used-cars-100k-sample (european_used_cars_100k.csv, 119 MB)
-and save it as data/external/european_used_cars_100k.csv. The raw file is not committed (over GitHub's 100 MB limit, and
-it contains seller names and addresses); the processed cars_europe.csv has no seller information.
-
-Row rules, as in full.py: prices converted to MAD, then the same 5k-2M MAD limits, placeholder prices and "price far from
-similar cars" rule (full.drop_price_outliers); Brand / Model cleaned with full.clean_brand / clean_model, plus the name
-fixes below so that the same car is spelled as in the Moroccan data.
-
-Columns, matched to cars_full.csv:
-  Brand, Model                    cleaned as in full.py; brand spellings (MINI -> Mini) and model names (BMW 320 -> serie 3,
-                                  Mercedes C 220 -> classe c, Mini Cooper S -> cooper ...) put into the Moroccan form
-  Year                            first registration year (listings registered after COLLECTION_YEAR are removed)
-  Fuel                            German / Spanish / French labels -> Petrol, Diesel, Hybrid, Electric, LPG (CNG counts as gas)
-  Gearbox                         Automatik / Halbautomatik = 1, Schaltgetriebe = 0
-  Mileage, Mileage Above 500000   km -> the training data's mileage range -> its midpoint, like full.py
-  Equipment Amount                how many of the 16 equipment items of the Moroccan data the listing has (German names
-                                  mapped in EQUIPMENT); a list with none of them (AutoScout24 sometimes lists page fields
-                                  such as "Kilometerstand" instead of equipment) is treated as unknown
-  Fiscal Power (CV)               not computable: the dataset gives horsepower, not the engine size (cc) the Moroccan CV is
-                                  based on. Left empty; the saved model fills it like any missing CV, with the most common
-                                  Moroccan CV of the same Brand + Model + Fuel (a real Moroccan value for a known model).
-  Condition, Number of Doors      not in this dataset: left empty, filled by the saved model (most common training condition,
-                                  doors by Brand/Model)
-  Dropped (not in cars_full.csv): version, power, body type, colour, seller columns, price evaluation, image URL.
-
-Only the cars the saved models are made for are kept (training_reference), both rules learned from the Moroccan TRAINING rows
-(the same 70% split as load_data_full), never from the European prices or the model's errors:
-  - car models the models were trained on: Brand + Model pairs with at least MIN_SEEN cars in the training rows
-    (MIN_SEEN = 10 is the encoder's min_frequency, so every kept model has its own column in the model);
-  - prices inside the training price range (q2-q98 of the training prices, about 21k-445k MAD): the same rule the Moroccan
-    test set gets in a2 / b1, so the scores are comparable.
+Prices are converted to MAD and get the same price rules as full.py; brand / model names, fuel, gearbox, mileage and
+equipment are mapped to the Moroccan form. Fiscal Power, Condition and Doors are not in the data and are filled by the
+saved model. Only car models seen in training and prices inside the training price range are kept (training_reference).
+See REPORT.md section 10.
 """
 import json
 import re

@@ -1,6 +1,7 @@
 """Tuned distance-based models (Part B): trains KNN, Radius Neighbours, and Kernel Regression with BEST_PARAMS and reports 5-fold CV and test results."""
 import sys
 import warnings
+from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -15,15 +16,8 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.shared.core_utils import RANDOM_STATE, evaluate
-from src.shared.experiment import (
-    choose_models,
-    cross_validate,
-    get_best_params,
-    save_results,
-    timed,
-)
-from src.shared.saved_models import save_model
+from src.shared.core_utils import RANDOM_STATE
+from src.shared.experiment import choose_models, fit_predict, run_family
 from src.shared.stages import choose_stage, load_data
 
 # Copy the best row of each model's tuning CSV here after running tune_distance.py.
@@ -179,34 +173,12 @@ def build_model(name, params):
     raise ValueError(f"Unknown model: {name}")
 
 
-def predict(model, X):
-    return model.predict(X).ravel()
-
-
-def fit_predict(split, name, params):
-    model = build_model(name, params)
-    _, fit_time = timed(model.fit, split.X_train, split.y_train.ravel())  # only the fit; no validation predictions inside
-    y_pred, predict_time = timed(predict, model, split.X_test)
-    y_pred = split.smear(predict(model, split.X_val), y_pred)  # log-price bias correction
-    return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
-
-
 def main():
     stage = choose_stage("B")
-    names = choose_models(list(BEST_PARAMS.get(stage, {})), "run")
-    chosen = get_best_params(BEST_PARAMS, stage, names, "distance")
-    split = load_data(stage)
-
-    results, cv_results = {}, {}
-    for name, params in chosen.items():
-        print(f"\n===== {name} (tuned) | parameters: {params} =====")
-        cv_results[name] = cross_validate(stage, lambda fold: fit_predict(fold, name, params))
-        results[name] = fit_predict(split, name, params)
-        save_model(stage, "distance", name, results[name]["model"], split)
-        print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
-        evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
-
-    save_results(stage, "distance", "Distance-based models", results, split, cv_results, order=BEST_PARAMS[stage])
+    params = BEST_PARAMS[stage]
+    names = choose_models(list(params), "run")
+    models = {name: partial(fit_predict, partial(build_model, name, params[name])) for name in names}
+    run_family(stage, load_data(stage), "distance", "Distance-based models", models, tuned_params=params)
 
 
 if __name__ == "__main__":

@@ -6,19 +6,8 @@ from src.shared.core_utils import RESULTS_ROOT, compute_metrics
 from src.shared.experiment import rounded, timed
 
 
-def save_tuning_csv(rows, csv_name, stage, score_column, param_names=None, lower_is_better=True):
+def save_tuning_csv(rows, csv_name, stage, score_column, param_names, lower_is_better=True):
     """Write results/<stage>/<csv_name>.csv, one row per combination, worst score first (the best is the LAST row)."""
-    if isinstance(param_names, bool):
-        lower_is_better = param_names
-        param_names = None
-
-    if param_names is None:
-        score_keys = {"val_RMSE", "val_MAE", "val_R2", "val_MAPE", "time_s"}
-        if rows:
-            param_names = [k for k in rows[0] if k not in score_keys and not k.startswith("val_")]
-        else:
-            param_names = []
-
     params = pd.DataFrame([{name: row[name] for name in param_names} for row in rows], dtype=object)
     scores = pd.DataFrame([{k: v for k, v in row.items() if k not in param_names} for row in rows])
     table = pd.concat([params, scores], axis=1)
@@ -76,23 +65,17 @@ def _param_key(param_dict, param_names):
 def grid_search(csv_name, stage, param_grid, evaluate, score_column="val_RMSE", lower_is_better=True):
     """Try every combination in param_grid. evaluate(params) returns a dict of scores that includes score_column.
     The CSV is rewritten after each combination, so stopping early still keeps the results so far.
-    If an existing CSV exists, completed combinations are preserved and only remaining combinations are run."""
+    If the CSV already exists (same parameters), its combinations are kept and only the remaining ones are run."""
     combinations = list(ParameterGrid(param_grid))
-    param_names = list(param_grid.keys())
-    out_dir = RESULTS_ROOT / stage
-    path = out_dir / f"{csv_name}.csv"
+    param_names = list(param_grid)
+    path = RESULTS_ROOT / stage / f"{csv_name}.csv"
 
     rows = []
-    completed_keys = set()
     if path.exists():
-        try:
-            existing_df = pd.read_csv(path)
-            if all(col in existing_df.columns for col in param_names) and score_column in existing_df.columns:
-                rows = existing_df.to_dict("records")
-                for r in rows:
-                    completed_keys.add(_param_key(r, param_names))
-        except Exception as e:
-            print(f"Warning: could not read existing {path}: {e}")
+        existing = pd.read_csv(path)
+        if set(param_names + [score_column]) <= set(existing.columns):
+            rows = existing.to_dict("records")
+    completed_keys = {_param_key(r, param_names) for r in rows}
 
     remaining = [p for p in combinations if _param_key(p, param_names) not in completed_keys]
 
@@ -100,13 +83,8 @@ def grid_search(csv_name, stage, param_grid, evaluate, score_column="val_RMSE", 
     if completed_keys:
         print(f"Resuming: {len(completed_keys)} already completed, {len(remaining)} remaining.")
 
-    if not remaining and rows:
-        table, path = save_tuning_csv(rows, csv_name, stage, score_column, param_names, lower_is_better)
-        return table, path
-
-    table = None
-    if rows:
-        table = pd.DataFrame(rows).sort_values(score_column, ascending=not lower_is_better, na_position="first", kind="stable").reset_index(drop=True)
+    if not remaining:
+        return save_tuning_csv(rows, csv_name, stage, score_column, param_names, lower_is_better)
 
     for idx, params in enumerate(remaining, start=1):
         total_done = len(completed_keys) + idx

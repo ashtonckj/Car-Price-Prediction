@@ -1,8 +1,7 @@
-"""Combines and compares complexity curve results between a2_preprocessed (default) and b1_tuned (tuned).
+"""Compares the complexity curves of a2_preprocessed (default settings) and b1_tuned (tuned settings).
+Run both complexity curve scripts first.
 
-Outputs:
-  - results/comparison/complexity_comparison.csv (side-by-side comparison table with differences & improvements)
-  - results/comparison/complexity_comparison.png (4-panel comparison plot with Random Forest inset zoom)
+Output: results/comparison/complexity_comparison.png (4 panels, with zooms for Random Forest and Polynomial Regression)
 """
 import sys
 from pathlib import Path
@@ -16,285 +15,169 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 from src.shared import complexity as cc
 from src.shared.core_utils import RESULTS_ROOT
-from src.shared.plots import THOUSANDS
+from src.shared.plots import THOUSANDS, save_figure
 
 OUT_DIR = RESULTS_ROOT / "comparison"
 
+# order: x-axis order of the swept values; zoom_values: values shown in the inset zoom
 CURVE_METADATA = {
     "polynomial_degree": {
         "family": "Linear",
         "model": "Polynomial Regression",
-        "parameter": "degree",
         "xlabel": "Polynomial degree (simple -> complex)",
         "categorical": True,
         "order": ["2", "3", "4", "5", "6", "7", "8"],
         "zoom_values": ["2", "3", "4"],
-        "default_tuned": None,
-        "tuned_value": 2,
+        "legend": ("upper left", None),
     },
     "random_forest_max_depth": {
         "family": "Tree",
         "model": "Random Forest",
-        "parameter": "max_depth",
         "xlabel": "Maximum tree depth (simple -> complex)",
         "categorical": True,
         "order": ["10", "20", "30", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95", "100", "None"],
         "zoom_values": ["40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95", "100", "None"],
-        "default_tuned": None,
-        "tuned_value": 50,
+        "legend": ("lower left", (0.0, 0.0)),
     },
     "knn_k": {
         "family": "Distance",
         "model": "KNN",
-        "parameter": "n_neighbors",
         "xlabel": "Number of neighbours k (simple -> complex)",
         "categorical": True,
         "order": ["100", "75", "50", "30", "20", "15", "10", "9", "7", "5", "3", "1"],
-        "default_tuned": None,
-        "tuned_value": 9,
+        "legend": ("lower left", (0.03, 0.08)),
     },
     "dcnv2_epochs": {
         "family": "Neural",
         "model": "DCN-V2",
-        "parameter": "epoch",
         "xlabel": "Training epochs (simple -> complex)",
         "categorical": False,
-        "order": None,
-        "default_tuned": None,
-        "tuned_value": None,
+        "legend": ("upper right", None),
     },
 }
 
-
-def load_stage_complexity(stage):
-    path = RESULTS_ROOT / stage / "complexity_curve.csv"
-    if not path.exists():
-        return pd.DataFrame()
-    df = pd.read_csv(path, dtype={"value": str}, keep_default_na=False)
-    df["value"] = df["value"].map(cc._clean_value)
-    df["stage"] = stage
-    return df
+# (column, line style, colour, label, line width, marker size); dashed = default (a2), solid = tuned (b1)
+A2_LINES = [("train_RMSE", "o--", "#6baed6", "Default Train (a2)", 1.5, 4), ("val_RMSE", "o--", "#fd8d3c", "Default Val (a2)", 2.0, 5)]
+B1_LINES = [("train_RMSE", "s-", "#08519c", "Tuned Train (b1)", 2.0, 5), ("val_RMSE", "s-", "#d94701", "Tuned Val (b1)", 2.5, 6)]
+BILLIONS = plt.FuncFormatter(lambda v, _: f"{v / 1e9:,.0f} bn")
 
 
-def label_point(ax, x, y, color, above=True):
-    """Dot on the curve at the kept epoch with its RMSE written next to it (validation above, training below)."""
-    ax.plot(x, y, "o", color=color, markersize=8, markeredgecolor="black", markeredgewidth=0.8, zorder=6)
-    ax.annotate(f"{y:,.0f}", (x, y), xytext=(0, 11 if above else -11), textcoords="offset points",
-                ha="center", va="bottom" if above else "top", fontsize=9, fontweight="bold", color=color, zorder=7,
-                bbox={"boxstyle": "round,pad=0.2", "fc": "white", "ec": color, "lw": 1, "alpha": 0.95})
+def column(data_map, values, name):
+    """The column `name` at each x value (NaN where the stage has no row for it)."""
+    return [data_map[v][name] if v in data_map else np.nan for v in values]
+
+
+def best_value(sub):
+    """(value, RMSE) of the lowest validation error."""
+    best = int(sub["val_RMSE"].idxmin())
+    return sub["value"][best], sub["val_RMSE"][best]
+
+
+def rf_inset(ax, position, name, zx, a2_map, b1_map, best_a2, best_b1):
+    """Random Forest zoom on the plateau depths: default vs tuned, for the training or validation RMSE."""
+    kind = "Val" if name == "val_RMSE" else "Train"
+    default_color, tuned_color = ("#fd8d3c", "#d94701") if kind == "Val" else ("#6baed6", "#08519c")
+    ins = ax.inset_axes(position)
+    a2, b1 = column(a2_map, zx, name), column(b1_map, zx, name)
+    ins.plot(zx, a2, "o--", color=default_color, linewidth=1.8, markersize=4, label=f"Default {kind}")
+    ins.plot(zx, b1, "s-", color=tuned_color, linewidth=2.0, markersize=5, label=f"Tuned {kind}")
+    if best_b1 in zx:
+        ins.axvline(best_b1, color="#2ca02c", linestyle="--", alpha=0.8)
+    if best_a2 in zx:
+        ins.axvline(best_a2, color="#fe3731", linestyle=":", alpha=0.8)
+    valid = [v for v in a2 + b1 if not np.isnan(v)]
+    margin = max((max(valid) - min(valid)) * 0.25, 30)
+    ins.set_ylim(min(valid) - margin, max(valid) + margin)
+    ins.tick_params(labelsize=6.5)
+    ins.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:,.0f}"))
+    ins.grid(True, linestyle=":", alpha=0.6)
+    ins.legend(fontsize=7.5, loc="center right")
+
+
+def plot_epochs(ax, sub, lines, name, mark_color, best_style, best_alpha):
+    """DCN-V2 epoch curve of one stage, ending where early stopping stops; marks the epoch whose weights are kept."""
+    kept, stop = cc.early_stop_epochs(sub)
+    run = sub.iloc[:stop]
+    x = [float(v) for v in run["value"]]
+    for column_name, style, color, label, width, _ in lines:
+        ax.plot(x, run[column_name], style.lstrip("os"), color=color, linewidth=width, label=label)
+    ax.plot([x[-1]] * 2, [run["train_RMSE"].iloc[-1], run["val_RMSE"].iloc[-1]], "x",
+            color=mark_color, markersize=9, markeredgewidth=2.2, label=f"{name} stopped: ep {stop}")
+    ax.axvline(kept, color=mark_color, linestyle=best_style, alpha=best_alpha, label=f"Best {name}: ep {kept}")
+    (_, _, train_color, *_), (_, _, val_color, *_) = lines
+    cc.label_point(ax, kept, sub["val_RMSE"][kept - 1], val_color, above=True)
+    cc.label_point(ax, kept, sub["train_RMSE"][kept - 1], train_color, above=False)
 
 
 def plot_comparison_panels(df_a2, df_b1):
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
     fig, axes = plt.subplots(2, 2, figsize=(16, 11))
 
     for ax, (curve_key, meta) in zip(axes.ravel(), CURVE_METADATA.items()):
         a2_sub = df_a2[df_a2["curve"] == curve_key].reset_index(drop=True)
         b1_sub = df_b1[df_b1["curve"] == curve_key].reset_index(drop=True)
-
-        if a2_sub.empty and b1_sub.empty:
-            ax.set_title(f"{meta['family']}: {meta['model']}")
-            ax.text(0.5, 0.5, "No data available", ha="center", va="center", transform=ax.transAxes)
-            ax.set_axis_off()
-            continue
+        billions = False
 
         if meta["categorical"]:
-            # Gather unique x values preserving defined order
-            order = meta.get("order")
             all_vals = list(dict.fromkeys(list(a2_sub["value"]) + list(b1_sub["value"])))
-            if order:
-                x_vals = [v for v in order if v in all_vals] + [v for v in all_vals if v not in order]
-            else:
-                x_vals = all_vals
-
-            # Re-index data to x_vals
+            x_vals = [v for v in meta["order"] if v in all_vals] + [v for v in all_vals if v not in meta["order"]]
             a2_map = {row["value"]: row for _, row in a2_sub.iterrows()}
             b1_map = {row["value"]: row for _, row in b1_sub.iterrows()}
+            for data_map, lines in ((a2_map, A2_LINES), (b1_map, B1_LINES)):
+                for name, style, color, label, width, size in lines:
+                    ax.plot(x_vals, column(data_map, x_vals, name), style, color=color, linewidth=width, markersize=size, label=label)
 
-            a2_train = [a2_map[v]["train_RMSE"] if v in a2_map else np.nan for v in x_vals]
-            a2_val = [a2_map[v]["val_RMSE"] if v in a2_map else np.nan for v in x_vals]
-            b1_train = [b1_map[v]["train_RMSE"] if v in b1_map else np.nan for v in x_vals]
-            b1_val = [b1_map[v]["val_RMSE"] if v in b1_map else np.nan for v in x_vals]
+            best_a2, score_a2 = best_value(a2_sub)
+            best_b1, score_b1 = best_value(b1_sub)
+            ax.axvline(best_a2, color="#ff3c23", linestyle=":", alpha=0.8, label=f"Best Default: {best_a2} ({score_a2:,.0f} MAD)")
+            ax.axvline(best_b1, color="#2ca02c", linestyle="-.", alpha=0.9, label=f"Best Tuned: {best_b1} ({score_b1:,.0f} MAD)")
 
-            # Plot default (a2)
-            ax.plot(x_vals, a2_train, "o--", color="#6baed6", linewidth=1.5, markersize=4, label="Default Train (a2)")
-            ax.plot(x_vals, a2_val, "o--", color="#fd8d3c", linewidth=2.0, markersize=5, label="Default Val (a2)")
+            if curve_key == "random_forest_max_depth":
+                zx = [v for v in x_vals if v in meta["zoom_values"]]
+                rf_inset(ax, [0.67, 0.68, 0.32, 0.3], "val_RMSE", zx, a2_map, b1_map, best_a2, best_b1)
+                rf_inset(ax, [0.67, 0.2, 0.32, 0.3], "train_RMSE", zx, a2_map, b1_map, best_a2, best_b1)
 
-            # Plot tuned (b1)
-            ax.plot(x_vals, b1_train, "s-", color="#08519c", linewidth=2.0, markersize=5, label="Tuned Train (b1)")
-            ax.plot(x_vals, b1_val, "s-", color="#d94701", linewidth=2.5, markersize=6, label="Tuned Val (b1)")
-
-            # Best validation point markings
-            if not a2_sub.empty:
-                best_a2_idx = int(a2_sub["val_RMSE"].idxmin())
-                best_a2_val = a2_sub["value"][best_a2_idx]
-                best_a2_score = a2_sub["val_RMSE"][best_a2_idx]
-                ax.axvline(best_a2_val, color="#ff3c23", linestyle=":", alpha=0.8,
-                           label=f"Best Default: {best_a2_val} ({best_a2_score:,.0f} MAD)")
-
-            if not b1_sub.empty:
-                best_b1_idx = int(b1_sub["val_RMSE"].idxmin())
-                best_b1_val = b1_sub["value"][best_b1_idx]
-                best_b1_score = b1_sub["val_RMSE"][best_b1_idx]
-                ax.axvline(best_b1_val, color="#2ca02c", linestyle="-.", alpha=0.9,
-                           label=f"Best Tuned: {best_b1_val} ({best_b1_score:,.0f} MAD)")
-
-            # Inset zoom for Random Forest to inspect the plateau validation comparison
-            if curve_key == "random_forest_max_depth" and not a2_sub.empty and not b1_sub.empty:
-                try:
-                    zoom_targets = meta.get("zoom_values", ["40", "50", "60", "70", "80", "90", "100", "None"])
-                    zx = [v for v in x_vals if v in zoom_targets]
-                    za2_val = [a2_map[v]["val_RMSE"] if v in a2_map else np.nan for v in zx]
-                    zb1_val = [b1_map[v]["val_RMSE"] if v in b1_map else np.nan for v in zx]
-
-                    ax_ins = ax.inset_axes([0.67, 0.68, 0.32, 0.3])
-                    ax_ins.plot(zx, za2_val, "o--", color="#fd8d3c", linewidth=1.8, markersize=4, label="Default Val")
-                    ax_ins.plot(zx, zb1_val, "s-", color="#d94701", linewidth=2.0, markersize=5, label="Tuned Val")
-
-                    # Highlight best tuned in zoom
-                    z_best_b1 = int(b1_sub["val_RMSE"].idxmin())
-                    if b1_sub["value"][z_best_b1] in zx:
-                        ax_ins.axvline(b1_sub["value"][z_best_b1], color="#2ca02c", linestyle="--", alpha=0.8)
-
-                    Z_best_a2 = int(a2_sub["val_RMSE"].idxmin())
-                    if a2_sub["value"][Z_best_a2] in zx:
-                        ax_ins.axvline(a2_sub["value"][Z_best_a2], color="#fe3731", linestyle=":", alpha=0.8)
-
-                    valid_vals = [v for v in za2_val + zb1_val if not np.isnan(v)]
-                    if valid_vals:
-                        v_min, v_max = min(valid_vals), max(valid_vals)
-                        v_span = v_max - v_min
-                        ax_ins.set_ylim(v_min - max(v_span * 0.25, 30), v_max + max(v_span * 0.25, 30))
-
-                    ax_ins.tick_params(labelsize=6.5)
-                    ax_ins.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:,.0f}"))
-                    ax_ins.grid(True, linestyle=":", alpha=0.6)
-                    ax_ins.legend(fontsize=7.5, loc="center right")
-                except Exception as e:
-                    print(f"Warning: could not draw RF inset zoom: {e}")
-            # Inset zoom for Random Forest to inspect the plateau train comparison
-            if curve_key == "random_forest_max_depth" and not a2_sub.empty and not b1_sub.empty:
-                try:
-                    zoom_targets = meta.get("zoom_values", ["40", "50", "60", "70", "80", "90", "100", "None"])
-                    zx = [v for v in x_vals if v in zoom_targets]
-                    za2_train = [a2_map[v]["train_RMSE"] if v in a2_map else np.nan for v in zx]
-                    zb1_train = [b1_map[v]["train_RMSE"] if v in b1_map else np.nan for v in zx]
-
-                    ax_ins_train = ax.inset_axes([0.67, 0.2, 0.32, 0.3])
-                    ax_ins_train.plot(zx, za2_train, "o--", color="#6baed6", linewidth=1.8, markersize=4, label="Default Train")
-                    ax_ins_train.plot(zx, zb1_train, "s-", color="#08519c", linewidth=2.0, markersize=5, label="Tuned Train")
-
-                    # Highlight best tuned in zoom
-                    z_best_b1 = int(b1_sub["val_RMSE"].idxmin())
-                    if b1_sub["value"][z_best_b1] in zx:
-                        ax_ins_train.axvline(b1_sub["value"][z_best_b1], color="#2ca02c", linestyle="--", alpha=0.8)
-
-                    z_best_a2 = int(a2_sub["val_RMSE"].idxmin())
-                    if a2_sub["value"][z_best_a2] in zx:
-                        ax_ins_train.axvline(a2_sub["value"][z_best_a2], color="#fe3731", linestyle=":", alpha=0.8)
-
-                    valid_vals = [v for v in za2_train + zb1_train if not np.isnan(v)]
-                    if valid_vals:
-                        v_min, v_max = min(valid_vals), max(valid_vals)
-                        v_span = v_max - v_min
-                        ax_ins_train.set_ylim(v_min - max(v_span * 0.25, 30), v_max + max(v_span * 0.25, 30))
-
-                    ax_ins_train.tick_params(labelsize=6.5)
-                    ax_ins_train.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:,.0f}"))
-                    ax_ins_train.grid(True, linestyle=":", alpha=0.6)
-                    ax_ins_train.legend(fontsize=7.5, loc="center right")
-                except Exception as e:
-                    print(f"Warning: could not draw RF train inset zoom: {e}")
+            if curve_key == "polynomial_degree":
+                values = [v for v in column(a2_map, x_vals, "val_RMSE") + column(b1_map, x_vals, "val_RMSE") if not np.isnan(v)]
+                billions = max(values) > 10 * np.median(values)  # blow-up(s): big chart in billions, small chart zooms on degrees 2-4
+                if billions:
+                    zx = [v for v in x_vals if v in meta["zoom_values"]]
+                    ins = ax.inset_axes([0.06, 0.1, 0.38, 0.42])
+                    for data_map, lines in ((a2_map, A2_LINES), (b1_map, B1_LINES)):
+                        for name, style, color, *_ in lines:
+                            ins.plot(zx, column(data_map, zx, name), style, color=color, markersize=4)
+                    ins.axvline(best_a2, color="#ff3c23", linestyle=":", alpha=0.8)
+                    ins.axvline(best_b1, color="#2ca02c", linestyle="-.", alpha=0.9)
+                    ins.set_title(f"Zoom: degree {zx[0]} to {zx[-1]} (MAD)", fontsize=8, pad=3)
+                    ins.tick_params(labelsize=7)
+                    ins.yaxis.set_major_formatter(THOUSANDS)
+                    ins.grid(True, linestyle=":", alpha=0.6)
         else:
-            # Numeric axis (epochs): each curve ends where early stopping would have stopped that training run
-            if not a2_sub.empty:
-                kept, stop = cc.early_stop_epochs(a2_sub)
-                a2_run = a2_sub.iloc[:stop]
-                x_a2 = [float(v) for v in a2_run["value"]]
-                ax.plot(x_a2, a2_run["train_RMSE"], "--", color="#6baed6", linewidth=1.5, label="Default Train (a2)")
-                ax.plot(x_a2, a2_run["val_RMSE"], "--", color="#fd8d3c", linewidth=2.0, label="Default Val (a2)")
-                ax.plot([x_a2[-1]] * 2, [a2_run["train_RMSE"].iloc[-1], a2_run["val_RMSE"].iloc[-1]], "x",
-                        color="#ff3c23", markersize=9, markeredgewidth=2.2, label=f"Default stopped: ep {stop}")
-                ax.axvline(kept, color="#ff3c23", linestyle=":", alpha=0.8, label=f"Best Default: ep {kept}")
-                label_point(ax, kept, a2_sub["val_RMSE"][kept - 1], "#fd8d3c", above=True)
-                label_point(ax, kept, a2_sub["train_RMSE"][kept - 1], "#6baed6", above=False)
-
-            if not b1_sub.empty:
-                kept, stop = cc.early_stop_epochs(b1_sub)
-                b1_run = b1_sub.iloc[:stop]
-                x_b1 = [float(v) for v in b1_run["value"]]
-                ax.plot(x_b1, b1_run["train_RMSE"], "-", color="#08519c", linewidth=2.0, label="Tuned Train (b1)")
-                ax.plot(x_b1, b1_run["val_RMSE"], "-", color="#d94701", linewidth=2.5, label="Tuned Val (b1)")
-                ax.plot([x_b1[-1]] * 2, [b1_run["train_RMSE"].iloc[-1], b1_run["val_RMSE"].iloc[-1]], "x",
-                        color="#2ca02c", markersize=9, markeredgewidth=2.2, label=f"Tuned stopped: ep {stop}")
-                ax.axvline(kept, color="#2ca02c", linestyle="-.", alpha=0.9, label=f"Best Tuned: ep {kept}")
-                label_point(ax, kept, b1_sub["val_RMSE"][kept - 1], "#d94701", above=True)
-                label_point(ax, kept, b1_sub["train_RMSE"][kept - 1], "#08519c", above=False)
+            plot_epochs(ax, a2_sub, A2_LINES, "Default", "#ff3c23", ":", 0.8)
+            plot_epochs(ax, b1_sub, B1_LINES, "Tuned", "#2ca02c", "-.", 0.9)
             ax.set_xlim(0, None)
 
         ax.set_title(f"{meta['family']}: {meta['model']} - Complexity Comparison", fontsize=11, fontweight="bold")
         ax.set_xlabel(meta["xlabel"], fontsize=9)
         ax.set_ylabel("RMSE (MAD)", fontsize=9)
-        ax.yaxis.set_major_formatter(THOUSANDS)
+        ax.yaxis.set_major_formatter(BILLIONS if billions else THOUSANDS)
         ax.grid(True, linestyle="--", alpha=0.5)
-        poly_vals = [v for v in a2_val + b1_val if not np.isnan(v)] if curve_key == "polynomial_degree" else []
-        has_spike = bool(poly_vals) and max(poly_vals) > 10 * np.median(poly_vals)  # blow-up(s) far above the typical point
-        if has_spike:  # big chart = whole curve in billions; small chart = zoom on degrees 2-4
-            ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v / 1e9:,.0f} bn"))
-            zx = [v for v in x_vals if v in meta["zoom_values"]]
-            ax_ins = ax.inset_axes([0.06, 0.1, 0.38, 0.42])
-            for data_map, col, style, color in [(a2_map, "train_RMSE", "o--", "#6baed6"), (a2_map, "val_RMSE", "o--", "#fd8d3c"),
-                                                (b1_map, "train_RMSE", "s-", "#08519c"), (b1_map, "val_RMSE", "s-", "#d94701")]:
-                ax_ins.plot(zx, [data_map[v][col] if v in data_map else np.nan for v in zx], style, color=color, markersize=4)
-            ax_ins.axvline(best_a2_val, color="#ff3c23", linestyle=":", alpha=0.8)
-            ax_ins.axvline(best_b1_val, color="#2ca02c", linestyle="-.", alpha=0.9)
-            ax_ins.set_title(f"Zoom: degree {zx[0]} to {zx[-1]} (MAD)", fontsize=8, pad=3)
-            ax_ins.tick_params(labelsize=7)
-            ax_ins.yaxis.set_major_formatter(THOUSANDS)
-            ax_ins.grid(True, linestyle=":", alpha=0.6)
-        if curve_key == "random_forest_max_depth":
-            loc = "lower left"
-            bbox = (0.0, 0.0)
-        elif curve_key == "polynomial_degree":
-            loc = "upper left"
-            bbox = None
-        elif curve_key == "knn_k":
-            loc = "lower left"
-            bbox = (0.03, 0.08)
-        else:
-            loc = "upper right"
-            bbox = None
-
+        loc, bbox = meta["legend"]
         ax.legend(fontsize=8, loc=loc, bbox_to_anchor=bbox, framealpha=0.8)
 
     fig.suptitle("Model Complexity Curves Comparison: Default (a2_preprocessed) vs Tuned (b1_tuned)", fontsize=13, fontweight="bold", y=0.98)
     fig.tight_layout(rect=(0, 0, 1, 0.96))
     fig_path = OUT_DIR / "complexity_comparison.png"
-    fig.savefig(fig_path, dpi=200, bbox_inches="tight", facecolor="white")
-    plt.close(fig)
+    save_figure(fig, fig_path)
     return fig_path
 
 
-def generate_complexity_comparison():
-    df_a2 = load_stage_complexity("a2_preprocessed")
-    df_b1 = load_stage_complexity("b1_tuned")
-
-    if df_a2.empty or df_b1.empty:
-        print("Warning: Missing complexity_curve.csv in results/a2_preprocessed/ or results/b1_tuned/.")
-        return None, None
-
-    fig_path = plot_comparison_panels(df_a2, df_b1)
-
-    print("\nSaved complexity comparison outputs:")
-    print(f"  - Plot (all models):  {fig_path}")
-
-
 def main():
-    generate_complexity_comparison()
+    df_a2 = cc.read_curve_csv(RESULTS_ROOT / "a2_preprocessed" / "complexity_curve.csv")
+    df_b1 = cc.read_curve_csv(RESULTS_ROOT / "b1_tuned" / "complexity_curve.csv")
+    print(f"Saved complexity comparison plot: {plot_comparison_panels(df_a2, df_b1)}")
 
 
 if __name__ == "__main__":

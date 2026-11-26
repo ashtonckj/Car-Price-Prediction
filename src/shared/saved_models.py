@@ -20,7 +20,7 @@ saved_models/ is in .gitignore.
 Important for custom classes / functions (DCN-V2, KernelRegressor, the KNN inverse_square weights): pickle stores WHERE a
 class lives. A script started with the Run button is the module "__main__", and a file saved from there could only be
 loaded by that same script. So the family scripts that define such things re-import themselves under their package name
-before running main() (see the bottom of run_neural.py, run_distance.py, neural_models.py, distance_models.py).
+before running main() (see the bottom of run_neural.py and run_distance.py).
 """
 import copy
 import re
@@ -90,9 +90,6 @@ def _to_cpu(model, kind):
 
 def save_model(stage, family, name, model, split):
     """Save one trained model of a family run (the final model, trained on the 70% train part) with its preprocessing."""
-    if split.preprocessing is None:
-        print(f"  (not saved: this split has no preprocessing information) {name}")
-        return None
     kind = _kind(model)
     val_pred = predict_scaled(model, kind, split.X_val)
     test_pred = split.smear(val_pred, predict_scaled(model, kind, split.X_test))
@@ -115,8 +112,7 @@ def save_model(stage, family, name, model, split):
     path = model_path(stage, family, name)
     path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(bundle, path, compress=3)
-    shown = path.relative_to(ROOT_DIR) if path.is_relative_to(ROOT_DIR) else path
-    print(f"  Saved model: {shown} ({path.stat().st_size / 1e6:,.1f} MB)")
+    print(f"  Saved model: {path.relative_to(ROOT_DIR)} ({path.stat().st_size / 1e6:,.1f} MB)")
     return path
 
 
@@ -164,9 +160,3 @@ def predict_prices(bundle, raw):
     """Predicted price in MAD for each raw listing (smearing included)."""
     return predict_from_matrix(bundle, prepare_features(bundle, raw))
 
-
-def in_price_range(bundle, prices):
-    """True where a price lies inside the range the model was trained on (q2-q98 of the training prices)."""
-    low, high = bundle["preprocessing"]["log_price_range"]
-    log_prices = np.log1p(np.asarray(prices, dtype=float))
-    return (log_prices >= low) & (log_prices <= high)

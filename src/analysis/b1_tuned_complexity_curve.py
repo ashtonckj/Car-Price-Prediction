@@ -11,7 +11,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
 from src.shared import complexity as cc
-from src.shared.core_utils import RANDOM_STATE
+from src.shared.core_utils import RANDOM_STATE, n_numeric_columns
 from src.tuned_models import run_distance, run_linear, run_neural, run_tree
 
 STAGE = "b1_tuned"
@@ -25,7 +25,7 @@ DCN_PARAMS = run_neural.BEST_PARAMS[STAGE]["DCN-V2"]
 
 
 def poly_curve(split):
-    n_numeric = cc.n_numeric_columns(STAGE)
+    n_numeric = n_numeric_columns(split)
     return cc.sweep(split, lambda d: run_linear.build_model("Polynomial Regression", {**POLY_PARAMS, "degree": d}, n_numeric), cc.POLY_DEGREES)
 
 
@@ -45,6 +45,7 @@ def dcn_curve(split):
     optimizer = torch.optim.AdamW(model.parameters(), lr=p["lr"], weight_decay=p["weight_decay"])
     return cc.epoch_curve(split, model, optimizer, p["batch_size"], run_neural.predict, flat_target=True, clip_grad=1.0,
                           max_epochs=run_neural.MAX_EPOCHS, patience=run_neural.PATIENCE)
+
 
 CURVES = {
     "polynomial_degree": cc.Curve("Polynomial Regression (degree)", "Linear family: Polynomial Regression (tuned)", "Polynomial degree (simple -> complex)", True, POLY_PARAMS["degree"], poly_curve),

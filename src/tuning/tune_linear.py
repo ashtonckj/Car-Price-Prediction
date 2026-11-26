@@ -1,6 +1,7 @@
 """Grid search for the linear models' hyperparameters (Part B)."""
 import sys
 import warnings
+from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -11,17 +12,22 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.shared.core_utils import N_FOLDS, RESULTS_ROOT, compute_metrics
-from src.shared.experiment import choose_models
+from src.shared.core_utils import (
+    N_FOLDS,
+    RESULTS_ROOT,
+    compute_metrics,
+    n_numeric_columns,
+)
+from src.shared.experiment import choose_models, fit_predict
 from src.shared.stages import choose_stage, load_data
 from src.shared.tuning import tune_family, validation_scores
-from src.tuned_models.run_linear import build_model, fit_predict, n_numeric_columns
+from src.tuned_models.run_linear import build_model
 
 warnings.filterwarnings("ignore", category=ConvergenceWarning)  # Huber at a low max_iter is part of the search
 
 # model name: (CSV name, parameter grid)
 PARAM_GRIDS = {
-    # 25 x 2 x 4 x 2 = 400 combinations 
+    # 25 x 2 x 4 x 2 = 400 combinations
     "Ridge": ("linear_tuning_ridge", {
         "alpha": [float(a) for a in np.logspace(-3, 3, 25)],  # 0.001 ... 1000
         "fit_intercept": [True, False],
@@ -32,11 +38,11 @@ PARAM_GRIDS = {
     "Huber": ("linear_tuning_huber", {
         "epsilon": [1.1, 1.35, 1.5, 1.75, 2.0, 2.5, 3.0, 3.5],
         "alpha": [1e-5, 1e-4, 1e-3, 1e-2, 1e-1],
-        "max_iter": [100, 200, 500, 1000], 
+        "max_iter": [100, 200, 500, 1000],
     }),
     # 7 x 2 x 2 = 28 combinations
     "Polynomial Regression": ("linear_tuning_polynomial", {
-        "degree": [2, 3, 4, 5, 6, 7, 8], # 1 is for linear regression so not included; stops at 8 (9+ is too large to run)
+        "degree": [2, 3, 4, 5, 6, 7, 8],  # 1 would be plain linear regression; 9+ is too large to run
         "interaction_only": [False, True],  # True = only cross terms (x1*x2), no squares (x1^2)
         "fit_intercept": [True, False],
     }),
@@ -64,7 +70,7 @@ def cv_check_polynomial(stage, n_numeric):
                   "fit_intercept": bool(row["fit_intercept"])}
         fold_metrics = []
         for split in folds:
-            y_pred = fit_predict(split, "Polynomial Regression", params, n_numeric)["y_pred"]
+            y_pred = fit_predict(partial(build_model, "Polynomial Regression", params, n_numeric), split)["y_pred"]
             try:
                 fold_metrics.append(compute_metrics(split.y_test, y_pred, split.inverse_transform_price))
             except ValueError:  # predictions overflowed to infinity

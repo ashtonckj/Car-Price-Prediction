@@ -1,8 +1,8 @@
 """Linear models: Ridge, Huber, Polynomial Regression. Run it and type a stage number."""
 import sys
+from functools import partial
 from pathlib import Path
 
-import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import HuberRegressor, LinearRegression, Ridge
 from sklearn.pipeline import Pipeline
@@ -12,57 +12,30 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.preprocessing import full, minimal
-from src.shared.core_utils import RANDOM_STATE, evaluate
-from src.shared.experiment import cross_validate, save_results, timed
+from src.shared.core_utils import RANDOM_STATE, n_numeric_columns
+from src.shared.experiment import fit_predict, run_family
 from src.shared.stages import choose_stage, load_data
 
-N_NUMERIC = 0  # set in main(): number of numeric columns (always the last ones after encoding)
+
+def polynomial(degree, n_numeric):
+    """Linear regression on polynomial terms of the numeric columns (the last n_numeric columns of X);
+    the one-hot columns pass through unchanged. Column indices, not a lambda, so the model can be pickled."""
+    add_terms = ColumnTransformer([("numeric", PolynomialFeatures(degree=degree), list(range(-n_numeric, 0)))], remainder="passthrough")
+    return Pipeline([("poly", add_terms), ("linreg", LinearRegression())])
 
 
-def polynomial_regression():
-    add_poly_terms = ColumnTransformer(
-        [("numeric", PolynomialFeatures(),
-          list(range(-N_NUMERIC, 0)))],  # the last N_NUMERIC columns (a lambda here could not be saved)
-        remainder="passthrough",
-    )
-    return Pipeline([("poly", add_poly_terms), ("linreg", LinearRegression())])
-
-
-# All models use default parameters
-MODELS = {
-    "Ridge": lambda: Ridge(random_state=RANDOM_STATE),
-    "Huber": lambda: HuberRegressor(),
-    "Polynomial Regression": polynomial_regression,  # no (): the factory is called later, once per fit
+MODELS = {  # all default parameters
+    "Ridge": lambda n_numeric: Ridge(random_state=RANDOM_STATE),
+    "Huber": lambda n_numeric: HuberRegressor(),
+    "Polynomial Regression": lambda n_numeric: polynomial(2, n_numeric),
 }
 
 
-def fit_predict(make_model, split):
-    model = make_model()
-    _, fit_time = timed(model.fit, split.X_train, split.y_train.ravel())
-    y_pred, predict_time = timed(model.predict, split.X_test)
-    y_pred = split.smear(model.predict(split.X_val), y_pred)  # log-price bias correction
-    return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
-
-
 def main():
-    global N_NUMERIC
     stage = choose_stage()
-    split = load_data(stage)  # also creates the stage's CSV if it is missing
-
-    csv_path, target = {"a1_baseline": (minimal.OUT_PATH, "Price"),
-                        "a2_preprocessed": (full.OUT_PATH, "Log Price")}[stage]
-    N_NUMERIC = pd.read_csv(csv_path).drop(columns=target).select_dtypes(include="number").shape[1]
-
-    results, cv_results = {}, {}
-    for name, make_model in MODELS.items():
-        print(f"\n===== {name} =====")
-        cv_results[name] = cross_validate(stage, lambda fold: fit_predict(make_model, fold))
-        results[name] = fit_predict(make_model, split)
-        print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
-        evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
-
-    save_results(stage, "linear", "Linear models", results, split, cv_results)
+    split = load_data(stage)
+    n_numeric = n_numeric_columns(split)
+    run_family(stage, split, "linear", "Linear models", {name: partial(fit_predict, partial(make, n_numeric)) for name, make in MODELS.items()})
 
 
 if __name__ == "__main__":

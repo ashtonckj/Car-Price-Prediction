@@ -9,7 +9,7 @@ if str(ROOT_DIR) not in sys.path:
 from src.shared.experiment import choose_models
 from src.shared.stages import choose_stage, load_data
 from src.shared.tuning import tune_family, validation_scores
-from src.tuned_models.run_distance import build_model, predict
+from src.tuned_models.run_distance import build_model
 
 # model name: (CSV name, parameter grid)
 PARAM_GRIDS = {
@@ -44,7 +44,7 @@ def main():
         def evaluate(params):
             model = build_model(name, params)
             model.fit(split.X_train, split.y_train.ravel())
-            return validation_scores(split, predict(model, split.X_val))
+            return validation_scores(split, model.predict(split.X_val))
         return evaluate
 
     tune_family(stage, names, PARAM_GRIDS, make_evaluate, "src/tuned_models/run_distance.py")

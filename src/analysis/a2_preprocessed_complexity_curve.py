@@ -12,9 +12,10 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
+from src.models.linear_models import polynomial
 from src.models.neural_models import DCNV2, predict
 from src.shared import complexity as cc
-from src.shared.core_utils import RANDOM_STATE
+from src.shared.core_utils import RANDOM_STATE, n_numeric_columns
 
 STAGE = "a2_preprocessed"
 
@@ -23,15 +24,12 @@ DCN_LR = 1e-3
 DCN_BATCH_SIZE = 256
 DCN_PATIENCE = 10  # early stopping, as in train_torch(patience=10)
 
-# Tree depth range for the validation zoom.
-# Exclude early underfitting (depths 10, 20) to zoom into the plateau/minimum region.
-# Examples: (30, 70), (30, None), or a list like ["30", "40", "50", "60", "70"]
-RF_ZOOM_RANGE = (40, 100)
+RF_ZOOM_RANGE = (40, 100)  # tree depths in the validation zoom: the plateau, without the underfitting depths 10-30
 
 
 def poly_curve(split):
-    n_numeric = cc.n_numeric_columns(STAGE)
-    return cc.sweep(split, lambda d: cc.polynomial(d, n_numeric), cc.POLY_DEGREES)
+    n_numeric = n_numeric_columns(split)
+    return cc.sweep(split, lambda d: polynomial(d, n_numeric), cc.POLY_DEGREES)
 
 
 def forest_curve(split):
@@ -45,7 +43,7 @@ def knn_curve(split):
 def dcn_curve(split):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(RANDOM_STATE)
-    model = DCNV2(n_features=split.X_train.shape[1]).to(device)  # 3 low-rank cross layers, 128-64 deep, dropout 0.1
+    model = DCNV2(n_features=split.X_train.shape[1]).to(device)  # 3 full-rank cross layers, 128-64 deep, dropout 0.1
     return cc.epoch_curve(split, model, torch.optim.Adam(model.parameters(), lr=DCN_LR), DCN_BATCH_SIZE, predict, patience=DCN_PATIENCE)
 
 

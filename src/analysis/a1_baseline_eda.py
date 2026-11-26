@@ -20,45 +20,20 @@ sns.set_theme(style="whitegrid")
 plt.rcParams["figure.figsize"] = (10, 6)
 
 
-def load_raw_data() -> pd.DataFrame:
-    """Loads the raw dataframe without modifying it."""
-    if not RAW_CSV.exists():
-        raise FileNotFoundError(f"Raw data file not found at {RAW_CSV}")
-    return pd.read_csv(RAW_CSV)
-
 def prepare_numerical_df(df: pd.DataFrame) -> pd.DataFrame:
     """Extracts and parses all continuous features into numeric dtypes for outlier testing."""
-    num_df = pd.DataFrame()
+    return pd.DataFrame({
+        "Price": df["Price"],
+        "Year": year_number(df),
+        "Fiscal Power": pd.to_numeric(df["Fiscal Power"].str.extract(r"(\d+)")[0], errors="coerce"),
+        "Equipment Amount": df["Equipment"].apply(lambda x: len(ast.literal_eval(x)) if isinstance(x, str) and x.startswith("[") else 0),
+        "Number of Doors": df["Number of Doors"],
+    })
 
-    # 1. Price
-    if "Price" in df.columns:
-        num_df["Price"] = pd.to_numeric(
-            df["Price"].astype(str).str.replace(r"[^\d\.]", "", regex=True), errors="coerce"
-        )
 
-    # 2. Year
-    if "Year" in df.columns:
-        num_df["Year"] = pd.to_numeric(
-            df["Year"].astype(str).str.extract(r"(\d{4})")[0], errors="coerce"
-        )
-
-    # 3. Fiscal Power
-    if "Fiscal Power" in df.columns:
-        num_df["Fiscal Power"] = pd.to_numeric(
-            df["Fiscal Power"].astype(str).str.extract(r"(\d+)")[0], errors="coerce"
-        )
-
-    # 4. Equipment Amount
-    if "Equipment" in df.columns:
-        num_df["Equipment Amount"] = df["Equipment"].apply(
-            lambda x: len(ast.literal_eval(x)) if pd.notna(x) and isinstance(x, str) and x.startswith("[") else 0
-        )
-
-    # 5. Number of Doors
-    if "Number of Doors" in df.columns:
-        num_df["Number of Doors"] = pd.to_numeric(df["Number of Doors"], errors="coerce")
-
-    return num_df
+def year_number(df: pd.DataFrame) -> pd.Series:
+    """'1980 ou plus ancien' -> 1980; anything without a 4-digit year -> NaN."""
+    return pd.to_numeric(df["Year"].astype(str).str.extract(r"(\d{4})")[0], errors="coerce")
 
 
 def inspect_overview(df: pd.DataFrame) -> None:
@@ -86,10 +61,7 @@ def inspect_target(df: pd.DataFrame) -> None:
     print(" 2. TARGET ANALYSIS (Price)")
     print("=" * 60)
 
-    # Clean numeric conversion for analysis
-    price_cleaned = pd.to_numeric(
-        df["Price"].astype(str).str.replace(r"[^\d\.]", "", regex=True), errors="coerce"
-    )
+    price_cleaned = df["Price"]  # already numeric in the raw CSV (NaN = no price)
 
     print(f"Missing Prices: {price_cleaned.isna().sum():,}")
     print("Price Quantiles (RAW):")
@@ -103,7 +75,7 @@ def inspect_target(df: pd.DataFrame) -> None:
 
     # Plot Price Distributions
     _fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-    
+
     # Linear scale plot (filtered to < 1M for readability)
     sns.histplot(price_cleaned[price_cleaned < 1_000_000], bins=50, kde=True, ax=axes[0], color="skyblue")
     axes[0].set_title("Price Distribution (< 1,000,000 MAD)")
@@ -127,115 +99,103 @@ def inspect_categorical_anomalies(df: pd.DataFrame) -> None:
     print("=" * 60)
 
     # Fuel anomalies
-    if "Fuel" in df.columns:
-        print("Fuel Value Counts:")
-        print(df["Fuel"].value_counts(dropna=False).to_string())
-        print("-" * 40)
+    print("Fuel Value Counts:")
+    print(df["Fuel"].value_counts(dropna=False).to_string())
+    print("-" * 40)
 
     # Gearbox language variants
-    if "Gearbox" in df.columns:
-        print("Gearbox Value Counts (Check for French vs English):")
-        print(df["Gearbox"].value_counts(dropna=False).to_string())
-        print("-" * 40)
+    print("Gearbox Value Counts (Check for French vs English):")
+    print(df["Gearbox"].value_counts(dropna=False).to_string())
+    print("-" * 40)
 
     # Condition language variants
-    if "Condition" in df.columns:
-        print("Condition Value Counts:")
-        print(df["Condition"].value_counts(dropna=False).to_string())
-        print("-" * 40)
+    print("Condition Value Counts:")
+    print(df["Condition"].value_counts(dropna=False).to_string())
+    print("-" * 40)
 
     # Fiscal Power values
-    if "Fiscal Power" in df.columns:
-        print(f"Fiscal Power Summary ({df['Fiscal Power'].nunique():,} unique values)")
-        print("Fiscal Power Value Counts (Top 10):")
-        print(df["Fiscal Power"].value_counts(dropna=False).head(10).to_string())
-        print("-" * 40)
+    print(f"Fiscal Power Summary ({df['Fiscal Power'].nunique():,} unique values)")
+    print("Fiscal Power Value Counts (Top 10):")
+    print(df["Fiscal Power"].value_counts(dropna=False).head(10).to_string())
+    print("-" * 40)
 
     # Brand anomalies (numeric IDs, missing values)
-    if "Brand" in df.columns:
-        print(f"Brand Summary ({df['Brand'].nunique():,} unique brands):")
-        print("Top 10 Brands:")
-        print(df["Brand"].value_counts(dropna=False).head(10).to_string())
-        brand_str = df["Brand"].dropna().astype(str)
-        numeric_brands = brand_str[brand_str.str.isnumeric()]
-        print(f"Corrupted / Numeric Brand IDs: {len(numeric_brands):,} rows (e.g., {numeric_brands.unique()[:5].tolist()})")
-        print(f"Missing Brand: {df['Brand'].isna().sum():,} rows")
-        print("-" * 40)
+    print(f"Brand Summary ({df['Brand'].nunique():,} unique brands):")
+    print("Top 10 Brands:")
+    print(df["Brand"].value_counts(dropna=False).head(10).to_string())
+    brand_str = df["Brand"].dropna().astype(str)
+    numeric_brands = brand_str[brand_str.str.isnumeric()]
+    print(f"Corrupted / Numeric Brand IDs: {len(numeric_brands):,} rows (e.g., {numeric_brands.unique()[:5].tolist()})")
+    print(f"Missing Brand: {df['Brand'].isna().sum():,} rows")
+    print("-" * 40)
 
     # Model anomalies (slug format, numeric values, missing values)
-    if "Model" in df.columns:
-        print(f"Model Summary ({df['Model'].nunique():,} unique models):")
-        print("Top 10 Models:")
-        print(df["Model"].value_counts(dropna=False).head(10).to_string())
-        model_str = df["Model"].dropna().astype(str)
-        slug_models = model_str[model_str.str.contains("_", na=False)]
-        print(f"Slug / Underscore Formatted Models: {len(slug_models):,} rows (e.g., {slug_models.unique()[:5].tolist()})")
-        print(f"Missing Model: {df['Model'].isna().sum():,} rows")
-        print("-" * 40)
+    print(f"Model Summary ({df['Model'].nunique():,} unique models):")
+    print("Top 10 Models:")
+    print(df["Model"].value_counts(dropna=False).head(10).to_string())
+    model_str = df["Model"].dropna().astype(str)
+    slug_models = model_str[model_str.str.contains("_", na=False)]
+    print(f"Slug / Underscore Formatted Models: {len(slug_models):,} rows (e.g., {slug_models.unique()[:5].tolist()})")
+    print(f"Missing Model: {df['Model'].isna().sum():,} rows")
+    print("-" * 40)
 
     # Origin categories and missingness
-    if "Origin" in df.columns:
-        print("Origin Value Counts:")
-        print(df["Origin"].value_counts(dropna=False).to_string())
-        missing_origin = df["Origin"].isna().sum()
-        print(f"Missing Origin: {missing_origin:,} ({missing_origin / len(df) * 100:.2f}%)")
-        print("-" * 40)
+    print("Origin Value Counts:")
+    print(df["Origin"].value_counts(dropna=False).to_string())
+    missing_origin = df["Origin"].isna().sum()
+    print(f"Missing Origin: {missing_origin:,} ({missing_origin / len(df) * 100:.2f}%)")
+    print("-" * 40)
 
     # First Owner categories and missingness
-    if "First Owner" in df.columns:
-        print("First Owner Value Counts:")
-        print(df["First Owner"].value_counts(dropna=False).to_string())
-        missing_fo = df["First Owner"].isna().sum()
-        print(f"Missing First Owner: {missing_fo:,} ({missing_fo / len(df) * 100:.2f}%)")
-        print("-" * 40)
+    print("First Owner Value Counts:")
+    print(df["First Owner"].value_counts(dropna=False).to_string())
+    missing_fo = df["First Owner"].isna().sum()
+    print(f"Missing First Owner: {missing_fo:,} ({missing_fo / len(df) * 100:.2f}%)")
+    print("-" * 40)
 
     # Location (cardinality, rare categories, Arabic vs Latin script mismatch)
-    if "Location" in df.columns:
-        print(f"Location Summary ({df['Location'].nunique():,} unique locations):")
-        print("Top 10 Locations:")
-        print(df["Location"].value_counts(dropna=False).head(10).to_string())
-        loc_series = df["Location"].dropna().astype(str)
-        arabic_locs = loc_series[loc_series.apply(lambda s: any('\u0600' <= c <= '\u06ff' for c in s))]
-        print(f"Non-Latin / Arabic Script Locations: {len(arabic_locs):,} rows ({arabic_locs.unique().tolist()})")
-        rare_locs = (df["Location"].value_counts() == 1).sum()
-        print(f"Rare Locations (Only 1 listing): {rare_locs:,}")
-        print("-" * 40)
+    print(f"Location Summary ({df['Location'].nunique():,} unique locations):")
+    print("Top 10 Locations:")
+    print(df["Location"].value_counts(dropna=False).head(10).to_string())
+    loc_series = df["Location"].dropna().astype(str)
+    arabic_locs = loc_series[loc_series.apply(lambda s: any('\u0600' <= c <= '\u06ff' for c in s))]
+    print(f"Non-Latin / Arabic Script Locations: {len(arabic_locs):,} rows ({arabic_locs.unique().tolist()})")
+    rare_locs = (df["Location"].value_counts() == 1).sum()
+    print(f"Rare Locations (Only 1 listing): {rare_locs:,}")
+    print("-" * 40)
 
     # Sector (high cardinality, placeholders, missingness)
-    if "Sector" in df.columns:
-        print(f"Sector Summary ({df['Sector'].nunique():,} unique sectors, Missing: {df['Sector'].isna().sum():,}):")
-        print("Top 10 Sectors:")
-        print(df["Sector"].value_counts(dropna=False).head(10).to_string())
-        generic_sectors = ["Toute la ville", "City Center", "Other", "Autre"]
-        generic_count = df["Sector"].isin(generic_sectors).sum()
-        print(f"Generic / Placeholder Sectors: {generic_count:,} ({generic_count / len(df) * 100:.2f}%)")
-        print("-" * 40)
+    print(f"Sector Summary ({df['Sector'].nunique():,} unique sectors, Missing: {df['Sector'].isna().sum():,}):")
+    print("Top 10 Sectors:")
+    print(df["Sector"].value_counts(dropna=False).head(10).to_string())
+    generic_sectors = ["Toute la ville", "City Center", "Other", "Autre"]
+    generic_count = df["Sector"].isin(generic_sectors).sum()
+    print(f"Generic / Placeholder Sectors: {generic_count:,} ({generic_count / len(df) * 100:.2f}%)")
+    print("-" * 40)
 
     # Mileage (range format, open-ended bucket, anomalies, missingness)
-    if "Mileage" in df.columns:
-        print(f"Mileage Summary ({df['Mileage'].nunique():,} unique range formats):")
-        print("Top 10 Mileage Buckets:")
-        print(df["Mileage"].value_counts(dropna=False).head(10).to_string())
-        mileage_series = df["Mileage"].dropna().astype(str)
-        has_range = mileage_series.str.contains("-", na=False)
-        has_plus = mileage_series.str.startswith("Plus de")
-        non_standard = mileage_series[~has_range & ~has_plus]
-        print(f"Standard Ranges ('X - Y'): {has_range.sum():,}")
-        print(f"Open-Ended Bucket ('Plus de 500 000'): {has_plus.sum():,}")
-        if len(non_standard) > 0:
-            print(f"Non-standard / Anomalous Mileage Entries: {len(non_standard):,} (Values: {non_standard.tolist()})")
-        print(f"Missing Mileage: {df['Mileage'].isna().sum():,} rows")
-        print("-" * 40)
+    print(f"Mileage Summary ({df['Mileage'].nunique():,} unique range formats):")
+    print("Top 10 Mileage Buckets:")
+    print(df["Mileage"].value_counts(dropna=False).head(10).to_string())
+    mileage_series = df["Mileage"].dropna().astype(str)
+    has_range = mileage_series.str.contains("-", na=False)
+    has_plus = mileage_series.str.startswith("Plus de")
+    non_standard = mileage_series[~has_range & ~has_plus]
+    print(f"Standard Ranges ('X - Y'): {has_range.sum():,}")
+    print(f"Open-Ended Bucket ('Plus de 500 000'): {has_plus.sum():,}")
+    if len(non_standard) > 0:
+        print(f"Non-standard / Anomalous Mileage Entries: {len(non_standard):,} (Values: {non_standard.tolist()})")
+    print(f"Missing Mileage: {df['Mileage'].isna().sum():,} rows")
+    print("-" * 40)
 
     # Number of Doors (discrete category distribution, missingness, unexpected values)
-    if "Number of Doors" in df.columns:
-        print("Number of Doors Value Counts:")
-        print(df["Number of Doors"].value_counts(dropna=False).to_string())
-        missing_doors = df["Number of Doors"].isna().sum()
-        unexpected_doors = df["Number of Doors"].dropna()[~df["Number of Doors"].dropna().isin([3.0, 5.0, 3, 5])]
-        print(f"Unexpected Door Values (outside 3 and 5): {len(unexpected_doors):,}")
-        print(f"Missing Number of Doors: {missing_doors:,} ({missing_doors / len(df) * 100:.2f}%)")
-        print("\n")
+    print("Number of Doors Value Counts:")
+    print(df["Number of Doors"].value_counts(dropna=False).to_string())
+    missing_doors = df["Number of Doors"].isna().sum()
+    unexpected_doors = df["Number of Doors"].dropna()[~df["Number of Doors"].dropna().isin([3.0, 5.0, 3, 5])]
+    print(f"Unexpected Door Values (outside 3 and 5): {len(unexpected_doors):,}")
+    print(f"Missing Number of Doors: {missing_doors:,} ({missing_doors / len(df) * 100:.2f}%)")
+    print("\n")
 
 
 def inspect_mileage_and_year(df: pd.DataFrame) -> None:
@@ -244,19 +204,17 @@ def inspect_mileage_and_year(df: pd.DataFrame) -> None:
     print(" 4. MILEAGE & YEAR FORMAT INSPECTION")
     print("=" * 60)
 
-    if "Mileage" in df.columns:
-        # Sample non-standard Mileage values (ranges, non-numeric strings)
-        sample_mileage = df["Mileage"].dropna().astype(str)
-        ranges = sample_mileage[sample_mileage.str.contains("-", na=False)]
-        print(f"Total Mileage entries containing ranges (e.g., '10000 - 20000'): {len(ranges):,}")
-        print("Sample Range Strings:")
-        print(ranges.head(5).to_list())
-        print("-" * 40)
+    # Sample non-standard Mileage values (ranges, non-numeric strings)
+    sample_mileage = df["Mileage"].dropna().astype(str)
+    ranges = sample_mileage[sample_mileage.str.contains("-", na=False)]
+    print(f"Total Mileage entries containing ranges (e.g., '10000 - 20000'): {len(ranges):,}")
+    print("Sample Range Strings:")
+    print(ranges.head(5).to_list())
+    print("-" * 40)
 
-    if "Year" in df.columns:
-        print("Year Unique Formats (Sample):")
-        print(df["Year"].dropna().astype(str).unique()[:10])
-        print("\n")
+    print("Year Unique Formats (Sample):")
+    print(df["Year"].dropna().astype(str).unique()[:10])
+    print("\n")
 
 
 def inspect_bivariate_relationships(df: pd.DataFrame) -> None:
@@ -265,15 +223,7 @@ def inspect_bivariate_relationships(df: pd.DataFrame) -> None:
     print(" 5. BIVARIATE RELATIONSHIPS & TOP BRANDS")
     print("=" * 60)
 
-    # Filter out extreme target outliers for correlation analysis
-    price_clean = pd.to_numeric(df["Price"].astype(str).str.replace(r"[^\d]", "", regex=True), errors="coerce")
-    year_clean = pd.to_numeric(df["Year"].astype(str).str.extract(r"(\d{4})")[0], errors="coerce")
-    
-    analysis_df = pd.DataFrame({
-        "Price": price_clean,
-        "Year": year_clean,
-        "Brand": df["Brand"] if "Brand" in df.columns else None
-    }).dropna(subset=["Price"])
+    analysis_df = pd.DataFrame({"Price": df["Price"], "Year": year_number(df), "Brand": df["Brand"]}).dropna(subset=["Price"])
     analysis_df = analysis_df[analysis_df["Price"].between(10_000, 1_500_000)]
 
     # Top 15 Brands by listing count
@@ -345,16 +295,13 @@ def plot_z_scores(num_df: pd.DataFrame) -> None:
 
     for idx, col in enumerate(cols):
         s = num_df[col].dropna()
-        if len(s) == 0 or s.std() == 0:
-            continue
-
         z_scores = (s - s.mean()) / s.std()
         outliers_count = (z_scores.abs() > 3).sum()
 
         sns.histplot(z_scores, kde=True, ax=axes[idx], color="mediumpurple", bins=40)
         axes[idx].axvline(3, color="red", linestyle="--", linewidth=1.5, label="Z = +3")
         axes[idx].axvline(-3, color="red", linestyle="--", linewidth=1.5, label="Z = -3")
-        
+
         axes[idx].set_title(f"Z-Score Distribution: {col}\n({outliers_count:,} outliers |Z| > 3)", fontsize=11, fontweight="bold")
         axes[idx].set_xlabel("Z-Score")
         axes[idx].set_ylabel("Count")
@@ -369,6 +316,7 @@ def plot_z_scores(num_df: pd.DataFrame) -> None:
     plt.close()
     print(f"Saved Z-Score distribution plots: {z_plot_path}")
 
+
 def detect_outliers_summary(num_df: pd.DataFrame) -> pd.DataFrame:
     """Calculates IQR and Z-Score outlier counts for each numerical feature."""
     summary_list = []
@@ -377,25 +325,12 @@ def detect_outliers_summary(num_df: pd.DataFrame) -> pd.DataFrame:
         s = num_df[col].dropna()
         n_total = len(s)
 
-        if n_total == 0:
-            continue
-
-        # IQR Method
-        q1 = s.quantile(0.25)
-        q3 = s.quantile(0.75)
+        q1, q3 = s.quantile(0.25), s.quantile(0.75)
         iqr = q3 - q1
-        lower_iqr = q1 - 1.5 * iqr
-        upper_iqr = q3 + 1.5 * iqr
-        iqr_outliers = s[(s < lower_iqr) | (s > upper_iqr)].count()
+        iqr_outliers = s[(s < q1 - 1.5 * iqr) | (s > q3 + 1.5 * iqr)].count()
 
-        # Z-Score Method (|Z| > 3)
-        mean = s.mean()
-        std = s.std()
-        if std > 0:
-            z_scores = (s - mean) / std
-            z_outliers = (z_scores.abs() > 3).sum()
-        else:
-            z_outliers = 0
+        mean, std = s.mean(), s.std()
+        z_outliers = (((s - mean) / std).abs() > 3).sum()
 
         summary_list.append({
             "Feature": col,
@@ -413,9 +348,9 @@ def detect_outliers_summary(num_df: pd.DataFrame) -> pd.DataFrame:
 
 def main():
     print("Starting EDA for Raw Dataset...\n")
-    df = load_raw_data()
+    df = pd.read_csv(RAW_CSV)
     num_df = prepare_numerical_df(df)
-    
+
     inspect_overview(df)
     inspect_target(df)
     inspect_categorical_anomalies(df)

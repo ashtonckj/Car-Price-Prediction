@@ -1,4 +1,4 @@
-"""Timing, 5-fold cross-validation, the model menu, and saving results to results/<stage>/<family>_results.json."""
+"""Timing, 5-fold cross-validation, the model menu, the family run loop, and saving results to results/<stage>/<family>_results.json."""
 import json
 import sys
 import time
@@ -6,8 +6,9 @@ import time
 import numpy as np
 import pandas as pd
 
-from src.shared.core_utils import N_FOLDS, RESULTS_ROOT, compute_metrics
+from src.shared.core_utils import N_FOLDS, RESULTS_ROOT, compute_metrics, evaluate
 from src.shared.plots import plot_family
+from src.shared.saved_models import save_model
 from src.shared.stages import STAGES, load_data
 
 METRICS = ["RMSE", "MAE", "R2", "MAPE"]
@@ -20,13 +21,13 @@ def timed(function, *args, **kwargs):
     return result, time.perf_counter() - t_start
 
 
-def cross_validate(stage, fit_predict):
-    """5-fold CV on the 70% train part. fit_predict(split) must train on split.X_train and return {"y_pred": ...}
+def cross_validate(stage, run):
+    """5-fold CV on the 70% train part. run(split) must train on split.X_train and return {"y_pred": ...}
     for split.X_test. Returns each metric's mean and std over the folds (the std shows how stable the model is)."""
     fold_metrics = []
     for fold in range(N_FOLDS):
         split = load_data(stage, fold)
-        y_pred = fit_predict(split)["y_pred"]
+        y_pred = run(split)["y_pred"]
         fold_metrics.append(compute_metrics(split.y_test, y_pred, split.inverse_transform_price))
         print(f"  CV fold {fold + 1}: R2 {fold_metrics[-1]['R2']:.4f} | MAE {fold_metrics[-1]['MAE']:,.0f}")
     table = pd.DataFrame(fold_metrics)
@@ -42,8 +43,6 @@ def rounded(values, digits=4):
 def choose_models(names, action="run", what="models"):
     """Numbered menu so one model of a family can be run or tuned on its own. Enter = every model.
     Returns the chosen names in menu order."""
-    if not names:
-        sys.exit("Nothing to choose for this stage: add an entry for it to BEST_PARAMS at the top of this file.")
     print(f"Which {what} do you want to {action}?")
     for number, name in enumerate(names, start=1):
         print(f"  {number} = {name}")
@@ -55,15 +54,6 @@ def choose_models(names, action="run", what="models"):
         sys.exit(f"'{choice}' is not an option.")
     numbers = sorted({int(c) for c in picked})
     return [names[n - 1] for n in numbers]
-
-
-def get_best_params(best_params, stage, names, family):
-    """BEST_PARAMS[stage][name] for each chosen model. Stops with a hint if one of them has not been filled in yet."""
-    missing = [name for name in names if name not in best_params.get(stage, {})]
-    if missing:
-        sys.exit(f"Add the best parameters for {', '.join(missing)} on {stage} to BEST_PARAMS at the top of this file "
-                 f"(see results/{stage}/{family}_tuning_<model>.csv).")
-    return {name: best_params[stage][name] for name in names}
 
 
 def save_results(stage, key, title, results, split, cv_results=None, order=None):
@@ -129,6 +119,32 @@ def save_results(stage, key, title, results, split, cv_results=None, order=None)
     json_path.write_text(json.dumps(saved, indent=2))
     print(f"\nSaved {key}_results.json and {key}_pred_vs_actual.png in {out_dir} "
           f"({len(results)} model(s) updated, {len(models)} in the file)")
+
+
+def fit_predict(make_model, split):
+    """Train a new sklearn-style model on split.X_train and predict split.X_test (log-price bias corrected)."""
+    model = make_model()
+    _, fit_time = timed(model.fit, split.X_train, split.y_train.ravel())
+    y_pred, predict_time = timed(model.predict, split.X_test)
+    y_pred = split.smear(model.predict(split.X_val), y_pred)
+    return {"model": model, "y_pred": y_pred, "fit_time": fit_time, "predict_time": predict_time}
+
+
+def run_family(stage, split, key, title, models, tuned_params=None):
+    """Every model of a family: 5-fold CV, then trained on the final split, test results printed and saved.
+    models:       {model name: fit_predict(split) -> {"model", "y_pred", "fit_time", "predict_time"}}
+    tuned_params: BEST_PARAMS[stage] of a Part B run: printed, used for the model order in the JSON, and every
+                  trained model is saved to saved_models/ (Part A runs save results only)."""
+    results, cv_results = {}, {}
+    for name, run in models.items():
+        print(f"\n===== {name} (tuned) | parameters: {tuned_params[name]} =====" if tuned_params else f"\n===== {name} =====")
+        cv_results[name] = cross_validate(stage, run)
+        results[name] = run(split)
+        if tuned_params:
+            save_model(stage, key, name, results[name]["model"], split)
+        print(f"Fit time (s): {results[name]['fit_time']:.2f} | Predict time (s): {results[name]['predict_time']:.2f}")
+        evaluate(name, split.y_test, results[name]["y_pred"], split.inverse_transform_price)
+    save_results(stage, key, title, results, split, cv_results, order=tuned_params)
 
 
 def load_stage_results(stage):

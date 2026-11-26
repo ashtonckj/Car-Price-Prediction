@@ -153,9 +153,6 @@ def main():
     families = {}  # (stage, family) -> (rows, {model name: predictions})
     for label in chosen:
         bundle = joblib.load(models[label])
-        if bundle["preprocessing"]["loader"] != "full":
-            print(f"\n{label}: skipped, this model was not trained on cars_full.csv columns")
-            continue
         row, predicted = evaluate(label, bundle, df, actual)
         rows, predictions = families.setdefault((bundle["stage"], bundle["family"]), ([], {}))
         rows.append(row)

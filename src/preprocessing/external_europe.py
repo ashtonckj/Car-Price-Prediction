@@ -53,7 +53,6 @@ from src.preprocessing import full
 
 RAW_CSV = ROOT_DIR / "data" / "external" / "european_used_cars_100k.csv"
 OUT_PATH = ROOT_DIR / "data" / "processed" / "cars_europe.csv"
-TITLE = "Europe (Hugging Face, CC BY-NC 4.0)"
 DOWNLOAD_URL = "https://huggingface.co/datasets/KTHESAT/european-used-cars-100k-sample"
 
 # Euro -> dirham. One fixed rate for every row, so R2 and MAPE do not depend on it. 2026 average about 10.76-10.77 MAD per
@@ -62,7 +61,6 @@ MAD_PER_EUR = 10.77
 ROUND_PRICE_TO = 10      # MAD
 COLLECTION_YEAR = 2026   # snapshot of October 2026: later registration years are typing errors
 
-FEATURE_COLUMNS = full.FEATURE_COLUMNS
 MIN_SEEN = 10  # training cars a Brand + Model needs to count as seen (= OneHotEncoder min_frequency in core_utils)
 
 BRAND_NAMES = {"MINI": "Mini", "SEAT": "Seat", "CUPRA": "Cupra", "Andere": "Autres", "Sonstige": "Autres"}
@@ -206,7 +204,7 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
     df = df[[pair in seen for pair in zip(df["Brand"], df["Model"])]].copy()  # only car models the saved models were trained on
     df["Log Price"] = np.log1p(df["Price"])
     df = df[df["Log Price"].between(low, high)]  # only prices inside the training price range
-    return df[FEATURE_COLUMNS + ["Log Price"]].drop_duplicates()
+    return df[full.FEATURE_COLUMNS + ["Log Price"]].drop_duplicates()
 
 
 def main() -> None:

@@ -49,7 +49,7 @@ def fit_predict(split, name, params):
 
 def main():
     stage = choose_stage("B")
-    names = choose_models(list(BEST_PARAMS[stage]), "run")
+    names = choose_models(list(BEST_PARAMS.get(stage, {})), "run")
     chosen = get_best_params(BEST_PARAMS, stage, names, "tree")
     split = load_data(stage)
 

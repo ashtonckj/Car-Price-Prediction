@@ -1,4 +1,4 @@
-"""Save each trained model WITH everything needed to use it on new listings, and load it back.
+"""Save each trained model WITH everything needed to use it on new listings (used by src/external/evaluate_saved_models.py).
 
 One file per model: saved_models/<stage>/<family>_<model>.joblib, e.g. saved_models/b1_tuned/tree_random_forest.joblib.
 The file is a dict ("bundle"):
@@ -9,13 +9,8 @@ The file is a dict ("bundle"):
     smear_shift    Duan's smearing for THIS model, as a shift in scaled log-price space (0 for a1, which predicts the price)
     + stage, family, model_name, feature_names, test metrics and library versions, for reference.
 
-Use it:
-    bundle = load_model("b1_tuned", "tree", "Random Forest")
-    prices = predict_prices(bundle, raw_listings)   # raw_listings: same columns as data/raw/cars_dataframe.csv
-    prices = predict_from_matrix(bundle, encoded_to_matrix(bundle, rows))   # rows: columns of cars_full.csv
-
-The files are large (a 500-tree Random Forest is hundreds of MB) and can be rebuilt by rerunning the family, so
-saved_models/ is in .gitignore.
+The files are large (a 500-tree Random Forest is hundreds of MB), so they are stored with Git LFS; rerunning a family
+rebuilds them.
 
 Important for custom classes / functions (DCN-V2, KernelRegressor, the KNN inverse_square weights): pickle stores WHERE a
 class lives. A script started with the Run button is the module "__main__", and a file saved from there could only be
@@ -116,27 +111,6 @@ def save_model(stage, family, name, model, split):
     return path
 
 
-def load_model(stage, family, name):
-    """Load a bundle written by save_model."""
-    return joblib.load(model_path(stage, family, name))
-
-
-def prepare_features(bundle, raw):
-    """Raw listings (columns of data/raw/cars_dataframe.csv, no Price needed) -> the model's input matrix.
-    Uses exactly what was learned from the training rows: no refitting on the new data."""
-    pre = bundle["preprocessing"]
-    if pre["loader"] != "full":
-        raise ValueError(f"{bundle['stage']} uses the minimal preprocessing; predicting new listings is only set up for "
-                         "the full preprocessing (a2_preprocessed, b1_tuned).")
-    return encoded_to_matrix(bundle, full.encode_columns(full.clean_names_and_year(raw)))
-
-
-def encoded_to_matrix(bundle, X):
-    """Rows already in the columns of data/processed/cars_full.csv (e.g. data/processed/cars_europe.csv) -> the model's
-    input matrix. Missing values are filled with what was learned from the training rows only (fill_missing)."""
-    return bundle["preprocessing"]["preprocessor"].transform(fill_missing(bundle, X)).astype("float32")
-
-
 def fill_missing(bundle, X):
     """Rows in the columns of cars_full.csv with every missing value filled from the training rows."""
     pre = bundle["preprocessing"]
@@ -154,9 +128,4 @@ def predict_from_matrix(bundle, X):
     """Predicted price in MAD (smearing included) from the model's input matrix."""
     y = predict_scaled(bundle["model"], bundle["kind"], X) + bundle["smear_shift"]
     return np.expm1(bundle["preprocessing"]["target_scaler"].inverse_transform(y.reshape(-1, 1)).ravel())
-
-
-def predict_prices(bundle, raw):
-    """Predicted price in MAD for each raw listing (smearing included)."""
-    return predict_from_matrix(bundle, prepare_features(bundle, raw))
 

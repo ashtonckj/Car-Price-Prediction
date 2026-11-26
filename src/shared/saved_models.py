@@ -12,6 +12,7 @@ The file is a dict ("bundle"):
 Use it:
     bundle = load_model("b1_tuned", "tree", "Random Forest")
     prices = predict_prices(bundle, raw_listings)   # raw_listings: same columns as data/raw/cars_dataframe.csv
+    prices = predict_from_matrix(bundle, encoded_to_matrix(bundle, rows))   # rows: columns of cars_full.csv
 
 The files are large (a 500-tree Random Forest is hundreds of MB) and can be rebuilt by rerunning the family, so
 saved_models/ is in .gitignore.
@@ -131,19 +132,37 @@ def prepare_features(bundle, raw):
     if pre["loader"] != "full":
         raise ValueError(f"{bundle['stage']} uses the minimal preprocessing; predicting new listings is only set up for "
                          "the full preprocessing (a2_preprocessed, b1_tuned).")
-    X = full.encode_columns(full.clean_names_and_year(raw))
+    return encoded_to_matrix(bundle, full.encode_columns(full.clean_names_and_year(raw)))
+
+
+def encoded_to_matrix(bundle, X):
+    """Rows already in the columns of data/processed/cars_full.csv (e.g. data/processed/cars_europe.csv) -> the model's
+    input matrix. Missing values are filled with what was learned from the training rows only (fill_missing)."""
+    return bundle["preprocessing"]["preprocessor"].transform(fill_missing(bundle, X)).astype("float32")
+
+
+def fill_missing(bundle, X):
+    """Rows in the columns of cars_full.csv with every missing value filled from the training rows."""
+    pre = bundle["preprocessing"]
+    X = X[full.FEATURE_COLUMNS].copy()
     X["Condition"] = X["Condition"].fillna(pre["condition_mode"])  # a listing without a condition: the most common one
     for learned in pre["fills"]:  # Fiscal Power, Number of Doors: same group-mode fill as the training rows
         apply_fill(learned, X)
-    return pre["preprocessor"].transform(X).astype("float32")
+    # Any other missing number (e.g. Equipment Amount, absent from another dataset): the training average, which the
+    # fitted scaler stores, so it becomes 0 ("an average car") after scaling
+    scaler = pre["preprocessor"].named_transformers_["numeric"]
+    return X.fillna(dict(zip(scaler.feature_names_in_, scaler.mean_)))
+
+
+def predict_from_matrix(bundle, X):
+    """Predicted price in MAD (smearing included) from the model's input matrix."""
+    y = predict_scaled(bundle["model"], bundle["kind"], X) + bundle["smear_shift"]
+    return np.expm1(bundle["preprocessing"]["target_scaler"].inverse_transform(y.reshape(-1, 1)).ravel())
 
 
 def predict_prices(bundle, raw):
     """Predicted price in MAD for each raw listing (smearing included)."""
-    pre = bundle["preprocessing"]
-    y = predict_scaled(bundle["model"], bundle["kind"], prepare_features(bundle, raw)) + bundle["smear_shift"]
-    log_price = pre["target_scaler"].inverse_transform(y.reshape(-1, 1)).ravel()
-    return np.expm1(log_price)
+    return predict_from_matrix(bundle, prepare_features(bundle, raw))
 
 
 def in_price_range(bundle, prices):

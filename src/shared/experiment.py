@@ -39,10 +39,12 @@ def rounded(values, digits=4):
     return {name: round(value, digits) for name, value in values.items()}
 
 
-def choose_models(names, action="run"):
+def choose_models(names, action="run", what="models"):
     """Numbered menu so one model of a family can be run or tuned on its own. Enter = every model.
     Returns the chosen names in menu order."""
-    print(f"Which models do you want to {action}?")
+    if not names:
+        sys.exit("Nothing to choose for this stage: add an entry for it to BEST_PARAMS at the top of this file.")
+    print(f"Which {what} do you want to {action}?")
     for number, name in enumerate(names, start=1):
         print(f"  {number} = {name}")
     choice = input("Type numbers separated by commas (Enter = all): ").strip()

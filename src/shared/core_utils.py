@@ -116,6 +116,17 @@ def load_data_minimal(fold=None):
 def load_data_full(fold=None):
     """a2_preprocessed / b1_tuned: price range, group-mode imputation, one-hot Brand/Model/Fuel, scaled numbers, scaled Log Price target."""
     df = read_processed(full.OUT_PATH, full.main)
+    fill_specs = [("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None),
+                  ("Number of Doors", [BRAND_MODEL], 5)]
+    # only used for new listings with no condition (training rows always have one)
+    extra = lambda X_train: {"condition_mode": X_train["Condition"].mode().iloc[0]}
+    return log_price_split(df, fold, fill_specs, "full", extra)
+
+
+def log_price_split(df, fold, fill_specs, loader, extra=None):
+    """Everything after the row cleaning, shared by every log-price dataset: split, price range, group-mode imputation,
+    one-hot Brand/Model/Fuel, scaled numbers, scaled Log Price target, smearing.
+    fill_specs: [(column, key sets, fallback)] for fill_from_train. extra(X_train) -> more entries for `preprocessing`."""
     X, y = df.drop(columns="Log Price"), df[["Log Price"]]
     X_train, y_train, X_val, y_val, X_test, y_test = split_rows(X, y, fold)
 
@@ -126,9 +137,8 @@ def load_data_full(fold=None):
     X_train, X_val, X_test = (X_part[k].copy() for X_part, k in zip((X_train, X_val, X_test), keep))
     y_train, y_val, y_test = (y_part[k] for y_part, k in zip((y_train, y_val, y_test), keep))
 
-    condition_mode = X_train["Condition"].mode().iloc[0]  # only used for new listings with no condition (training rows always have one)
-    fills = [fill_from_train("Fiscal Power (CV)", [BRAND_MODEL + ["Fuel"], BRAND_MODEL], None, X_train, X_val, X_test),
-             fill_from_train("Number of Doors", [BRAND_MODEL], 5, X_train, X_val, X_test)]
+    extra = extra(X_train) if extra else {}
+    fills = [fill_from_train(column, key_sets, fallback, X_train, X_val, X_test) for column, key_sets, fallback in fill_specs]
 
     numeric = [c for c in X_train.columns if c not in BRAND_MODEL + ["Fuel"]]
     preprocessor = ColumnTransformer([
@@ -155,8 +165,8 @@ def load_data_full(fold=None):
         factor = np.mean(np.exp(to_log(y_val) - to_log(y_val_pred)))
         return np.asarray(y_pred).ravel() + np.log(factor) / target_scaler.scale_[0]  # = price * factor, in scaled log space
 
-    preprocessing = {"loader": "full", "fills": fills, "condition_mode": condition_mode, "preprocessor": preprocessor,
-                     "target_scaler": target_scaler, "log_price_range": (float(low), float(high))}
+    preprocessing = {"loader": loader, "fills": fills, "preprocessor": preprocessor,
+                     "target_scaler": target_scaler, "log_price_range": (float(low), float(high)), **extra}
     return Split(X_train, y_train, X_val, y_val, X_test, y_test, inverse_transform_price, smear, feature_names(preprocessor), preprocessing)
 
 

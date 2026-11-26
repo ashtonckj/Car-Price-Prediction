@@ -12,6 +12,8 @@ STAGES = {
     # Same data as b1_tuned; the ensemble scripts take their base models' BEST_PARAMS from b1_tuned and save here.
     # Its own part, so choose_stage("B") (tuning / tuned-model menus) does not offer it.
     "b2_ensemble": {"part": "ensemble", "title": "B2 ensemble (tuned b1 models combined)", "load": load_data_full},
+    # Part B step 3 (b3_external) is not a stage: nothing is trained. src/external/evaluate_saved_models.py tests the
+    # saved models on data/processed/cars_europe.csv and saves to results/b3_external/.
 }
 
 

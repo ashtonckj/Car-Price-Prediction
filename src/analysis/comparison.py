@@ -17,7 +17,7 @@ from src.shared.stages import STAGES
 
 OUT_DIR = RESULTS_ROOT / "comparison"
 STAGE_METRICS = ["R2", "MAE", "MAPE"]  # compared across stages
-COMPARED_STAGES = [stage for stage, info in STAGES.items() if info["part"] in ("A", "B")]  # a1, a2, b1 (not b2_ensemble)
+COMPARED_STAGES = ["a1_baseline", "a2_preprocessed", "b1_tuned"]
 SHOWN_COLUMNS = ["Family", "Model", "R2", "CV_R2_mean", "CV_R2_std", "MAE", "RMSE", "MAPE", "Fit_time_s"]
 
 

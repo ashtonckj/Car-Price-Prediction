@@ -2,7 +2,6 @@
 import sys
 from pathlib import Path
 
-import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import HuberRegressor, LinearRegression, Ridge
 from sklearn.pipeline import Pipeline
@@ -12,7 +11,6 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from src.preprocessing import full
 from src.shared.core_utils import RANDOM_STATE, evaluate
 from src.shared.experiment import (
     choose_models,
@@ -33,9 +31,9 @@ BEST_PARAMS = {
 }
 
 
-def n_numeric_columns():
+def n_numeric_columns(split):
     """Number of numeric columns: after encoding they are always the last columns of X."""
-    return pd.read_csv(full.OUT_PATH).drop(columns="Log Price").select_dtypes(include="number").shape[1]
+    return len(split.preprocessing["preprocessor"].named_transformers_["numeric"].feature_names_in_)
 
 
 def build_model(name, params, n_numeric):
@@ -66,7 +64,7 @@ def main():
     names = choose_models(list(BEST_PARAMS[stage]), "run")
     chosen = get_best_params(BEST_PARAMS, stage, names, "linear")
     split = load_data(stage)
-    n_numeric = n_numeric_columns()
+    n_numeric = n_numeric_columns(split)
 
     results, cv_results = {}, {}
     for name, params in chosen.items():

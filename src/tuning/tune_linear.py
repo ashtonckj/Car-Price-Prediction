@@ -90,7 +90,7 @@ def main():
     stage = choose_stage("B")
     names = choose_models(list(PARAM_GRIDS), "tune")
     split = load_data(stage)
-    n_numeric = n_numeric_columns()
+    n_numeric = n_numeric_columns(split)
 
     def make_evaluate(name):
         def evaluate(params):

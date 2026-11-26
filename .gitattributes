@@ -1,1 +1,2 @@
 *.joblib filter=lfs diff=lfs merge=lfs -text
+data/external/european_used_cars_100k.csv filter=lfs diff=lfs merge=lfs -text
